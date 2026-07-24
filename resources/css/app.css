@@ -1,1 +1,164 @@
 @import "tailwindcss";
+
+/* ============================
+   Material Symbols
+============================ */
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+
+    line-height: 1;
+    vertical-align: middle;
+
+    transition:
+        font-variation-settings .25s ease,
+        transform .25s ease,
+        color .25s ease;
+}
+
+/* Hover -> Filled */
+.group:hover .material-symbols-outlined.hover-fill {
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 24;
+
+    transform: scale(1.08);
+}
+
+/* Active -> Filled */
+.material-symbols-outlined.filled {
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 24;
+}
+
+/* ============================
+    Loader
+============================ */
+
+.windows-loader {
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+
+.windows-loader .dot {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: rotate(225deg);
+    animation: windows-spin 3.5s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+.windows-loader .dot span {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    background: #212A37;
+}
+
+.windows-loader .dot:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.windows-loader .dot:nth-child(2) {
+    animation-delay: 150ms;
+}
+
+.windows-loader .dot:nth-child(3) {
+    animation-delay: 300ms;
+}
+
+.windows-loader .dot:nth-child(4) {
+    animation-delay: 450ms;
+}
+
+.windows-loader .dot:nth-child(5) {
+    animation-delay: 600ms;
+}
+
+@keyframes windows-spin {
+
+    0% {
+        transform: rotate(225deg);
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+
+    7% {
+        transform: rotate(345deg);
+        animation-timing-function: linear;
+    }
+
+    30% {
+        transform: rotate(455deg);
+        animation-timing-function: ease-in-out;
+    }
+
+    39% {
+        transform: rotate(570deg);
+        animation-timing-function: linear;
+    }
+
+    70% {
+        transform: rotate(815deg);
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+
+    75% {
+        transform: rotate(945deg);
+        animation-timing-function: ease-out;
+    }
+
+    76% {
+        transform: rotate(945deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: rotate(945deg);
+        opacity: 0;
+    }
+
+}
+
+#page-content {
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+#page-content.page-enter {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================
+   Page Transition
+============================ */
+
+.page-transition {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+        opacity .45s cubic-bezier(.22, 1, .36, 1),
+        transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+.page-transition.page-show {
+    opacity: 1;
+    transform: translateY(0);
+}

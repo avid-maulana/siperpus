@@ -1,40 +1,68 @@
-<div class="flex items-center justify-between mb-4">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+
     <p class="text-sm text-slate-500">
-        <span class="font-semibold text-slate-700">{{ $literatures->total() }}</span>
+        <span class="font-semibold text-slate-700">
+            {{ $literatures->total() }}
+        </span>
+
         literatur ditemukan
 
         @if(request('search'))
-            untuk "<span class="font-medium text-slate-700">{{ request('search') }}</span>"
+            untuk
+            <span class="font-semibold text-slate-800">
+                "{{ request('search') }}"
+            </span>
         @endif
     </p>
 
-    @if(request('search') || request('type_id') || request('category_id'))
-        <a href="{{ route('literatures.index') }}"
-            data-ajax-page
-            data-reset-filter
-            class="text-xs font-medium text-red-500 hover:text-red-700 hover:underline">
-            Reset filter
-        </a>
+    @if(request('search'))
+        <button
+            type="button"
+            id="resetSearch"
+            class="self-start text-sm font-medium text-red-500 hover:text-red-600 transition-colors">
+
+            Reset Pencarian
+
+        </button>
     @endif
+
 </div>
 
-@if ($literatures->isEmpty())
+@if($literatures->isEmpty())
 
-    <div class="text-center py-16 border border-dashed border-slate-200 rounded-xl">
-        <p class="text-slate-500 text-sm">
-            Tidak ada literatur yang cocok dengan pencarianmu.
+    <div class="rounded-xl border border-dashed border-slate-300 py-16 text-center">
+
+        <svg
+            class="mx-auto w-12 h-12 text-slate-300"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0a6.5 6.5 0 0113 0z"/>
+
+        </svg>
+
+        <h3 class="mt-4 text-lg font-semibold text-slate-700">
+            Literatur tidak ditemukan
+        </h3>
+
+        <p class="mt-2 text-sm text-slate-500">
+            Coba gunakan kata kunci yang berbeda.
         </p>
+
     </div>
 
 @else
 
-    {{-- Desktop --}}
     @include('literatures._table')
 
-    {{-- Mobile --}}
     @include('literatures._card')
 
-    {{-- Pagination --}}
     @include('literatures._pagination')
 
 @endif

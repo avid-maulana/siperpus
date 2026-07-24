@@ -4,6 +4,8 @@
 
     <title>@yield('title', 'Perpustakaan Departemen')</title>
 
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+
     @vite([
         'resources/css/app.css',
         'resources/js/app.js'

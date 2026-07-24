@@ -9,12 +9,9 @@ use Illuminate\Http\Request;
 
 class LiteratureController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Welcome Page
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Homepage
+     */
     public function home()
     {
         return view('home', [
@@ -22,7 +19,6 @@ class LiteratureController extends Controller
             'categoryCount'   => Category::count(),
             'typeCount'       => Type::count(),
 
-            // 6 literatur terbaru
             'latestLiteratures' => Literature::with('category')
                 ->latest()
                 ->take(6)
@@ -30,61 +26,93 @@ class LiteratureController extends Controller
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Daftar Literatur
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Daftar Literatur
+     */
     public function index(Request $request)
     {
-        $types = Type::with('categories')->get();
-        $categories = Category::all();
+        $query = Literature::with([
+            'category',
+            'type',
+        ]);
 
-        $query = Literature::with(['category', 'type']);
+        /*
+        |--------------------------------------------------------------------------
+        | Live Search
+        |--------------------------------------------------------------------------
+        */
 
-        // Pencarian
         if ($request->filled('search')) {
 
-            $search = $request->search;
+            $keyword = trim($request->search);
 
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($keyword) {
 
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('author', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                $q->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('author', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
 
             });
 
         }
 
-        // Filter berdasarkan tipe
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Tipe
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->filled('type_id')) {
 
-            $query->whereHas('category.type', function ($q) use ($request) {
-
-                $q->where('id', $request->type_id);
-
-            });
+            $query->where('type_id', $request->type_id);
 
         }
 
-        // Filter berdasarkan kategori
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Kategori
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->filled('category_id')) {
 
             $query->where('category_id', $request->category_id);
 
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination
+        |--------------------------------------------------------------------------
+        */
+
         $literatures = $query
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
+        /*
+        |--------------------------------------------------------------------------
+        | AJAX Request
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->ajax()) {
+
+            return view('literatures._result', compact('literatures'));
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | First Load
+        |--------------------------------------------------------------------------
+        */
+
         return view('literatures.index', [
             'literatures' => $literatures,
-            'categories'  => $categories,
-            'types'       => $types,
+            'types'       => Type::all(),
+            'categories'  => Category::all(),
         ]);
     }
 }

@@ -24,23 +24,26 @@ class SkripsiController extends Controller
 
         if ($request->filled('search')) {
 
-            $search = trim($request->search);
+    $search = trim($request->search);
 
-            $userIds = DB::connection('master')
-                ->table('user')
-                ->where('nama_lengkap', 'like', "%{$search}%")
-                ->pluck('user_id');
+    $userIds = DB::connection('master')
+        ->table('user')
+        ->where(function ($query) use ($search) {
+            $query->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nomor_induk', 'like', "%{$search}%");
+        })
+        ->pluck('user_id');
 
-            $query->where(function ($query) use ($search, $userIds) {
+    $query->where(function ($query) use ($search, $userIds) {
 
-                $query->where('judul', 'like', "%{$search}%");
+        $query->where('judul', 'like', "%{$search}%");
 
-                if ($userIds->isNotEmpty()) {
-                    $query->orWhereIn('user_mahasiswa_id', $userIds);
-                }
-
-            });
+        if ($userIds->isNotEmpty()) {
+            $query->orWhereIn('user_mahasiswa_id', $userIds);
         }
+
+    });
+}
 
         /*
         |--------------------------------------------------------------------------
@@ -50,7 +53,7 @@ class SkripsiController extends Controller
 
         $skripsis = $query
             ->latest('updated_at')
-            ->paginate(10)
+            ->paginate(12)
             ->withQueryString();
 
         /*
