@@ -31,6 +31,12 @@ class LiteratureController extends Controller
      */
     public function index(Request $request)
     {
+        $typeOptions = Literature::select('type')
+            ->distinct()
+            ->pluck('type')
+            ->filter()
+            ->values();
+
         $query = Literature::with([
             'category',
             'type',
@@ -62,9 +68,9 @@ class LiteratureController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($request->filled('type_id')) {
+        if ($request->filled('type')) {
 
-            $query->where('type_id', $request->type_id);
+            $query->where('type', $request->type);
 
         }
 
@@ -88,7 +94,7 @@ class LiteratureController extends Controller
 
         $literatures = $query
             ->latest()
-            ->paginate(10)
+            ->paginate(12)
             ->withQueryString();
 
         /*
@@ -111,7 +117,7 @@ class LiteratureController extends Controller
 
         return view('literatures.index', [
             'literatures' => $literatures,
-            'types'       => Type::all(),
+            'types'       => $typeOptions,
             'categories'  => Category::all(),
         ]);
     }

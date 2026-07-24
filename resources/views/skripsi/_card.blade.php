@@ -64,44 +64,59 @@
         </div>
 
         <!-- Repository Documents -->
-        <div class="mt-8 border-t border-slate-100 pt-6">
-            <h4 class="mb-4 text-xs font-semibold uppercase tracking-[0.125em] text-slate-500">
-                Dokumen Repository
-            </h4>
+<!-- Repository Documents -->
+<div class="mt-8 border-t border-slate-100 pt-6">
+    <h4 class="mb-4 text-xs font-semibold uppercase tracking-[0.125em] text-slate-500">
+        Dokumen Repository
+    </h4>
 
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                @foreach ($babList as $key => $label)
-                    @php
-                        $available = $skripsi->isi && $skripsi->isi->$key;
-                        $icon = $key === 'daftar_pustaka' ? 'menu_book' : 'description';
-                    @endphp
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+        @foreach ($babList as $key => $label)
+            @php
+                $available = $skripsi->isi && $skripsi->isi->$key;
+                $icon = $key === 'daftar_pustaka' ? 'menu_book' : 'description';
+            @endphp
 
-                    @if ($available)
-                        <a href="{{ route('pdf.viewer', ['path' => $skripsi->isi->$key]) }}"
-                           class="group/link flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm active:scale-[0.985]">
-                            <span class="flex items-center gap-3 min-w-0">
-                                <span class="material-symbols-outlined text-[18px] text-slate-400 transition-colors group-hover/link:text-blue-500">
-                                    {{ $icon }}
-                                </span>
-                                <span class="truncate">{{ $label }}</span>
-                            </span>
-                            <span class="material-symbols-outlined text-[18px] text-slate-300 transition-colors group-hover/link:text-blue-500">
-                                open_in_new
-                            </span>
-                        </a>
-                    @else
-                        <div class="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400">
-                            <span class="flex items-center gap-3 min-w-0">
-                                <span class="material-symbols-outlined text-[18px] text-slate-300">
-                                    {{ $icon }}
-                                </span>
-                                <span class="truncate">{{ $label }}</span>
-                            </span>
-                            <span class="text-[10px] font-medium">Belum ada</span>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </div>
+            @if ($available)
+                <a
+                    href="{{ route('pdf.viewer', ['path' => $skripsi->isi->$key]) }}"
+                    class="group/link flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all duration-300 hover:border-[#212A37] hover:bg-[#212A37] hover:text-white hover:shadow-lg">
+
+                    <span class="flex min-w-0 items-center gap-3">
+                        <span class="material-symbols-outlined text-[18px] text-slate-400 transition-colors duration-300 group-hover/link:text-white">
+                            {{ $icon }}
+                        </span>
+
+                        <span class="truncate">
+                            {{ $label }}
+                        </span>
+                    </span>
+
+                    <span class="material-symbols-outlined text-[18px] text-slate-300 transition-colors duration-300 group-hover/link:text-white">
+                        open_in_new
+                    </span>
+                </a>
+            @else
+                <div
+                    class="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400">
+
+                    <span class="flex min-w-0 items-center gap-3">
+                        <span class="material-symbols-outlined text-[18px] text-slate-300">
+                            {{ $icon }}
+                        </span>
+
+                        <span class="truncate">
+                            {{ $label }}
+                        </span>
+                    </span>
+
+                    <span class="text-[10px] font-medium">
+                        Belum ada
+                    </span>
+                </div>
+            @endif
+        @endforeach
+    </div>
+</div>
     </div>
 </div>

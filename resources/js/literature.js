@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("filterForm");
 
     if (!form) return;
 
     const search = document.getElementById("searchInput");
-    const clear = document.getElementById("clearSearch");
+    const clearButton = document.getElementById("clearSearch");
     const reset = document.getElementById("resetSearch");
     const type = document.getElementById("typeSelect");
     const category = document.getElementById("categorySelect");
@@ -13,12 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let debounce = null;
     let controller = null;
+    let activeRequestId = 0;
+    let loadingTimer = null;
 
-    /**
-     * Build URL
-     */
+    function syncCategoryOptions() {
+        if (!category) return;
+
+        const currentValue = category.value;
+
+        Array.from(category.options).forEach((option) => {
+            option.hidden = false;
+        });
+
+        if (currentValue && !Array.from(category.options).some(option => option.value === currentValue)) {
+            category.value = "";
+        }
+    }
+
     function buildUrl(base = form.action) {
-
         const params = new URLSearchParams();
 
         if (search.value.trim()) {
@@ -26,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (type?.value) {
-            params.set("type_id", type.value);
+            params.set("type", type.value);
         }
 
         if (category?.value) {
@@ -38,24 +50,43 @@ document.addEventListener("DOMContentLoaded", () => {
             : base;
     }
 
-    /**
-     * Render Result
-     */
     function render(html) {
         results.innerHTML = html;
     }
 
-    /**
-     * AJAX Request
-     */
+    function clearLoading() {
+        if (loadingTimer) {
+            clearTimeout(loadingTimer);
+            loadingTimer = null;
+        }
+    }
+
+    function showLoading() {
+        clearLoading();
+
+        loadingTimer = setTimeout(() => {
+            results.innerHTML = `
+                <div class="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
+                    <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-100 border-t-blue-600"></div>
+                    <p class="mt-4 text-sm font-medium text-slate-600">Mencari literatur...</p>
+                </div>
+            `;
+        }, 180);
+    }
+
     async function request(url, push = true) {
-
         controller?.abort();
-
         controller = new AbortController();
+        activeRequestId += 1;
+        const currentRequestId = activeRequestId;
+
+        clearLoading();
+
+        if (url !== location.href && !url.includes("page=")) {
+            showLoading();
+        }
 
         try {
-
             const response = await fetch(url, {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
@@ -67,109 +98,85 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(response.status);
             }
 
-            render(await response.text());
+            const html = await response.text();
 
-            if (push) {
+            if (currentRequestId === activeRequestId) {
+                render(html);
+            }
+
+            if (push && currentRequestId === activeRequestId) {
                 history.pushState({}, "", url);
             }
 
         } catch (error) {
-
-            if (error.name !== "AbortError") {
-                console.error(error);
+            if (error.name === "AbortError") {
+                return;
             }
 
+            if (currentRequestId === activeRequestId) {
+                render(`
+                    <div class="rounded-[2rem] border border-dashed border-slate-200 bg-slate-50 p-12 text-center">
+                        <span class="material-symbols-outlined text-5xl text-slate-400">search_off</span>
+                        <h3 class="mt-4 text-lg font-semibold text-slate-900">Tidak ada hasil</h3>
+                        <p class="mt-2 text-sm text-slate-500">Coba ubah kata kunci, tipe, atau kategori untuk menemukan koleksi yang Anda cari.</p>
+                    </div>
+                `);
+            }
+        } finally {
+            if (currentRequestId === activeRequestId) {
+                clearLoading();
+                controller = null;
+            }
         }
-
     }
 
-    /**
-     * Refresh Data
-     */
     function refresh(push = true) {
         request(buildUrl(), push);
     }
 
-    /**
-     * Prevent Form Submit
-     */
     form.addEventListener("submit", e => {
         e.preventDefault();
     });
 
-    /**
-     * Live Search
-     */
-    search.addEventListener("input", () => {
+    syncCategoryOptions();
 
-        clear.classList.toggle("hidden", !search.value.trim());
+    search.addEventListener("input", () => {
+        clearButton?.classList.toggle("hidden", !search.value.trim());
 
         clearTimeout(debounce);
 
         debounce = setTimeout(() => {
-
             refresh();
-
-        }, 300);
-
+        }, 250);
     });
 
-    /**
-     * Filter Type
-     */
     type?.addEventListener("change", () => {
-
+        syncCategoryOptions();
         refresh();
-
     });
 
-    /**
-     * Filter Category
-     */
     category?.addEventListener("change", () => {
-
         refresh();
-
     });
 
-    /**
-     * Clear Search
-     */
-    clear?.addEventListener("click", () => {
-
+    clearButton?.addEventListener("click", () => {
         search.value = "";
-
-        clear.classList.add("hidden");
-
+        clearButton.classList.add("hidden");
         refresh();
-
         search.focus();
-
     });
 
-    /**
-     * Reset Filter
-     */
     reset?.addEventListener("click", () => {
-
         search.value = "";
-
         if (type) type.value = "";
         if (category) category.value = "";
-
-        clear.classList.add("hidden");
-
+        syncCategoryOptions();
+        clearButton?.classList.add("hidden");
         refresh();
-
         search.focus();
-
     });
 
-    /**
-     * AJAX Pagination
-     */
     results.addEventListener("click", (e) => {
-
         const link = e.target.closest("[data-ajax-page]");
 
         if (!link) return;
@@ -178,34 +185,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         request(link.href);
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
+        window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    /**
-     * Browser Back / Forward
-     */
     window.addEventListener("popstate", () => {
-
         const params = new URL(location.href).searchParams;
-
         search.value = params.get("search") || "";
 
         if (type) {
-            type.value = params.get("type_id") || "";
+            type.value = params.get("type") || "";
         }
 
         if (category) {
             category.value = params.get("category_id") || "";
         }
 
-        clear.classList.toggle("hidden", !search.value.trim());
-
+        syncCategoryOptions();
+        clearButton?.classList.toggle("hidden", !search.value.trim());
         request(location.href, false);
-
     });
-
 });
