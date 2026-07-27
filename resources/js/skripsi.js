@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const search = document.getElementById("search");
+    const kbk = document.getElementById("kbk");
     const searchButton = document.getElementById("search-button");
     const loading = document.getElementById("loading-bar");
     const result = document.getElementById("skripsi-result");
@@ -102,16 +103,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================
 
     const triggerSearch = () => {
-        const url = new URL(window.location.href);
+    const url = new URL(window.location.href);
 
-        if (search.value.trim() !== "") {
-            url.searchParams.set("search", search.value.trim());
-        } else {
-            url.searchParams.delete("search");
-        }
+    // Search
+    if (search.value.trim() !== "") {
+        url.searchParams.set("search", search.value.trim());
+    } else {
+        url.searchParams.delete("search");
+    }
 
-        loadData(url);
-    };
+    // KBK
+    if (kbk && kbk.value !== "") {
+        url.searchParams.set("kbk", kbk.value);
+    } else {
+        url.searchParams.delete("kbk");
+    }
+
+    loadData(url);
+};
 
     search.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
@@ -124,6 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
         search.focus();
         triggerSearch();
     });
+       
+    kbk?.addEventListener("change", () => {
+        triggerSearch();
+    });
+
 
     // ==========================
     // Pagination AJAX
@@ -141,6 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (search.value.trim() !== "") {
             url.searchParams.set("search", search.value.trim());
+        } else {
+            url.searchParams.delete("search");
+        }
+
+        if (kbk && kbk.value !== "") {
+            url.searchParams.set("kbk", kbk.value);
+        } else {
+            url.searchParams.delete("kbk");
         }
 
         loadData(url);

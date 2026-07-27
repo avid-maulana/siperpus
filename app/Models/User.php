@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,7 +29,7 @@ class User extends Authenticatable
         'pwd_hash',
         'kat_no_induk',
         'level',
-        'remember_token', // kalau pakai fitur "remember me"
+        'remember_token',
     ];
 
     protected $hidden = [
@@ -36,8 +37,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    /**
+     * Relasi ke data skripsi.
+     */
     public function skripsi()
     {
         return $this->hasMany(Skripsi::class, 'user_mahasiswa_id', 'user_id');
+    }
+
+    /**
+     * Relasi ke data_judul.
+     */
+    public function dataJudul()
+    {
+        return $this->hasOne(DataJudul::class, 'user_mahasiswa_id', 'user_id');
     }
 }
