@@ -97,11 +97,11 @@
                 </p>
 
                 <h1 class="mt-4 max-w-3xl text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
-                    Selamat datang di Perpustakaan Digital Universitas Negeri Malang
+                    Selamat datang di SIPERPUS Departemen Teknik Elektro dan Informatika
                 </h1>
 
                 <p class="mt-4 max-w-2xl text-sm sm:text-base text-white/85">
-                    Departemen Teknik Elektro dan Informatika. Akses koleksi karya ilmiah, skripsi, dan disertasi mahasiswa secara digital.
+                    Akses koleksi buku, karya ilmiah, dan skripsi mahasiswa secara digital.
                 </p>
 
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -138,6 +138,10 @@
                         </button>
                     </div>
                 </form>
+                <p id="search-error" class="mt-3 hidden text-sm font-medium text-red-300">
+    Silakan masukkan kata kunci pencarian.
+</p>
+                
             </div>
         </div>
     </div>

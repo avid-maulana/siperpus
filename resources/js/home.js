@@ -115,4 +115,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyMode('literature');
 
+    const searchInput = document.getElementById('search');
+const searchError = document.getElementById('search-error');
+
+heroSearchForm.addEventListener('submit', (e) => {
+    const keyword = searchInput.value.trim();
+
+    if (!keyword) {
+        e.preventDefault();
+
+        searchError.classList.remove('hidden');
+
+        searchInput.classList.add(
+            'border-red-400',
+            'ring-4',
+            'ring-red-400/20'
+        );
+
+        searchInput.focus();
+        return;
+    }
+
+    searchError.classList.add('hidden');
+});
+
+searchInput.addEventListener('input', () => {
+    if (searchInput.value.trim() !== '') {
+        searchError.classList.add('hidden');
+        searchInput.classList.remove(
+            'border-red-400',
+            'ring-4',
+            'ring-red-400/20'
+        );
+    }
+});
 });
