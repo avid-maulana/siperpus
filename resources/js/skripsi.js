@@ -28,6 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 200);
     };
 
+    const renderLoadingState = () => {
+        result.innerHTML = `
+            <div class="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+                <div class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-900"></div>
+                <p class="text-sm font-semibold text-slate-700">Memuat hasil pencarian...</p>
+                <p class="mt-2 text-sm text-slate-500">Harap tunggu sebentar sambil kami mencari repository skripsi yang cocok.</p>
+            </div>
+        `;
+    };
+
     const loadData = async (url) => {
 
         // Batalkan request sebelumnya
@@ -38,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         controller = new AbortController();
 
         showLoading();
+        renderLoadingState();
 
         try {
 
