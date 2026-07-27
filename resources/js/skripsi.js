@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const search = document.getElementById("search");
+    const searchButton = document.getElementById("search-button");
     const loading = document.getElementById("loading-bar");
     const result = document.getElementById("skripsi-result");
     const resultInfo = document.getElementById("result-info");
@@ -8,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!search || !loading || !result || !resultInfo) return;
 
-    let timeout;
     let controller = null;
 
     const showLoading = () => {
@@ -90,22 +90,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // Search
     // ==========================
 
-    search.addEventListener("input", function () {
+    const triggerSearch = () => {
+        const url = new URL(window.location.href);
 
-        clearTimeout(timeout);
+        if (search.value.trim() !== "") {
+            url.searchParams.set("search", search.value.trim());
+        } else {
+            url.searchParams.delete("search");
+        }
 
-        timeout = setTimeout(() => {
+        loadData(url);
+    };
 
-            const url = new URL("/skripsi", window.location.origin);
+    search.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            triggerSearch();
+        }
+    });
 
-            if (this.value.trim() !== "") {
-                url.searchParams.set("search", this.value.trim());
-            }
-
-            loadData(url);
-
-        }, 400);
-
+    searchButton?.addEventListener("click", () => {
+        search.focus();
+        triggerSearch();
     });
 
     // ==========================
