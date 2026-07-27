@@ -17,6 +17,7 @@ class LiteratureController extends Controller
         return view('home', [
             'literatureCount' => Literature::count(),
             'categoryCount'   => Category::count(),
+            'userCount'       => \App\Models\User::count(),
             'typeCount'       => Type::count(),
 
             'latestLiteratures' => Literature::with('category')

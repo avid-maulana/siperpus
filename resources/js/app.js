@@ -2,6 +2,7 @@ import './bootstrap';
 import './skripsi';
 import './literature';
 import './navbar';
+import './home' ;
 
 document.addEventListener("DOMContentLoaded", () => {
 
