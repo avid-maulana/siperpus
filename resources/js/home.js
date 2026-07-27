@@ -13,11 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const showSlide = (index) => {
     slides.forEach((slide, i) => {
         if (i === index) {
+
+            // Reset animation
+            slide.style.animation = 'none';
+            slide.offsetHeight; // Trigger reflow
+            slide.style.animation = '';
+
             slide.classList.add('active');
             slide.style.zIndex = '2';
+
         } else {
+
             slide.classList.remove('active');
             slide.style.zIndex = '1';
+
         }
     });
 };

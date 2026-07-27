@@ -164,21 +164,31 @@
 }
 
 
-/* slider ome background */
+/* slider background */
 .hero-slide{
     position:absolute;
     inset:0;
     background-size:cover;
     background-position:center;
-    opacity:0;
 
+    opacity:0;
     transform:scale(1);
-    transition:
-        opacity 1.5s ease,
-        transform 8s linear;
+
+    transition:opacity 1.5s ease;
+    will-change:transform, opacity;
 }
 
 .hero-slide.active{
     opacity:1;
-    transform:scale(1.12);
+    animation:heroZoom 7s linear forwards;
+}
+
+@keyframes heroZoom{
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.15);
+    }
 }

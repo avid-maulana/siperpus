@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="relative min-h-screen overflow-hidden">
+<div class="relative -mt-20 min-h-screen overflow-hidden">
 
     <!-- Background Slider -->
     <div class="absolute inset-0 -z-20">
@@ -28,7 +28,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/15 via-slate-950/30 to-slate-950/90"></div>
 
     <!-- Content -->
-        <div class="relative max-w-7xl mx-auto px-6 py-12 lg:px-8 lg:py-16 text-white">
+        <div class="relative mx-auto max-w-7xl px-6 pt-32 pb-12 lg:px-8 lg:pt-40 lg:pb-16 text-white">
             <!-- Statistics Cards -->
             <div class="grid gap-4 sm:grid-cols-3 mb-12 lg:mb-16">
                 <!-- Total Koleksi Card -->
@@ -111,7 +111,7 @@
                         data-filter="literature"
                         data-route="{{ route('literatures.index') }}"
                         class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2 text-xs sm:text-sm font-semibold text-slate-950 shadow-lg shadow-slate-950/15 transition hover:bg-slate-100">
-                        Filter Literatur
+                        Cari Literatur
                     </button>
                     <button
                         type="button"
@@ -119,7 +119,7 @@
                         data-filter="skripsi"
                         data-route="{{ route('skripsi.index') }}"
                         class="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs sm:text-sm font-semibold text-white transition hover:bg-white/15">
-                        Filter Skripsi
+                        Cari Skripsi
                     </button>
                 </div>
 
