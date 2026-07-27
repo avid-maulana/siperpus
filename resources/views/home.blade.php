@@ -28,18 +28,6 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/15 via-slate-950/30 to-slate-950/90"></div>
 
     <!-- Content -->
-    <div class="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:px-8 lg:py-16 text-white">
-
-        {{-- Statistics --}}
-        ...
-
-        {{-- Welcome --}}
-        ...
-
-    </div>
-
-
-
         <div class="relative max-w-7xl mx-auto px-6 py-12 lg:px-8 lg:py-16 text-white">
             <!-- Statistics Cards -->
             <div class="grid gap-4 sm:grid-cols-3 mb-12 lg:mb-16">

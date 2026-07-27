@@ -6,18 +6,17 @@
 </div>
 
 {{-- Navbar: Default Putih, Jika di-scroll jadi #212A37 --}}
-<header id="navbar" class="fixed top-0 left-0 z-50 w-full border-b transition-all duration-300 ease-in-out bg-white border-slate-200 [&.scrolled]:bg-[#212A37] [&.scrolled]:border-transparent [&.scrolled]:shadow-md">
+<header id="navbar" class="fixed top-0 left-0 z-50 w-full border-b transition-all duration-300 ease-in-out bg-[#212A37] border-transparent [&.scrolled]:bg-white [&.scrolled]:border-slate-200 [&.scrolled]:shadow-md">
     <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
 
         {{-- Logo --}}
         <a href="{{ route('home') }}" class="flex items-center gap-3">
             <img src="{{ asset('asset/logo.png') }}" alt="Logo" class="h-10 w-10 object-contain">
             <div class="hidden leading-tight sm:block">
-                {{-- Default: Teks Gelap, Scrolled: Teks Putih --}}
-                <h1 class="text-sm font-bold tracking-wide transition-colors duration-300 text-slate-900 [.scrolled_&]:text-white">
+                <h1 class="text-sm font-bold tracking-wide transition-colors duration-300 text-white [.scrolled_&]:text-slate-900">
                     PERPUSTAKAAN
                 </h1>
-                <p class="text-[11px] transition-colors duration-300 text-slate-500 [.scrolled_&]:text-slate-300">
+                <p class="text-[11px] transition-colors duration-300 text-slate-300 [.scrolled_&]:text-slate-500">
                     Departemen Teknik Elektro dan Informatika
                 </p>
             </div>
@@ -39,12 +38,11 @@
                             @endphp
 
                             <a href="{{ route($item['route']) }}"
-                               class="group relative py-5 text-[15px] font-medium transition duration-300 {{ $active ? 'text-slate-900 [.scrolled_&]:text-white' : 'text-slate-600 hover:text-slate-900 [.scrolled_&]:text-slate-300 [.scrolled_&]:hover:text-white' }}">
+                               class="group relative py-5 text-[15px] font-medium transition duration-300 {{ $active ? 'text-white [.scrolled_&]:text-slate-900' : 'text-slate-300 hover:text-white [.scrolled_&]:text-slate-600 [.scrolled_&]:hover:text-slate-900' }}">
                                 
                                 {{ $item['label'] }}
 
-                                {{-- Garis Bawah: Default Gelap, Scrolled Putih --}}
-                                <span class="absolute bottom-0 left-1/2 h-[2.5px] w-0 -translate-x-1/2 rounded-full transition-all duration-300 ease-out bg-[#212A37] [.scrolled_&]:bg-white {{ $active ? '!left-0 !w-full !translate-x-0' : 'group-hover:left-0 group-hover:w-full group-hover:translate-x-0' }}">
+                                <span class="absolute bottom-0 left-1/2 h-[2.5px] w-0 -translate-x-1/2 rounded-full transition-all duration-300 ease-out bg-white [.scrolled_&]:bg-[#212A37] {{ $active ? '!left-0 !w-full !translate-x-0' : 'group-hover:left-0 group-hover:w-full group-hover:translate-x-0' }}">
                                 </span>
                             </a>
                         @endforeach
@@ -63,23 +61,22 @@
                         @endphp
 
                         <a href="{{ route($item['route']) }}"
-                           class="group relative py-5 text-[16px] font-medium transition-all duration-300 {{ $active ? 'text-slate-900 [.scrolled_&]:text-white' : 'text-slate-600 hover:text-slate-900 [.scrolled_&]:text-slate-300 [.scrolled_&]:hover:text-white' }}">
+                           class="group relative py-5 text-[16px] font-medium transition-all duration-300 {{ $active ? 'text-white [.scrolled_&]:text-slate-900' : 'text-slate-300 hover:text-white [.scrolled_&]:text-slate-600 [.scrolled_&]:hover:text-slate-900' }}">
                            
                             {{ $item['label'] }}
 
-                            <span class="absolute bottom-0 left-1/2 h-[2.5px] w-0 -translate-x-1/2 rounded-full transition-all duration-300 ease-out bg-[#212A37] [.scrolled_&]:bg-white {{ $active ? '!left-0 !w-full !translate-x-0' : 'group-hover:left-0 group-hover:w-full group-hover:translate-x-0' }}">
+                            <span class="absolute bottom-0 left-1/2 h-[2.5px] w-0 -translate-x-1/2 rounded-full transition-all duration-300 ease-out bg-white [.scrolled_&]:bg-[#212A37] {{ $active ? '!left-0 !w-full !translate-x-0' : 'group-hover:left-0 group-hover:w-full group-hover:translate-x-0' }}">
                             </span>
                         </a>
                     @endforeach
                 </div>
 
                 {{-- Logout --}}
-                {{-- Border Default: abu-abu, Scrolled: putih transparan --}}
-                <div class="ml-8 border-l pl-6 transition-colors duration-300 border-slate-200 [.scrolled_&]:border-white/20">
+                <div class="ml-8 border-l pl-6 transition-colors duration-300 border-white/20 [.scrolled_&]:border-slate-200">
                     <form id="logoutForm" action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button id="logoutButton" type="submit"
-                                class="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 text-slate-500 hover:bg-red-50 hover:text-red-600 [.scrolled_&]:text-slate-300 [.scrolled_&]:hover:bg-red-500/20 [.scrolled_&]:hover:text-red-400">
+                                class="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 text-slate-300 hover:bg-red-500/20 hover:text-red-400 [.scrolled_&]:text-slate-500 [.scrolled_&]:hover:bg-red-50 [.scrolled_&]:hover:text-red-600">
                             
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
