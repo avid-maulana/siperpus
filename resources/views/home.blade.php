@@ -4,10 +4,41 @@
 
 @section('content')
 
-<div class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-slate-950/75"></div>
-    <div class="relative min-h-screen bg-cover bg-center" style="background-image: url('{{ asset('asset/um.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/15 via-slate-950/30 to-slate-950/90"></div>
+<div class="relative min-h-screen overflow-hidden">
+
+    <!-- Background Slider -->
+    <div class="absolute inset-0 -z-20">
+        <div class="hero-slide active"
+            style="background-image: url('{{ asset('asset/lobi.jpg') }}')"></div>
+
+        <div class="hero-slide"
+            style="background-image: url('{{ asset('asset/sign ruangan.jpg') }}')"></div>
+
+        <div class="hero-slide"
+            style="background-image: url('{{ asset('asset/rak 3.jpg') }}')"></div>
+
+        <div class="hero-slide"
+            style="background-image: url('{{ asset('asset/rak 4.jpg') }}')"></div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 -z-10 bg-slate-700/75"></div>
+
+    <!-- Gradient -->
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/15 via-slate-950/30 to-slate-950/90"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:px-8 lg:py-16 text-white">
+
+        {{-- Statistics --}}
+        ...
+
+        {{-- Welcome --}}
+        ...
+
+    </div>
+
+
 
         <div class="relative max-w-7xl mx-auto px-6 py-12 lg:px-8 lg:py-16 text-white">
             <!-- Statistics Cards -->
@@ -73,8 +104,8 @@
 
             <!-- Welcome Section -->
             <div class="mt-8 lg:mt-12">
-                <p class="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-white">
-                    Halo {{ Auth::user()->name }},
+                <p class="text-xs sm:text-sm font-semibold text-white">
+                    Halo {{ ucwords(strtolower(Auth::user()->nama_lengkap)) }},
                 </p>
 
                 <h1 class="mt-4 max-w-3xl text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
@@ -92,7 +123,7 @@
                         data-filter="literature"
                         data-route="{{ route('literatures.index') }}"
                         class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2 text-xs sm:text-sm font-semibold text-slate-950 shadow-lg shadow-slate-950/15 transition hover:bg-slate-100">
-                        Cari Literatur
+                        Filter Literatur
                     </button>
                     <button
                         type="button"
@@ -100,7 +131,7 @@
                         data-filter="skripsi"
                         data-route="{{ route('skripsi.index') }}"
                         class="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs sm:text-sm font-semibold text-white transition hover:bg-white/15">
-                        Cari Skripsi
+                        Filter Skripsi
                     </button>
                 </div>
 

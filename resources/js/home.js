@@ -1,4 +1,38 @@
+import './home';
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ===========================
+    // HERO BACKGROUND SLIDER
+    // ===========================
+    const slides = document.querySelectorAll('.hero-slide');
+
+    if (slides.length) {
+        let current = 0;
+
+        const showSlide = (index) => {
+    slides.forEach((slide, i) => {
+        if (i === index) {
+            slide.classList.add('active');
+            slide.style.zIndex = '2';
+        } else {
+            slide.classList.remove('active');
+            slide.style.zIndex = '1';
+        }
+    });
+};
+
+        showSlide(current);
+
+        setInterval(() => {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }, 7000); // ganti gambar setiap 7 detik
+    }
+
+    // ===========================
+    // FILTER LITERATUR / SKRIPSI
+    // ===========================
     const filterLiteratureBtn = document.getElementById('filterLiteratureBtn');
     const filterSkripsiBtn = document.getElementById('filterSkripsiBtn');
     const heroSearchForm = document.getElementById('heroSearchForm');
@@ -28,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resetButton = (button) => {
         button.classList.remove(...activeClasses, ...inactiveClasses);
+
         button.classList.add(
             'inline-flex',
             'items-center',
@@ -42,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const applyMode = (mode) => {
+
         const route = mode === 'skripsi'
             ? filterSkripsiBtn.dataset.route
             : filterLiteratureBtn.dataset.route;
@@ -53,21 +89,21 @@ document.addEventListener('DOMContentLoaded', () => {
         resetButton(filterSkripsiBtn);
 
         if (mode === 'skripsi') {
+
             filterSkripsiBtn.classList.add(...activeClasses);
             filterLiteratureBtn.classList.add(...inactiveClasses);
+
         } else {
+
             filterLiteratureBtn.classList.add(...activeClasses);
             filterSkripsiBtn.classList.add(...inactiveClasses);
+
         }
     };
 
-    filterLiteratureBtn.addEventListener('click', () => {
-        applyMode('literature');
-    });
-
-    filterSkripsiBtn.addEventListener('click', () => {
-        applyMode('skripsi');
-    });
+    filterLiteratureBtn.addEventListener('click', () => applyMode('literature'));
+    filterSkripsiBtn.addEventListener('click', () => applyMode('skripsi'));
 
     applyMode('literature');
+
 });
