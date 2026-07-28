@@ -14,23 +14,23 @@ class LiteratureController extends Controller
      * Homepage
      */
     public function home()
-{
-    return view('home', [
-        'literatureCount' => Literature::count(),
-        'categoryCount'   => Category::count(),
-        'userCount'       => \App\Models\User::count(),
-        'typeCount'       => Type::count(),
+    {
+        return view('home', [
+            'literatureCount' => Literature::count(),
+            'categoryCount'   => Category::count(),
+            'userCount'       => \App\Models\User::count(),
+            'typeCount'       => Type::count(),
 
-        'kbkCount' => DB::connection('master')
-            ->table('data_kbk')
-            ->count(),
+            'kbkCount' => DB::connection('master')
+                ->table('data_kbk')
+                ->count(),
 
-        'latestLiteratures' => Literature::with('category')
-            ->latest()
-            ->take(6)
-            ->get(),
-    ]);
-}
+            'latestLiteratures' => Literature::with('category')
+                ->latest()
+                ->take(6)
+                ->get(),
+        ]);
+    }
 
     /**
      * Daftar Literatur
@@ -111,7 +111,10 @@ class LiteratureController extends Controller
 
         if ($request->ajax()) {
 
-            return view('literatures._result', compact('literatures'));
+            return view('literatures._result', [
+                'literatures' => $literatures,
+                'categories'  => Category::all(),
+            ]);
 
         }
 

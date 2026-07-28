@@ -1,4 +1,13 @@
-﻿<div class="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+﻿{{-- Metadata AJAX --}}
+<div
+    id="result-meta"
+    data-total="{{ $literatures->total() }}"
+    data-current-page="{{ $literatures->currentPage() }}"
+    data-last-page="{{ $literatures->lastPage() }}"
+    hidden>
+</div>
+
+<div class="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
     <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
             <p class="text-sm font-medium uppercase text-slate-500">Hasil pencarian</p>
