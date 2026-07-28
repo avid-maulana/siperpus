@@ -19,10 +19,12 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/15 via-slate-950/30 to-slate-950/90"></div>
 
     <!-- Content -->
-    <div class="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 py-24 lg:px-8 text-white">
+    <!-- PERUBAHAN: Mengganti py-24 dengan pt-28 pb-40 (dan lg:pb-52) agar konten terdorong sedikit ke atas dari titik tengah (center) -->
+    <div class="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 pt-28 pb-40 lg:px-8 lg:pb-52 text-white">
 
         <!-- Statistics Cards -->
-        <div class="mb-10 grid gap-4 sm:grid-cols-2 lg:mb-14 lg:grid-cols-4">
+        <!-- PERUBAHAN: Mengurangi margin bottom dari mb-10 lg:mb-14 menjadi mb-8 lg:mb-10 agar jarak dengan teks Welcome lebih rapat -->
+        <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:mb-10 lg:grid-cols-4">
 
             <!-- Total Koleksi Card -->
             <div class="group flex h-full flex-col justify-between rounded-xl border border-white/20 bg-white/10 p-5 shadow-lg backdrop-blur-sm transition-all hover:bg-white/15 sm:p-6">
@@ -126,7 +128,8 @@
                 </button>
             </div>
 
-            <form id="heroSearchForm" action="{{ route('literatures.index') }}" method="GET" class="mt-8">
+            <!-- PERUBAHAN: Sedikit merapatkan margin top pada form dari mt-8 menjadi mt-6 -->
+            <form id="heroSearchForm" action="{{ route('literatures.index') }}" method="GET" class="mt-6">
                 <input type="hidden" id="filterTarget" name="filter_target" value="literature">
                 <div class="relative max-w-2xl">
                     <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">

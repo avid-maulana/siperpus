@@ -68,7 +68,7 @@
     // AJAX
     // ==========================
 
-    const loadData = async (url) => {
+    const loadData = async (url, showLoader = true) => {
 
         if (controller) {
             controller.abort();
@@ -76,8 +76,10 @@
 
         controller = new AbortController();
 
-        showLoading();
-        renderLoadingState();
+        if (showLoader) {
+            showLoading();
+            renderLoadingState();
+        }
 
         try {
 
@@ -116,6 +118,12 @@
 
             history.replaceState({}, "", url);
 
+            // Scroll ke hasil
+            result.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
         } catch (error) {
 
             if (error.name !== "AbortError") {
@@ -126,43 +134,41 @@
 
         } finally {
 
+        if (showLoader) {
             hideLoading();
-
         }
 
-    };
+    }
+
+};
 
         // ==========================
     // Search
     // ==========================
 
-    const triggerSearch = (page = null) => {
+    const triggerSearch = (page = null, showLoader = true) => {
 
-        const url = new URL(form.action);
+    const url = new URL(form.action);
 
-        // Search
-        if (search.value.trim() !== "") {
-            url.searchParams.set("search", search.value.trim());
-        }
+    if (search.value.trim() !== "") {
+        url.searchParams.set("search", search.value.trim());
+    }
 
-        // Type
-        if (type.value !== "") {
-            url.searchParams.set("type", type.value);
-        }
+    if (type.value !== "") {
+        url.searchParams.set("type", type.value);
+    }
 
-        // Category
-        if (category.value !== "") {
-            url.searchParams.set("category_id", category.value);
-        }
+    if (category.value !== "") {
+        url.searchParams.set("category_id", category.value);
+    }
 
-        // Page
-        if (page) {
-            url.searchParams.set("page", page);
-        }
+    if (page) {
+        url.searchParams.set("page", page);
+    }
 
-        loadData(url);
+    loadData(url, showLoader);
 
-    };
+};
 
     // ==========================
     // Search Input
@@ -265,22 +271,17 @@
 
     document.addEventListener("click", (event) => {
 
-        const link = event.target.closest("[data-ajax-page]");
+    const link = event.target.closest("[data-ajax-page]");
 
-        if (!link) return;
+    if (!link) return;
 
-        event.preventDefault();
+    event.preventDefault();
 
-        const page = new URL(link.href).searchParams.get("page");
+    const page = new URL(link.href).searchParams.get("page");
 
-        triggerSearch(page);
+    triggerSearch(page, false);
 
-        window.scrollTo({
-            top: result.offsetTop - 120,
-            behavior: "smooth"
-        });
-
-    });
+});
 
     // ==========================
     // Browser Back / Forward
