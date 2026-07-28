@@ -28,7 +28,7 @@
             <div class="group flex h-full flex-col justify-between rounded-xl border border-white/20 bg-white/10 p-5 shadow-lg backdrop-blur-sm transition-all hover:bg-white/15 sm:p-6">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">Total Koleksi</p>
+                        <p class="text-xs font-semibold uppercase text-white/80">Total Koleksi</p>
                         <p class="mt-3 text-3xl font-bold text-white">{{ number_format($literatureCount) }}</p>
                     </div>
                     <div class="ml-3 flex-shrink-0">
@@ -47,7 +47,7 @@
             <div class="group flex h-full flex-col justify-between rounded-xl border border-white/20 bg-white/10 p-5 shadow-lg backdrop-blur-sm transition-all hover:bg-white/15 sm:p-6">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">Kategori</p>
+                        <p class="text-xs font-semibold uppercase text-white/80">Kategori</p>
                         <p class="mt-3 text-3xl font-bold text-white">{{ number_format($categoryCount) }}</p>
                     </div>
                     <div class="ml-3 flex-shrink-0">
@@ -65,7 +65,7 @@
             <div class="group flex h-full flex-col justify-between rounded-xl border border-white/20 bg-white/10 p-5 shadow-lg backdrop-blur-sm transition-all hover:bg-white/15 sm:p-6">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">Kompetensi Bidang Keahlian</p>
+                        <p class="text-xs font-semibold uppercase text-white/80">Kompetensi Bidang Keahlian</p>
                         <p class="mt-3 text-3xl font-bold text-white">{{ number_format($kbkCount) }}</p>
                     </div>
                     <div class="ml-3 flex-shrink-0">
@@ -81,7 +81,7 @@
             <div class="group flex h-full flex-col justify-between rounded-xl border border-white/20 bg-white/10 p-5 shadow-lg backdrop-blur-sm transition-all hover:bg-white/15 sm:p-6">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">Anggota Aktif</p>
+                        <p class="text-xs font-semibold uppercase text-white/80">Anggota Aktif</p>
                         <p class="mt-3 text-3xl font-bold text-white">{{ number_format($userCount) }}</p>
                     </div>
                     <div class="ml-3 flex-shrink-0">

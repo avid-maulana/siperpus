@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let controller = null;
 
+    // Menyimpan kombinasi pencarian terakhir
+    let lastSearch = "";
+
     const showLoading = () => {
         loading.style.opacity = "1";
         loading.style.width = "30%";
@@ -72,13 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const meta = result.querySelector("#result-meta");
 
             if (meta) {
-                resultInfo.innerHTML = `
-                    Menampilkan
-                    <span class="font-semibold text-blue-600">
-                        ${Number(meta.dataset.total).toLocaleString("id-ID")}
-                    </span>
-                    skripsi
-                `;
+               resultInfo.innerHTML = `
+                ${Number(meta.dataset.total).toLocaleString("id-ID")}
+                <span class="text-base font-medium text-slate-500">
+                    Skripsi
+                </span>
+            `;
             }
 
             // Update URL browser tanpa reload
@@ -103,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================
 
     const triggerSearch = () => {
+
     const url = new URL(window.location.href);
 
     // Search
@@ -118,6 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         url.searchParams.delete("kbk");
     }
+
+    const currentSearch =
+        `${search.value.trim()}-${kbk ? kbk.value : ""}`;
 
     loadData(url);
 };

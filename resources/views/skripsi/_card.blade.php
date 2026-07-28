@@ -78,42 +78,46 @@
                     @php
                         $available = $skripsi->isi && $skripsi->isi->$key;
                         $icon = $key === 'daftar_pustaka' ? 'menu_book' : 'description';
+
+                        $isDaftarPustaka = $key === 'daftar_pustaka';
                     @endphp
 
                     @if ($available)
                         <a
                             href="{{ route('pdf.viewer', ['path' => $skripsi->isi->$key]) }}"
-                            class="group/link flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all duration-300 hover:border-[#212A37] hover:bg-[#212A37] hover:text-white hover:shadow-lg">
-
-                            <span class="flex min-w-0 items-center gap-3">
+                            class="group/link flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all duration-300 hover:border-[#212A37] hover:bg-[#212A37] hover:text-white hover:shadow-lg
+                            {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}">
+                            
+                            <span class="flex min-w-0 items-center gap-3 {{ $isDaftarPustaka ? 'sm:justify-center sm:w-full' : '' }}">
                                 <span class="material-symbols-outlined text-[18px] text-slate-400 transition-colors duration-300 group-hover/link:text-white">
                                     {{ $icon }}
                                 </span>
 
-                                <span class="truncate">
+                                <span class="truncate {{ $isDaftarPustaka ? 'sm:text-center' : '' }}">
                                     {{ $label }}
                                 </span>
                             </span>
 
-                            <span class="material-symbols-outlined text-[18px] text-slate-300 transition-colors duration-300 group-hover/link:text-white">
+                            <span class="material-symbols-outlined text-[18px] text-slate-300 transition-colors duration-300 group-hover/link:text-white {{ $isDaftarPustaka ? 'sm:hidden' : '' }}">
                                 open_in_new
                             </span>
                         </a>
                     @else
                         <div
-                            class="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400">
-
-                            <span class="flex min-w-0 items-center gap-3">
+                            class="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400
+                            {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}">
+                            
+                            <span class="flex min-w-0 items-center gap-3 {{ $isDaftarPustaka ? 'sm:justify-center sm:w-full' : '' }}">
                                 <span class="material-symbols-outlined text-[18px] text-slate-300">
                                     {{ $icon }}
                                 </span>
 
-                                <span class="truncate">
+                                <span class="truncate {{ $isDaftarPustaka ? 'sm:text-center' : '' }}">
                                     {{ $label }}
                                 </span>
                             </span>
 
-                            <span class="text-[10px] font-medium">
+                            <span class="text-[10px] font-medium {{ $isDaftarPustaka ? 'sm:hidden' : '' }}">
                                 Belum ada
                             </span>
                         </div>
