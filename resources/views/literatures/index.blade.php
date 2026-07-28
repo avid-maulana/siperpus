@@ -8,7 +8,7 @@
     {{-- Hero --}}
 <section class="relative -mt-20 overflow-hidden">
     <img
-        src="{{ asset('asset/rak 2.jpg') }}"
+        src="{{ asset('gambar/rak 4.png') }}"
         alt="Universitas Negeri Malang"
         class="absolute inset-0 h-full w-full object-cover">
 

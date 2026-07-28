@@ -8,10 +8,10 @@
 
     <!-- Background Slider -->
     <div class="absolute inset-0 -z-20">
-        <div class="hero-slide active" style="background-image: url('{{ asset('asset/lobi.jpg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('asset/sign ruangan.jpg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('asset/rak 3.jpg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('asset/rak 4.jpg') }}')"></div>
+        <div class="hero-slide active" style="background-image: url('{{ asset('gambar/departmen.png') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('gambar/ruang.png') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('gambar/rak 3.png') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('gambar/rak 4.png') }}')"></div>
     </div>
 
     <!-- Overlay -->
