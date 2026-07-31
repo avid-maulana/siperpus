@@ -63,9 +63,7 @@ class LiteratureController extends Controller
                 $q->where('title', 'like', "%{$keyword}%")
                     ->orWhere('author', 'like', "%{$keyword}%")
                     ->orWhere('description', 'like', "%{$keyword}%");
-
             });
-
         }
 
         /*
@@ -77,7 +75,6 @@ class LiteratureController extends Controller
         if ($request->filled('type')) {
 
             $query->where('type', $request->type);
-
         }
 
         /*
@@ -89,7 +86,6 @@ class LiteratureController extends Controller
         if ($request->filled('category_id')) {
 
             $query->where('category_id', $request->category_id);
-
         }
 
         /*
@@ -115,7 +111,6 @@ class LiteratureController extends Controller
                 'literatures' => $literatures,
                 'categories'  => Category::all(),
             ]);
-
         }
 
         /*

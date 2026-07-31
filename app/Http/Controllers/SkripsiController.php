@@ -11,7 +11,7 @@ class SkripsiController extends Controller
 {
     public function index(Request $request)
     {
-        
+
         /*
         |--------------------------------------------------------------------------
         | Data KBK
@@ -25,9 +25,9 @@ class SkripsiController extends Controller
         |--------------------------------------------------------------------------
         */
         $query = Skripsi::with([
-                'user.dataJudul.kbk',
-                'isi'
-            ])
+            'user.dataJudul.kbk',
+            'isi'
+        ])
             ->where('status_judul', 'SELESAI')
             ->whereHas('isi', function ($query) {
                 $query->where('status', 'DITERIMA');
@@ -65,16 +65,15 @@ class SkripsiController extends Controller
 | Filter KBK
 |--------------------------------------------------------------------------
 */
-if ($request->filled('kbk')) {
+        if ($request->filled('kbk')) {
 
-    $userIds = DB::connection('sisinta')
-        ->table('data_judul')
-        ->where('id_kbk', $request->kbk)
-        ->pluck('user_mahasiswa_id');
+            $userIds = DB::connection('sisinta')
+                ->table('data_judul')
+                ->where('id_kbk', $request->kbk)
+                ->pluck('user_mahasiswa_id');
 
-    $query->whereIn('user_mahasiswa_id', $userIds);
-
-}
+            $query->whereIn('user_mahasiswa_id', $userIds);
+        }
 
         /*
         |--------------------------------------------------------------------------

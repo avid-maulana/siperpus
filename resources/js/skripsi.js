@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     const search = document.getElementById("search");
     const kbk = document.getElementById("kbk");
     const searchButton = document.getElementById("search-button");
     const loading = document.getElementById("loading-bar");
     const result = document.getElementById("skripsi-result");
     const resultInfo = document.getElementById("result-info");
-    
 
     if (!search || !loading || !result || !resultInfo) return;
 
@@ -19,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
         loading.style.opacity = "1";
         loading.style.width = "30%";
 
-        setTimeout(() => loading.style.width = "60%", 100);
-        setTimeout(() => loading.style.width = "85%", 250);
+        setTimeout(() => (loading.style.width = "60%"), 100);
+        setTimeout(() => (loading.style.width = "85%"), 250);
     };
 
     const hideLoading = () => {
@@ -43,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const loadData = async (url) => {
-
         // Batalkan request sebelumnya
         if (controller) {
             controller.abort();
@@ -55,12 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
         renderLoadingState();
 
         try {
-
             const response = await fetch(url, {
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
                 },
-                signal: controller.signal
+                signal: controller.signal,
             });
 
             if (!response.ok) {
@@ -75,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const meta = result.querySelector("#result-meta");
 
             if (meta) {
-               resultInfo.innerHTML = `
+                resultInfo.innerHTML = `
                 ${Number(meta.dataset.total).toLocaleString("id-ID")}
                 <span class="text-base font-medium text-slate-500">
                     Skripsi
@@ -85,19 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Update URL browser tanpa reload
             history.replaceState({}, "", url);
-
         } catch (error) {
-
             if (error.name !== "AbortError") {
                 console.error(error);
             }
-
         } finally {
-
             hideLoading();
-
         }
-
     };
 
     // ==========================
@@ -105,28 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================
 
     const triggerSearch = () => {
+        const url = new URL(window.location.href);
 
-    const url = new URL(window.location.href);
+        // Search
+        if (search.value.trim() !== "") {
+            url.searchParams.set("search", search.value.trim());
+        } else {
+            url.searchParams.delete("search");
+        }
 
-    // Search
-    if (search.value.trim() !== "") {
-        url.searchParams.set("search", search.value.trim());
-    } else {
-        url.searchParams.delete("search");
-    }
+        // KBK
+        if (kbk && kbk.value !== "") {
+            url.searchParams.set("kbk", kbk.value);
+        } else {
+            url.searchParams.delete("kbk");
+        }
 
-    // KBK
-    if (kbk && kbk.value !== "") {
-        url.searchParams.set("kbk", kbk.value);
-    } else {
-        url.searchParams.delete("kbk");
-    }
+        const currentSearch = `${search.value.trim()}-${kbk ? kbk.value : ""}`;
 
-    const currentSearch =
-        `${search.value.trim()}-${kbk ? kbk.value : ""}`;
-
-    loadData(url);
-};
+        loadData(url);
+    };
 
     search.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
@@ -139,18 +127,16 @@ document.addEventListener("DOMContentLoaded", () => {
         search.focus();
         triggerSearch();
     });
-       
+
     kbk?.addEventListener("change", () => {
         triggerSearch();
     });
-
 
     // ==========================
     // Pagination AJAX
     // ==========================
 
     document.addEventListener("click", function (e) {
-
         const link = e.target.closest(".pagination a");
 
         if (!link) return;
@@ -172,7 +158,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         loadData(url);
-
     });
-
 });

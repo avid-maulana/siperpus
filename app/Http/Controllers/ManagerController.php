@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Literature;
 use Illuminate\Http\Request;
+
 class ManagerController extends Controller
 {
     public function manageLiteratures(Request $request)
@@ -18,9 +20,9 @@ class ManagerController extends Controller
             $query->where('year', $request->year);
         }
         if ($request->search) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', "%{$request->search}%")
-                ->orWhere('author', 'like', "%{$request->search}%");
+                    ->orWhere('author', 'like', "%{$request->search}%");
             });
         }
 

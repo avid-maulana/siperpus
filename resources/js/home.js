@@ -1,35 +1,30 @@
-import './home';
+import "./home";
 
-document.addEventListener('DOMContentLoaded', () => {
-
+document.addEventListener("DOMContentLoaded", () => {
     // ===========================
     // HERO BACKGROUND SLIDER
     // ===========================
-    const slides = document.querySelectorAll('.hero-slide');
+    const slides = document.querySelectorAll(".hero-slide");
 
     if (slides.length) {
         let current = 0;
 
         const showSlide = (index) => {
-    slides.forEach((slide, i) => {
-        if (i === index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    // Reset animation
+                    slide.style.animation = "none";
+                    slide.offsetHeight; // Trigger reflow
+                    slide.style.animation = "";
 
-            // Reset animation
-            slide.style.animation = 'none';
-            slide.offsetHeight; // Trigger reflow
-            slide.style.animation = '';
-
-            slide.classList.add('active');
-            slide.style.zIndex = '2';
-
-        } else {
-
-            slide.classList.remove('active');
-            slide.style.zIndex = '1';
-
-        }
-    });
-};
+                    slide.classList.add("active");
+                    slide.style.zIndex = "2";
+                } else {
+                    slide.classList.remove("active");
+                    slide.style.zIndex = "1";
+                }
+            });
+        };
 
         showSlide(current);
 
@@ -42,54 +37,59 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===========================
     // FILTER LITERATUR / SKRIPSI
     // ===========================
-    const filterLiteratureBtn = document.getElementById('filterLiteratureBtn');
-    const filterSkripsiBtn = document.getElementById('filterSkripsiBtn');
-    const heroSearchForm = document.getElementById('heroSearchForm');
-    const filterTarget = document.getElementById('filterTarget');
+    const filterLiteratureBtn = document.getElementById("filterLiteratureBtn");
+    const filterSkripsiBtn = document.getElementById("filterSkripsiBtn");
+    const heroSearchForm = document.getElementById("heroSearchForm");
+    const filterTarget = document.getElementById("filterTarget");
 
-    if (!filterLiteratureBtn || !filterSkripsiBtn || !heroSearchForm || !filterTarget) {
+    if (
+        !filterLiteratureBtn ||
+        !filterSkripsiBtn ||
+        !heroSearchForm ||
+        !filterTarget
+    ) {
         return;
     }
 
     const activeClasses = [
-        'bg-white',
-        'text-slate-950',
-        'hover:bg-slate-100',
-        'shadow-lg',
-        'shadow-slate-950/15',
-        'border',
-        'border-transparent',
+        "bg-white",
+        "text-slate-950",
+        "hover:bg-slate-100",
+        "shadow-lg",
+        "shadow-slate-950/15",
+        "border",
+        "border-transparent",
     ];
 
     const inactiveClasses = [
-        'border',
-        'border-white/30',
-        'bg-white/10',
-        'text-white',
-        'hover:bg-white/15',
+        "border",
+        "border-white/30",
+        "bg-white/10",
+        "text-white",
+        "hover:bg-white/15",
     ];
 
     const resetButton = (button) => {
         button.classList.remove(...activeClasses, ...inactiveClasses);
 
         button.classList.add(
-            'inline-flex',
-            'items-center',
-            'justify-center',
-            'rounded-full',
-            'px-6',
-            'py-3',
-            'text-sm',
-            'font-semibold',
-            'transition'
+            "inline-flex",
+            "items-center",
+            "justify-center",
+            "rounded-full",
+            "px-6",
+            "py-3",
+            "text-sm",
+            "font-semibold",
+            "transition",
         );
     };
 
     const applyMode = (mode) => {
-
-        const route = mode === 'skripsi'
-            ? filterSkripsiBtn.dataset.route
-            : filterLiteratureBtn.dataset.route;
+        const route =
+            mode === "skripsi"
+                ? filterSkripsiBtn.dataset.route
+                : filterLiteratureBtn.dataset.route;
 
         filterTarget.value = mode;
         heroSearchForm.action = route || heroSearchForm.action;
@@ -97,56 +97,54 @@ document.addEventListener('DOMContentLoaded', () => {
         resetButton(filterLiteratureBtn);
         resetButton(filterSkripsiBtn);
 
-        if (mode === 'skripsi') {
-
+        if (mode === "skripsi") {
             filterSkripsiBtn.classList.add(...activeClasses);
             filterLiteratureBtn.classList.add(...inactiveClasses);
-
         } else {
-
             filterLiteratureBtn.classList.add(...activeClasses);
             filterSkripsiBtn.classList.add(...inactiveClasses);
-
         }
     };
 
-    filterLiteratureBtn.addEventListener('click', () => applyMode('literature'));
-    filterSkripsiBtn.addEventListener('click', () => applyMode('skripsi'));
+    filterLiteratureBtn.addEventListener("click", () =>
+        applyMode("literature"),
+    );
+    filterSkripsiBtn.addEventListener("click", () => applyMode("skripsi"));
 
-    applyMode('literature');
+    applyMode("literature");
 
-    const searchInput = document.getElementById('search');
-const searchError = document.getElementById('search-error');
+    const searchInput = document.getElementById("search");
+    const searchError = document.getElementById("search-error");
 
-heroSearchForm.addEventListener('submit', (e) => {
-    const keyword = searchInput.value.trim();
+    heroSearchForm.addEventListener("submit", (e) => {
+        const keyword = searchInput.value.trim();
 
-    if (!keyword) {
-        e.preventDefault();
+        if (!keyword) {
+            e.preventDefault();
 
-        searchError.classList.remove('hidden');
+            searchError.classList.remove("hidden");
 
-        searchInput.classList.add(
-            'border-red-400',
-            'ring-4',
-            'ring-red-400/20'
-        );
+            searchInput.classList.add(
+                "border-red-400",
+                "ring-4",
+                "ring-red-400/20",
+            );
 
-        searchInput.focus();
-        return;
-    }
+            searchInput.focus();
+            return;
+        }
 
-    searchError.classList.add('hidden');
-});
+        searchError.classList.add("hidden");
+    });
 
-searchInput.addEventListener('input', () => {
-    if (searchInput.value.trim() !== '') {
-        searchError.classList.add('hidden');
-        searchInput.classList.remove(
-            'border-red-400',
-            'ring-4',
-            'ring-red-400/20'
-        );
-    }
-});
+    searchInput.addEventListener("input", () => {
+        if (searchInput.value.trim() !== "") {
+            searchError.classList.add("hidden");
+            searchInput.classList.remove(
+                "border-red-400",
+                "ring-4",
+                "ring-red-400/20",
+            );
+        }
+    });
 });

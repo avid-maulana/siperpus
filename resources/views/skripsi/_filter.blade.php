@@ -62,7 +62,7 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M21 21l-4.35-4.35m1.1-5.15a6.5 6.5 0 11-13 0a6.5 6.5 0 0113 0z"/>
+                                d="M21 21l-4.35-4.35m1.1-5.15a6.5 6.5 0 11-13 0a6.5 6.5 0 0113 0z" />
 
                         </svg>
 
@@ -95,13 +95,13 @@
 
                             @foreach($kbks as $kbk)
 
-                                <option
-                                    value="{{ $kbk->id }}"
-                                    @selected(request('kbk')==$kbk->id)>
+                            <option
+                                value="{{ $kbk->id }}"
+                                @selected(request('kbk')==$kbk->id)>
 
-                                    {{ $kbk->nama_kbk }}
+                                {{ $kbk->nama_kbk }}
 
-                                </option>
+                            </option>
 
                             @endforeach
 
@@ -118,7 +118,7 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M19 9l-7 7-7-7"/>
+                                d="M19 9l-7 7-7-7" />
 
                         </svg>
 
@@ -141,7 +141,7 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M21 21l-4.35-4.35m1.1-5.15a6.5 6.5 0 11-13 0a6.5 6.5 0 0113 0z"/>
+                                d="M21 21l-4.35-4.35m1.1-5.15a6.5 6.5 0 11-13 0a6.5 6.5 0 0113 0z" />
 
                         </svg>
 

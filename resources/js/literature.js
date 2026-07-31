@@ -1,5 +1,4 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-
     const form = document.getElementById("filterForm");
 
     const search = document.getElementById("searchInput");
@@ -22,30 +21,23 @@
     // ==========================
 
     const showLoading = () => {
-
         loading.style.opacity = "1";
         loading.style.width = "30%";
 
-        setTimeout(() => loading.style.width = "60%", 100);
-        setTimeout(() => loading.style.width = "85%", 250);
-
+        setTimeout(() => (loading.style.width = "60%"), 100);
+        setTimeout(() => (loading.style.width = "85%"), 250);
     };
 
     const hideLoading = () => {
-
         loading.style.width = "100%";
 
         setTimeout(() => {
-
             loading.style.opacity = "0";
             loading.style.width = "0";
-
         }, 200);
-
     };
 
     const renderLoadingState = () => {
-
         result.innerHTML = `
             <div class="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
 
@@ -61,7 +53,6 @@
 
             </div>
         `;
-
     };
 
     // ==========================
@@ -69,7 +60,6 @@
     // ==========================
 
     const loadData = async (url, showLoader = true) => {
-
         if (controller) {
             controller.abort();
         }
@@ -82,21 +72,16 @@
         }
 
         try {
-
             const response = await fetch(url, {
-
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
                 },
 
-                signal: controller.signal
-
+                signal: controller.signal,
             });
 
             if (!response.ok) {
-
                 throw new Error("Gagal memuat data");
-
             }
 
             const html = await response.text();
@@ -106,14 +91,12 @@
             const meta = result.querySelector("#result-meta");
 
             if (meta) {
-
                 resultInfo.innerHTML = `
                     ${Number(meta.dataset.total).toLocaleString("id-ID")}
                     <span class="text-lg font-medium text-slate-500">
                         Literatur
                     </span>
                 `;
-
             }
 
             history.replaceState({}, "", url);
@@ -121,76 +104,59 @@
             // Scroll ke hasil
             result.scrollIntoView({
                 behavior: "smooth",
-                block: "start"
+                block: "start",
             });
-
         } catch (error) {
-
             if (error.name !== "AbortError") {
-
                 console.error(error);
-
             }
-
         } finally {
-
-        if (showLoader) {
-            hideLoading();
+            if (showLoader) {
+                hideLoading();
+            }
         }
+    };
 
-    }
-
-};
-
-        // ==========================
+    // ==========================
     // Search
     // ==========================
 
     const triggerSearch = (page = null, showLoader = true) => {
+        const url = new URL(form.action);
 
-    const url = new URL(form.action);
+        if (search.value.trim() !== "") {
+            url.searchParams.set("search", search.value.trim());
+        }
 
-    if (search.value.trim() !== "") {
-        url.searchParams.set("search", search.value.trim());
-    }
+        if (type.value !== "") {
+            url.searchParams.set("type", type.value);
+        }
 
-    if (type.value !== "") {
-        url.searchParams.set("type", type.value);
-    }
+        if (category.value !== "") {
+            url.searchParams.set("category_id", category.value);
+        }
 
-    if (category.value !== "") {
-        url.searchParams.set("category_id", category.value);
-    }
+        if (page) {
+            url.searchParams.set("page", page);
+        }
 
-    if (page) {
-        url.searchParams.set("page", page);
-    }
-
-    loadData(url, showLoader);
-
-};
+        loadData(url, showLoader);
+    };
 
     // ==========================
     // Search Input
     // ==========================
 
     search.addEventListener("input", () => {
-
-        clearButton.classList.toggle(
-            "hidden",
-            search.value.trim() === ""
-        );
-
+        clearButton.classList.toggle("hidden", search.value.trim() === "");
     });
 
     search.addEventListener("keydown", (event) => {
-
         if (event.key !== "Enter") return;
 
         event.preventDefault();
 
         triggerSearch();
-
     });
 
     // ==========================
@@ -198,11 +164,9 @@
     // ==========================
 
     form.addEventListener("submit", (event) => {
-
         event.preventDefault();
 
         triggerSearch();
-
     });
 
     // ==========================
@@ -210,15 +174,11 @@
     // ==========================
 
     type?.addEventListener("change", () => {
-
         triggerSearch();
-
     });
 
     category?.addEventListener("change", () => {
-
         triggerSearch();
-
     });
 
     // ==========================
@@ -226,7 +186,6 @@
     // ==========================
 
     clearButton?.addEventListener("click", () => {
-
         search.value = "";
 
         clearButton.classList.add("hidden");
@@ -234,7 +193,6 @@
         search.focus();
 
         triggerSearch();
-
     });
 
     // ==========================
@@ -242,7 +200,6 @@
     // ==========================
 
     resetButton?.addEventListener("click", () => {
-
         search.value = "";
 
         type.value = "";
@@ -252,7 +209,6 @@
         clearButton.classList.add("hidden");
 
         resetButton?.addEventListener("click", () => {
-
             search.value = "";
             type.value = "";
             category.value = "";
@@ -260,46 +216,36 @@
             clearButton.classList.add("hidden");
 
             loadData(form.action);
-
         });
-
     });
 
-        // ==========================
+    // ==========================
     // Pagination AJAX
     // ==========================
 
     document.addEventListener("click", (event) => {
+        const link = event.target.closest("[data-ajax-page]");
 
-    const link = event.target.closest("[data-ajax-page]");
+        if (!link) return;
 
-    if (!link) return;
+        event.preventDefault();
 
-    event.preventDefault();
+        const page = new URL(link.href).searchParams.get("page");
 
-    const page = new URL(link.href).searchParams.get("page");
-
-    triggerSearch(page, false);
-
-});
+        triggerSearch(page, false);
+    });
 
     // ==========================
     // Browser Back / Forward
     // ==========================
 
     window.addEventListener("popstate", () => {
-
         loadData(window.location.href);
-
     });
 
     // ==========================
     // Initial State
     // ==========================
 
-    clearButton?.classList.toggle(
-        "hidden",
-        search.value.trim() === ""
-    );
-
+    clearButton?.classList.toggle("hidden", search.value.trim() === "");
 });
