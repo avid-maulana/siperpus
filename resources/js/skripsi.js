@@ -79,8 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             }
 
-            // Update URL browser tanpa reload
-            history.replaceState({}, "", url);
+            // Update URL browser tanpa reload, mengikuti URL final bila terjadi redirect.
+            history.replaceState({}, "", response.url);
         } catch (error) {
             if (error.name !== "AbortError") {
                 console.error(error);
@@ -111,7 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
             url.searchParams.delete("kbk");
         }
 
-        const currentSearch = `${search.value.trim()}-${kbk ? kbk.value : ""}`;
+        // Reset ke halaman pertama setiap kali filter berubah.
+        url.searchParams.delete("page");
 
         loadData(url);
     };

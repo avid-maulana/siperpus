@@ -92,6 +92,13 @@ class SkripsiController extends Controller
             ->paginate(12)
             ->withQueryString();
 
+        if ($skripsis->currentPage() > $skripsis->lastPage()) {
+            $queryParams = $request->query();
+            $queryParams['page'] = max(1, $skripsis->lastPage());
+
+            return redirect()->route('skripsi.index', $queryParams);
+        }
+
         /*
         |--------------------------------------------------------------------------
         | AJAX Request
