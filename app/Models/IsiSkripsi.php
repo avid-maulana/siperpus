@@ -10,7 +10,7 @@ class IsiSkripsi extends Model
     use HasFactory;
     protected $connection = 'sisinta';
     protected $table = 'berkas_akhir';
-    protected $primaryKey = 'id_buku';
+    protected $primaryKey = 'user_mahasiswa_id';
     public $timestamps = true;
 
     public function skripsi()

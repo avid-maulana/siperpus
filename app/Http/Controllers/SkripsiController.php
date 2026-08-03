@@ -52,7 +52,10 @@ class SkripsiController extends Controller
 
             $query->where(function ($query) use ($search, $userIds) {
 
-                $query->where('judul', 'like', "%{$search}%");
+                $query->whereRaw(
+                    "REGEXP_REPLACE(judul, '<[^>]*>', ' ') LIKE ?",
+                    ["%{$search}%"]
+                );
 
                 if ($userIds->isNotEmpty()) {
                     $query->orWhereIn('user_mahasiswa_id', $userIds);
