@@ -71,19 +71,25 @@
                     @endforeach
                 </div>
 
-                {{-- Logout --}}
-                <div class="ml-8 border-l pl-6 transition-colors duration-300 border-white/20 [.scrolled_&]:border-slate-200">
-                    <form id="logoutForm" action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button id="logoutButton" type="submit"
-                                class="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 text-slate-300 hover:bg-red-500/20 hover:text-red-400 [.scrolled_&]:text-slate-500 [.scrolled_&]:hover:bg-red-50 [.scrolled_&]:hover:text-red-600">
-                            
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                            </svg>
-                            Logout
-                        </button>
-                    </form>
+                {{-- Profile menu --}}
+                <div class="relative ml-8">
+                    <button id="profileMenuButton" type="button" aria-expanded="false" aria-haspopup="true"
+                            class="flex items-center gap-2 rounded-full border border-white/20 bg-slate-800 px-3 py-2 text-sm text-white transition hover:border-white/40 hover:bg-slate-700 [.scrolled_&]:border-slate-200 [.scrolled_&]:bg-white [.scrolled_&]:text-slate-900">
+                        <span class="material-symbols-outlined text-[20px]">account_circle</span>
+                        <span class="hidden sm:inline">Profil</span>
+                    </button>
+
+                    <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100">
+                            Edit Profil
+                        </a>
+                        <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="border-t border-slate-100">
+                            @csrf
+                            <button id="logoutButton" type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 transition hover:bg-red-50 hover:text-red-700">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             @endauth
         </nav>
@@ -124,6 +130,36 @@
                 logoutButton.disabled = true;
                 logoutButton.classList.add('opacity-70', 'cursor-not-allowed');
                 showOverlay();
+            });
+        }
+
+        const profileMenuButton = document.getElementById('profileMenuButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileMenuButton && profileDropdown) {
+            profileMenuButton.addEventListener('click', function (event) {
+                event.stopPropagation();
+                const isOpen = profileDropdown.classList.contains('opacity-100');
+
+                if (isOpen) {
+                    profileDropdown.classList.add('invisible', 'opacity-0');
+                    profileDropdown.classList.remove('opacity-100');
+                    profileMenuButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    profileDropdown.classList.remove('invisible');
+                    profileDropdown.classList.add('opacity-100');
+                    profileMenuButton.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            window.addEventListener('click', function () {
+                profileDropdown.classList.add('invisible', 'opacity-0');
+                profileDropdown.classList.remove('opacity-100');
+                profileMenuButton.setAttribute('aria-expanded', 'false');
+            });
+
+            profileDropdown.addEventListener('click', function (event) {
+                event.stopPropagation();
             });
         }
 

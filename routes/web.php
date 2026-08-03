@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\LiteratureController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkripsiController;
 
 /*
@@ -49,6 +50,13 @@ Route::middleware('auth')->group(function () {
         ]);
 
     })->name('pdf.viewer');
+
+    // Profile
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::put('/profile/update', [ProfileController::class, 'update'])
+        ->name('profile.update');
 
     /*
     |--------------------------------------------------------------------------
