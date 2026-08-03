@@ -53,7 +53,11 @@ class SkripsiController extends Controller
             $query->where(function ($query) use ($search, $userIds) {
 
                 $query->whereRaw(
-                    "REGEXP_REPLACE(judul, '<[^>]*>', ' ') LIKE ?",
+                    "REGEXP_REPLACE(
+                        REGEXP_REPLACE(judul, '<[^>]*>', ' '),
+                        '[[:space:]]+',
+                        ' '
+                    ) LIKE ?",
                     ["%{$search}%"]
                 );
 

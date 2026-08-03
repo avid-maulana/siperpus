@@ -42,11 +42,11 @@
             </div>
 
             @if ($errors->any())
-                <div class="mb-6 rounded-xl bg-red-50 border border-red-200 p-4">
-                    @foreach($errors->all() as $error)
-                        <p class="text-sm text-red-600">{{ $error }}</p>
-                    @endforeach
-                </div>
+            <div class="mb-6 rounded-xl bg-red-50 border border-red-200 p-4">
+                @foreach($errors->all() as $error)
+                <p class="text-sm text-red-600">{{ $error }}</p>
+                @endforeach
+            </div>
             @endif
 
             <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-6">
@@ -69,9 +69,9 @@
                 </div>
 
                 @php
-                    $angka1 = rand(1,9);
-                    $angka2 = rand(1,9);
-                    session(['captcha_hasil' => $angka1 + $angka2]);
+                $angka1 = rand(1,9);
+                $angka2 = rand(1,9);
+                session(['captcha_hasil' => $angka1 + $angka2]);
                 @endphp
 
                 {{-- Captcha --}}
@@ -80,7 +80,33 @@
                         {{ $angka1 }} + {{ $angka2 }}
                     </div>
 
-                    <input id="captcha" type="number" name="captcha" required min="0" max="18" inputmode="numeric" autocomplete="off" placeholder="Jawaban" class="flex-1 rounded-2xl bg-slate-100 px-5 py-4 outline-none transition focus:bg-white focus:ring-2 focus:ring-blue-600">
+                    <div class="relative flex-1">
+                        <input
+                            id="captcha"
+                            type="number"
+                            name="captcha"
+                            required
+                            min="0"
+                            max="18"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            placeholder=" "
+                            class="peer w-full rounded-2xl bg-slate-100 px-5 pt-6 pb-2 outline-none transition focus:bg-white focus:ring-2 focus:ring-blue-600">
+
+                        <label
+                            for="captcha"
+                            class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 transition-all duration-200
+                   peer-placeholder-shown:text-base
+                   peer-focus:top-2
+                   peer-focus:text-xs
+                   peer-focus:-translate-y-0
+                   peer-focus:text-blue-600
+                   peer-not-placeholder-shown:top-2
+                   peer-not-placeholder-shown:text-xs
+                   peer-not-placeholder-shown:-translate-y-0">
+                            Jawaban
+                        </label>
+                    </div>
                 </div>
 
                 {{-- Button --}}
@@ -102,7 +128,7 @@
             const button = document.getElementById('loginButton');
             const arrow = document.getElementById('loginArrow');
             const overlay = document.getElementById('loadingOverlay');
-            
+
             // Array dari input yang ada secara berurutan
             const inputs = [
                 document.getElementById('username'),
@@ -146,7 +172,7 @@
                 if (e.key === 'Enter') {
                     // Cari input mana yang sedang aktif (di-focus)
                     const activeIndex = inputs.indexOf(document.activeElement);
-                    
+
                     // Jika yang aktif BUKAN input terakhir (captcha)
                     if (activeIndex > -1 && activeIndex < inputs.length - 1) {
                         e.preventDefault(); // Cegah form submit
@@ -160,35 +186,35 @@
             form.addEventListener('submit', () => {
                 setButtonActive();
                 showOverlay();
-                
+
                 // Pilihan opsional: menghilangkan fokus dari input (keyboard di HP akan turun)
-                document.activeElement.blur(); 
+                document.activeElement.blur();
             });
 
             window.addEventListener('pageshow', () => {
                 hideOverlay();
-                
+
                 // Reset tombol jika user menekan tombol 'Back' di browser
                 button.classList.add('bg-slate-100', 'text-slate-600');
                 button.classList.remove('bg-blue-700', 'text-white', 'scale-105', 'shadow-lg', 'shadow-blue-500/25');
                 arrow.classList.remove('translate-x-1');
             });
-            
+
             const captcha = document.getElementById('captcha');
 
-            captcha.addEventListener('input', function () {
+            captcha.addEventListener('input', function() {
                 // Hanya mengizinkan angka saat copy-paste/ketik cepat
                 this.value = this.value.replace(/\D/g, '');
             });
 
-            captcha.addEventListener('keypress', function (e) {
+            captcha.addEventListener('keypress', function(e) {
                 // Izinkan angka (0-9) ATAU tombol Enter
                 if (!/[0-9]/.test(e.key) && e.key !== 'Enter') {
                     e.preventDefault();
                 }
             });
 
-            captcha.addEventListener('paste', function (e) {
+            captcha.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData)
                     .getData('text')
@@ -198,4 +224,5 @@
         });
     </script>
 </body>
+
 </html>

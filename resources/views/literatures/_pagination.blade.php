@@ -11,7 +11,6 @@
             <li>
                 <a href="{{ $literatures->appends(request()->except('page'))->previousPageUrl() }}"
                     data-ajax-page
-                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
                     class="flex items-center justify-center rounded-xl px-4 py-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                     <span class="text-lg leading-none">&laquo;</span>
                 </a>
@@ -32,7 +31,6 @@
                 <li>
                     <a href="{{ $literatures->appends(request()->except('page'))->url($page) }}"
                         data-ajax-page
-                        onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
                         class="flex items-center justify-center rounded-xl px-4 py-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                         {{ $page }}
                     </a>
@@ -48,7 +46,6 @@
             <li>
                 <a href="{{ $literatures->appends(request()->except('page'))->url($literatures->lastPage()) }}"
                     data-ajax-page
-                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
                     class="flex items-center justify-center rounded-xl px-4 py-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                     {{ $literatures->lastPage() }}
                 </a>
@@ -59,7 +56,6 @@
             <li>
                 <a href="{{ $literatures->appends(request()->except('page'))->nextPageUrl() }}"
                     data-ajax-page
-                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
                     class="flex items-center justify-center rounded-xl px-4 py-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                     <span class="text-lg leading-none">&raquo;</span>
                 </a>

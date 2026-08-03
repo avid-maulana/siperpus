@@ -20,9 +20,9 @@
     {{-- Navbar --}}
     @include('layouts.partials.navbar')
 
-   <main id="page-content" class="pt-20 opacity-0 translate-y-3">
-    @yield('content')
-</main>
+    <main id="page-content" class="pt-20 opacity-0 translate-y-3">
+        @yield('content')
+    </main>
 
     {{-- Footer --}}
     @include('layouts.partials.footer')

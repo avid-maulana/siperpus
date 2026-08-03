@@ -16,6 +16,24 @@
 
     let controller = null;
 
+    const scrollToTop = () => {
+        const pageContent = document.getElementById("page-content");
+
+        if (pageContent) {
+            pageContent.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+
+            return;
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
     // ==========================
     // Loading
     // ==========================
@@ -101,11 +119,7 @@
 
             history.replaceState({}, "", url);
 
-            // Scroll ke hasil
-            result.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-            });
+            scrollToTop();
         } catch (error) {
             if (error.name !== "AbortError") {
                 console.error(error);
