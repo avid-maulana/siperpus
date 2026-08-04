@@ -56,7 +56,7 @@
             @method('PUT')
 
             {{-- Scrollable Content --}}
-            <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8">
+            <div id="editModalBody" class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8">
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div class="md:col-span-2">
                         <label for="edit_cover_url" class="mb-2 block text-sm font-semibold text-slate-700">
@@ -218,6 +218,10 @@
         const modal = document.getElementById('editModal');
         const content = modal.querySelector('.modal-content');
 
+        // reset internal scroll to top so form always opens at its start
+        const body = document.getElementById('editModalBody');
+        if (body) body.scrollTop = 0;
+
         modal.classList.remove('hidden');
         requestAnimationFrame(() => {
             modal.classList.add('opacity-100');
@@ -231,6 +235,10 @@
 
         const modal = document.getElementById('editModal');
         const content = modal.querySelector('.modal-content');
+
+        // reset scroll on hide as well
+        const body = document.getElementById('editModalBody');
+        if (body) body.scrollTop = 0;
 
         modal.classList.remove('opacity-100');
         content.classList.remove('scale-100');
