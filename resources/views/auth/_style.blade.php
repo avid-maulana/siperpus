@@ -4,40 +4,57 @@
         padding: 6px;
     }
 
+    .captcha-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    /* FIX: card ini sebelumnya punya min-width:200px yang di-override jadi
+       min-width:0 oleh definisi kedua di bawahnya. Di dalam flex row,
+       min-width:0 membuat elemen boleh menyusut lebih kecil dari kontennya
+       sendiri -- sementara <canvas> di dalamnya tetap 130x46px tetap, jadi
+       gambar captcha ke-clip/kepotong saat card menyempit (misal di layar
+       kecil). flex-shrink:0 + width eksplisit mencegah itu. */
     .captcha-card {
         background: #ffffff;
         border: 1px solid rgba(226, 232, 240, 0.8);
         border-radius: 12px;
-        padding: 10px 12px;
+        padding: 8px 10px;
         box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 200px;
+        flex-shrink: 0;
+        width: fit-content;
     }
 
     .captcha-canvas {
         border-radius: 8px;
         background: transparent;
         display: block;
+        width: 130px;
+        height: 46px;
     }
 
     .captcha-refresh {
         width: 46px;
         height: 46px;
         min-width: 46px;
+        flex-shrink: 0;
         border-radius: 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: #111827;
+        background: #2563EB;
         border: none;
-        box-shadow: 0 10px 24px rgba(17, 24, 39, 0.12);
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
         cursor: pointer;
-        transition: transform .18s ease, filter .18s ease;
+        transition: transform .18s ease, filter .18s ease, background-color .18s ease;
     }
 
     .captcha-refresh:hover {
+        background: #1D4ED8;
         transform: translateY(-2px) scale(1.02);
         filter: brightness(1.06);
     }
@@ -48,32 +65,33 @@
         line-height: 1;
     }
 
+    .captcha-field {
+        flex: 1;
+        min-width: 0;
+    }
+
     .captcha-input {
-        border-radius: 20px;
-        background: #ffffff;
-        border: 1px solid #D1D5DB;
+        border-radius: 16px;
+        background: transparent;
+        border: none;
         padding: 16px 16px 12px;
         outline: none;
         color: #111827;
         box-shadow: none;
         font-family: Inter, Poppins, sans-serif;
         font-size: 1rem;
-        transition:
-            border-color 0.3s ease,
-            box-shadow 0.3s ease,
-            background-color 0.3s ease;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .captcha-input:focus {
+        background: #ffffff;
+        box-shadow: 0 0 0 2px #2563eb;
     }
 
     .captcha-input::placeholder {
         color: #94a3b8;
         font-size: 1rem;
         opacity: 1;
-    }
-
-    .captcha-input:focus {
-        border-color: #2563EB;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-        background: #ffffff;
     }
 
     .captcha-input+label {
@@ -96,11 +114,6 @@
         color: #2563EB;
     }
 
-    .captcha-row {
-        gap: 12px;
-        align-items: center;
-    }
-
     .btn-primary {
         width: 100%;
         height: 50px;
@@ -118,17 +131,17 @@
         font-weight: 600;
         cursor: pointer;
 
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .btn-primary:hover {
-        background: #212A37;
+        background: #1D4ED8;
         color: #ffffff;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
     }
 
     .btn-press {
         transform: scale(0.98) !important;
-        box-shadow: 0 6px 18px rgba(33, 42, 55, 0.08) !important;
     }
 
     .signin-helper {
@@ -156,49 +169,33 @@
         font-size: 0.85rem;
     }
 
-    .captcha-row {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
+    .validation-tooltip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        color: #dc2626;
+        font-size: 0.8rem;
+    }
 
-.captcha-card {
-    min-width: 0;
-    padding: 8px 10px;
-}
+    .validation-tooltip.hidden {
+        display: none;
+    }
 
-.captcha-field {
-    flex: 1;
-    min-width: 0;
-}
-
-.validation-tooltip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-    color: #dc2626;
-    font-size: 0.8rem;
-}
-
-.validation-tooltip.hidden {
-    display: none;
-}
-
-.validation-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: #dc2626;
-    color: #fff;
-    font-size: 0.65rem;
-    font-weight: bold;
-    flex-shrink: 0;
-}
+    .validation-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: #dc2626;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
 </style>

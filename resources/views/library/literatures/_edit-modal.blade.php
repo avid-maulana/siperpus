@@ -5,13 +5,11 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="editModalTitle"
-    onclick="hideEditModal(event)"
->
+    onclick="hideEditModal(event)">
     {{-- Modal Content --}}
     <div
         class="modal-content mx-auto flex max-h-[90vh] w-full max-w-2xl scale-95 transform flex-col overflow-hidden rounded-3xl bg-white shadow-[0_20px_80px_rgba(15,23,42,0.25)] ring-1 ring-slate-200 transition-all duration-300"
-        onclick="event.stopPropagation()"
-    >
+        onclick="event.stopPropagation()">
         {{-- Header --}}
         <div class="flex items-start justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
             <div>
@@ -27,8 +25,7 @@
                 type="button"
                 onclick="hideEditModal()"
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-                aria-label="Tutup modal"
-            >
+                aria-label="Tutup modal">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -40,8 +37,7 @@
             id="editForm"
             method="POST"
             data-action-template="{{ url('/library/literature') }}/__ID__"
-            class="flex min-h-0 flex-1 flex-col"
-        >
+            class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
 
@@ -78,7 +74,7 @@
                         <select name="category_id" required class="input-field w-full">
                             <option value="">Pilih kategori</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </label>
@@ -105,14 +101,12 @@
                 <button
                     type="button"
                     onclick="hideEditModal()"
-                    class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 active:scale-[0.98]"
-                >
+                    class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 active:scale-[0.98]">
                     Batal
                 </button>
                 <button
                     type="submit"
-                    class="inline-flex h-11 items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-blue-500/20"
-                >
+                    class="inline-flex h-11 items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-blue-500/20">
                     Simpan Perubahan
                 </button>
             </div>
@@ -134,7 +128,11 @@
         outline: none;
         transition: all 0.2s;
     }
-    .input-field::placeholder { color: rgb(148 163 184); }
+
+    .input-field::placeholder {
+        color: rgb(148 163 184);
+    }
+
     .input-field:focus {
         border-color: rgb(59 130 246);
         background-color: white;
