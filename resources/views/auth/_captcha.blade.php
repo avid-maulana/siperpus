@@ -21,7 +21,7 @@
 
 <div class="captcha-box">
 
-    <div class="flex items-center captcha-row">
+    <div class="captcha-row">
 
         <div class="captcha-card">
             <canvas id="captchaCanvas" width="130" height="46" class="captcha-canvas"></canvas>
@@ -33,10 +33,35 @@
 
         <div class="relative captcha-field">
 
-            <input id="captcha" name="captcha" type="text" required inputmode="numeric" pattern="[0-9]*"
-                autocomplete="off" placeholder=" " class="w-full captcha-input">
+            <input
+                id="captcha"
+                name="captcha"
+                type="text"
+                required
+                inputmode="numeric"
+                pattern="[0-9]*"
+                autocomplete="off"
+                placeholder=" "
+                class="peer w-full rounded-2xl bg-slate-100 px-5 pb-2 pt-6 outline-none transition
+                       focus:bg-white focus:ring-2 focus:ring-blue-600"
+            >
 
-            <label for="captcha">
+            <label
+                for="captcha"
+                class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500
+                       transition-all duration-200
+
+                       peer-placeholder-shown:text-base
+
+                       peer-focus:top-2
+                       peer-focus:-translate-y-0
+                       peer-focus:text-xs
+                       peer-focus:text-blue-600
+
+                       peer-not-placeholder-shown:top-2
+                       peer-not-placeholder-shown:-translate-y-0
+                       peer-not-placeholder-shown:text-xs"
+            >
                 Jawaban
             </label>
 

@@ -80,10 +80,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const drawText = (expression) => {
-        const fontSize = 26;
+        const fontSize = 24;
         const text = `${expression} = ?`;
 
-        const centerX = canvas.width / 2;
+        // Jarak aman dari tepi kiri/kanan canvas supaya karakter
+        // (termasuk saat dirotasi) tidak pernah menyentuh batas.
+        const padding = 12;
+        const availableWidth = canvas.width - padding * 2;
+
+        // Spacing antar karakter menyesuaikan lebar yang tersedia,
+        // bukan nilai tetap -- ini kunci fix-nya. Sebelumnya spacing
+        // tetap (fontSize * 0.55) membuat total lebar teks nyaris
+        // sama/lebih besar dari canvas, jadi karakter pertama & terakhir
+        // selalu mepet/keluar tepi.
+        const spacing = Math.min(
+            fontSize * 0.6,
+            availableWidth / (text.length - 1)
+        );
+
+        const totalWidth = spacing * (text.length - 1);
+        const startX = (canvas.width - totalWidth) / 2;
         const centerY = canvas.height / 2;
 
         ctx.save();
@@ -94,29 +110,27 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < text.length; i++) {
             const character = text[i];
 
-            const offset =
-                (i - text.length / 2) *
-                (fontSize * 0.55);
+            const baseX = startX + i * spacing;
 
-            const x =
-                centerX +
-                offset +
-                rand(-4, 4);
+            // Clamp: posisi akhir (termasuk jitter) tidak pernah
+            // boleh melewati area padding, apa pun yang terjadi.
+            const x = Math.min(
+                canvas.width - padding,
+                Math.max(padding, baseX + rand(-2, 2))
+            );
 
-            const y =
-                centerY +
-                rand(-3, 3);
+            const y = centerY + rand(-3, 3);
 
             ctx.save();
 
             ctx.translate(x, y);
 
             ctx.rotate(
-                (rand(-8, 8) * Math.PI) / 180
+                (rand(-6, 6) * Math.PI) / 180
             );
 
             ctx.font =
-                `600 ${fontSize + rand(-2, 2)}px ` +
+                `600 ${fontSize + rand(-1, 1)}px ` +
                 'Inter, Arial, sans-serif';
 
             ctx.fillStyle = '#111827';

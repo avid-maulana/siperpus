@@ -217,7 +217,7 @@
                     <button
                         id="loginButton"
                         type="submit"
-                        class="btn-primary"
+                        class="btn-primary group"
                         aria-label="Sign In"
                     >
 
@@ -225,6 +225,14 @@
                             Login
                         </span>
 
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+                        >
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
