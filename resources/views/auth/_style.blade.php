@@ -70,50 +70,6 @@
         min-width: 0;
     }
 
-    .captcha-input {
-        border-radius: 16px;
-        background: transparent;
-        border: none;
-        padding: 16px 16px 12px;
-        outline: none;
-        color: #111827;
-        box-shadow: none;
-        font-family: Inter, Poppins, sans-serif;
-        font-size: 1rem;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .captcha-input:focus {
-        background: #ffffff;
-        box-shadow: 0 0 0 2px #2563eb;
-    }
-
-    .captcha-input::placeholder {
-        color: #94a3b8;
-        font-size: 1rem;
-        opacity: 1;
-    }
-
-    .captcha-input+label {
-        pointer-events: none;
-        position: absolute;
-        left: 18px;
-        top: 16px;
-        color: #64748b;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-        background: white;
-        padding: 0 6px;
-    }
-
-    .captcha-input:focus+label,
-    .captcha-input:not(:placeholder-shown)+label {
-        top: 5px;
-        left: 16px;
-        font-size: 0.75rem;
-        color: #2563EB;
-    }
-
     .btn-primary {
         width: 100%;
         height: 50px;
