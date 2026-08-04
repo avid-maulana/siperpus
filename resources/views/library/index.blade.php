@@ -3,12 +3,36 @@
 @section('title', 'Manajemen Literatur')
 
 @section('content')
-<div class="container mx-auto px-4 py-10 space-y-12">
-    {{-- Flash Message --}}
-    @if (session('success'))
-    <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded shadow">
-        {{ session('success') }}
-    </div>
+<div class="min-h-screen bg-slate-50 text-slate-800">
+    <section class="relative -mt-20 overflow-hidden">
+        <img
+            src="{{ asset('gambar/rak 1.png') }}"
+            alt="Universitas Negeri Malang"
+            class="absolute inset-0 h-full w-full object-cover">
+
+        <div class="absolute inset-0 bg-gradient-to-r from-[#212A37]/95 via-[#212A37]/80 to-[#212A37]/60"></div>
+
+        <div class="relative mx-auto flex min-h-[420px] max-w-7xl items-center px-4 py-24 sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <p class="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-slate-300">Panel Admin</p>
+                <h1 class="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+                    Kelola Koleksi Literatur
+                </h1>
+                <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+                    Tambah, perbarui, dan atur literatur agar koleksi tetap rapi, informatif, dan mudah ditemukan.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="relative z-20 mx-auto -mt-14 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="rounded-[28px] border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-[#f8fafc] p-6 shadow-[0_25px_80px_-25px_rgba(15,23,42,0.35)] ring-1 ring-slate-100 sm:p-8">
+            <div class="space-y-12 w-full">
+        {{-- Flash Message --}}
+        @if (session('success'))
+        <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded shadow">
+            {{ session('success') }}
+        </div>
     @endif
 
     {{-- SECTION: Tipe Literatur --}}
@@ -44,12 +68,11 @@
                                     <input type="text" name="name" value="{{ $type->name }}"
                                         class="w-32 border border-gray-300 rounded-md px-2 py-1 text-sm focus:ring focus:ring-indigo-200">
                                     <button type="submit"
-                                        class="px-3 py-1 bg-sky-600 text-white rounded hover:bg-sky-700 transition">Update</button>
+                                        class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Update</button>
                                 </form>
-                                <form action="{{ route('library.destroyType', $type->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus tipe ini?')">
+                                <form action="{{ route('library.destroyType', $type->id) }}" method="POST" class="delete-form">
                                     @csrf @method('DELETE')
-                                    <button type="submit"
+                                    <button type="button" onclick="openDeleteConfirm(this, 'Yakin ingin menghapus tipe ini?')"
                                         class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Hapus</button>
                                 </form>
                             </div>
@@ -109,12 +132,11 @@
                                         @endforeach
                                     </select>
                                     <button type="submit"
-                                        class="px-3 py-1 bg-sky-600 text-white rounded hover:bg-sky-700 transition">Update</button>
+                                        class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Update</button>
                                 </form>
-                                <form action="{{ route('library.destroyCategory', $category->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                                <form action="{{ route('library.destroyCategory', $category->id) }}" method="POST" class="delete-form">
                                     @csrf @method('DELETE')
-                                    <button type="submit"
+                                    <button type="button" onclick="openDeleteConfirm(this, 'Yakin ingin menghapus kategori ini?')"
                                         class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Hapus</button>
                                 </form>
                             </div>
@@ -123,7 +145,48 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
+
+    <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
+        <div class="w-full max-w-lg rounded-[24px] border border-slate-200 bg-white p-6 shadow-xl">
+            <h3 class="text-lg font-semibold text-slate-900">Konfirmasi Penghapusan</h3>
+            <p id="deleteConfirmMessage" class="mt-3 text-sm text-slate-600"></p>
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" onclick="closeDeleteConfirm()" class="rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200">Batal</button>
+                <button type="button" onclick="confirmDelete()" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Hapus Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.body.appendChild(document.getElementById('deleteConfirmModal'));
+
+        let deleteConfirmForm = null;
+
+        function openDeleteConfirm(button, message) {
+            deleteConfirmForm = button.closest('form');
+            document.getElementById('deleteConfirmMessage').textContent = message;
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteConfirm() {
+            deleteConfirmForm = null;
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmDelete() {
+            if (deleteConfirmForm) {
+                deleteConfirmForm.submit();
+            }
+            closeDeleteConfirm();
+        }
+    </script>
+</div>
 
 @endsection
