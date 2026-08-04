@@ -1,7 +1,7 @@
 @php
     // hasil selalu >= 0 supaya cocok dengan input numeric-only
-    $angka1 = rand(1, 20);
-    $angka2 = rand(1, 20);
+    $angka1 = rand(1, 9);
+    $angka2 = rand(1, 9);
 
     if ($angka1 < $angka2) {
         [$angka1, $angka2] = [$angka2, $angka1];
