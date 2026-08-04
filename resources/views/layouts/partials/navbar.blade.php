@@ -84,18 +84,6 @@
                                }}">
                         <span>Manage</span>
 
-                        {{-- Chevron --}}
-                        <span
-                            id="manageChevron"
-                            class="material-symbols-outlined
-                                   text-[21px]
-                                   transition-transform
-                                   duration-300
-                                   ease-in-out
-                                   group-hover/manage:rotate-180">
-                            expand_more
-                        </span>
-
                         {{-- Active Line --}}
                         <span
                             class="absolute bottom-0 left-1/2
@@ -266,20 +254,25 @@
                     <span>Profil</span>
                 </button>
 
-                    <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
-                        <a href="{{ route('profile.edit') }}" class="flex items-center justify-between px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100">
-                            <span>Edit Profil</span>
-                            <span class="material-symbols-outlined text-[18px] text-slate-400 ml-3">person</span>
-                        </a>
-                        <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="border-t border-slate-100">
-                            @csrf
-                            <button id="logoutButton" type="submit" class="w-full flex items-center justify-between px-4 py-3 text-sm text-red-600 transition hover:bg-red-50 hover:text-red-700">
-                                <span>Logout</span>
-                                <span id="logoutIcon" class="material-symbols-outlined text-[18px] text-red-500 logout-icon">logout</span>
-                            </button>
-                        </form>
-                    </div>
+                <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-700 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900">
+                        <span class="material-symbols-outlined text-[20px]">
+                            person
+                        </span>
+                        <span>Edit Profil</span>
+                    </a>
+
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button id="logoutButton" type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-red-600 transition-colors duration-200 hover:bg-red-50 hover:text-red-700">
+                            <span id="logoutIcon" class="material-symbols-outlined text-[20px] text-red-500 logout-icon">
+                                logout
+                            </span>
+                            <span>Logout</span>
+                        </button>
+                    </form>
                 </div>
+            </div>
             @endauth
         </nav>
     </div>
@@ -369,7 +362,7 @@
     .logout-icon {
         opacity: 0;
         transform: translateX(-8px);
-        transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
     }
 
     .logout-icon.logout-enter {
