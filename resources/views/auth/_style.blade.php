@@ -157,65 +157,48 @@
     }
 
     .captcha-row {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
 
-    .captcha-card {
-        flex-shrink: 0;
-        padding: 6px 8px;
-    }
+.captcha-card {
+    min-width: 0;
+    padding: 8px 10px;
+}
 
-    .captcha-refresh {
-        flex-shrink: 0;
-    }
+.captcha-field {
+    flex: 1;
+    min-width: 0;
+}
 
-    .captcha-field {
-        flex: 1 1 auto;
-        min-width: 90px;
-    }
+.validation-tooltip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    color: #dc2626;
+    font-size: 0.8rem;
+}
 
-    .captcha-input {
-        padding: 14px 12px 10px;
-    }
+.validation-tooltip.hidden {
+    display: none;
+}
 
-    .captcha-input+label {
-        left: 14px;
-    }
-
-    .captcha-input:focus+label,
-    .captcha-input:not(:placeholder-shown)+label {
-        left: 12px;
-    }
-
-    .validation-tooltip {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        width: 100%;
-        margin-top: 10px;
-        text-align: center;
-        color: #dc2626;
-        font-size: 0.8rem;
-    }
-
-    .validation-tooltip.hidden {
-        display: none;
-    }
-
-    .validation-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background-color: #dc2626;
-        color: #fff;
-        font-size: 0.65rem;
-        font-weight: bold;
-        flex-shrink: 0;
-    }
+.validation-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #dc2626;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
 </style>

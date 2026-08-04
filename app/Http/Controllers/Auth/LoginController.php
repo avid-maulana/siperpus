@@ -18,43 +18,78 @@ class LoginController extends Controller
         $request->validate([
             'username' => 'required',
             'password' => 'required',
-            'captcha' => 'required',
+            'captcha'  => 'required',
         ]);
 
+        /*
+    |--------------------------------------------------------------------------
+    | Cari User
+    |--------------------------------------------------------------------------
+    */
         $user = \App\Models\User::where('username', $request->username)->first();
 
         if (!$user) {
-            return back()->withErrors([
-                'username' => 'Username tidak ditemukan.',
-            ]);
+            return back()
+                ->withErrors([
+                    'username' => 'Username tidak ditemukan.',
+                ])
+                ->withInput($request->only('username'));
         }
 
-        // Gunakan password_verify() agar bisa membaca hash $2a$
+        /*
+    |--------------------------------------------------------------------------
+    | Validasi Password
+    |--------------------------------------------------------------------------
+    */
         if (!password_verify($request->password, $user->password)) {
-            return back()->withErrors([
-                'username' => 'Username atau Password salah.',
-            ]);
+            return back()
+                ->withErrors([
+                    'username' => 'Username atau Password salah.',
+                ])
+                ->withInput($request->only('username'));
         }
 
-        if ((int) $request->captcha !== session('captcha_hasil')) {
-            return back()->withErrors(['captcha' => 'Jawaban captcha salah.']);
+        /*
+    |--------------------------------------------------------------------------
+    | Validasi Captcha
+    |--------------------------------------------------------------------------
+    */
+        if ((int) $request->captcha !== (int) session('captcha_hasil')) {
+            return back()
+                ->withErrors([
+                    'captcha' => 'Jawaban captcha salah.',
+                ])
+                ->withInput($request->only('username'));
         }
 
-        // Login manual jika password cocok
-        if ($user->level == 6 || ($user->level >= 1 && $user->level <= 12)) {
-            Auth::login($user);
-            $request->session()->regenerate();
-
-            if ($user->level == 6) {
-                return redirect()->intended('/library');
-            } else {
-                return redirect()->intended('/');
-            }
-        } else {
-            return back()->withErrors([
-                'username' => 'Level user tidak valid.',
-            ]);
+        /*
+    |--------------------------------------------------------------------------
+    | Validasi Level
+    |--------------------------------------------------------------------------
+    */
+        if ($user->level < 1 || $user->level > 12) {
+            return back()
+                ->withErrors([
+                    'username' => 'Level user tidak valid.',
+                ])
+                ->withInput($request->only('username'));
         }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Login
+    |--------------------------------------------------------------------------
+    */
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        /*
+    |--------------------------------------------------------------------------
+    | Redirect Home
+    |--------------------------------------------------------------------------
+    */
+        return redirect()->route('home');
     }
 
     public function username()
