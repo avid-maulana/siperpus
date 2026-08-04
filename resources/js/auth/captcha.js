@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const refresh = document.getElementById('captchaRefresh');
     const expected = document.getElementById('captchaExpected');
     const input = document.getElementById('captcha');
+    const validationBox = document.getElementById('captchaValidation');
+    const validationText = document.getElementById('captchaValidationText');
 
     if (!canvas || !refresh || !expected || !input) {
         return;
@@ -14,18 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    /**
-     * Membuat angka random.
-     */
     const rand = (min, max) => {
         return Math.floor(
             Math.random() * (max - min + 1)
         ) + min;
     };
 
-    /**
-     * Membersihkan canvas.
-     */
     const clearCanvas = () => {
         ctx.clearRect(
             0,
@@ -35,11 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     };
 
-    /**
-     * Membuat noise CAPTCHA.
-     */
     const drawNoise = () => {
-        // Garis acak
         for (let i = 0; i < 4; i++) {
             ctx.beginPath();
 
@@ -65,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.stroke();
         }
 
-        // Titik acak
         for (let i = 0; i < 24; i++) {
             ctx.fillStyle = `rgba(
                 17,
@@ -88,11 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    /**
-     * Menggambar teks CAPTCHA.
-     */
     const drawText = (expression) => {
-        const fontSize = 30;
+        const fontSize = 26;
         const text = `${expression} = ?`;
 
         const centerX = canvas.width / 2;
@@ -145,106 +133,86 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.restore();
     };
 
-    /**
-     * Render CAPTCHA ke canvas.
-     */
     const renderCaptcha = (expression) => {
         clearCanvas();
         drawNoise();
         drawText(expression);
     };
 
-    /**
-     * Menghitung hasil expression.
-     */
-    const computeAnswer = (expression) => {
-        const match = expression.match(
-            /(-?\d+)\s*([+\-xX*])\s*(-?\d+)/
-        );
+    const showValidation = (message) => {
+        validationText.textContent = message;
+        validationBox.classList.remove('hidden');
+    };
 
-        if (!match) {
-            return null;
-        }
-
-        const firstNumber = parseInt(match[1], 10);
-        const operator = match[2];
-        const secondNumber = parseInt(match[3], 10);
-
-        switch (operator) {
-            case '+':
-                return firstNumber + secondNumber;
-
-            case '-':
-                return firstNumber - secondNumber;
-
-            case '*':
-            case 'x':
-            case 'X':
-                return firstNumber * secondNumber;
-
-            default:
-                return null;
-        }
+    const hideValidation = () => {
+        validationBox.classList.add('hidden');
     };
 
     /**
      * Render CAPTCHA pertama yang dibuat Laravel.
      */
-    const initialExpression =
-        expected.dataset.expr;
+    const initialExpression = expected.dataset.expr;
 
     if (initialExpression) {
         renderCaptcha(initialExpression);
     }
 
     /**
-     * Refresh CAPTCHA.
+     * Validasi input: hanya boleh angka.
+     */
+    input.addEventListener('input', () => {
+        if (input.value !== '' && !/^\d*$/.test(input.value)) {
+            input.value = input.value.replace(/\D/g, '');
+            showValidation('Hanya angka yang diperbolehkan');
+        } else {
+            hideValidation();
+        }
+    });
+
+    /**
+     * Refresh CAPTCHA — fetch ulang halaman supaya session
+     * di server ikut ter-update, lalu render ulang canvas
+     * dari data-expr yang baru.
      */
     refresh.addEventListener('click', () => {
-        const firstNumber = rand(1, 20);
-        const secondNumber = rand(1, 30);
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then((res) => res.text())
+        .then((html) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newExpected = doc.getElementById('captchaExpected');
 
-        const operators = ['+', '-'];
+            if (!newExpected) {
+                return;
+            }
 
-        const operator =
-            operators[
-                rand(0, operators.length - 1)
-            ];
+            const newExpression = newExpected.dataset.expr;
 
-        const expression =
-            `${firstNumber} ${operator} ${secondNumber}`;
+            expected.dataset.expr = newExpression;
 
-        const answer =
-            computeAnswer(expression);
+            renderCaptcha(newExpression);
 
-        expected.value = answer ?? '';
+            input.value = '';
+            hideValidation();
+            input.focus();
 
-        expected.dataset.expr =
-            expression;
-
-        renderCaptcha(expression);
-
-        input.value = '';
-        input.focus();
-
-        /**
-         * Animasi tombol refresh.
-         */
-        if (typeof refresh.animate === 'function') {
-            refresh.animate(
-                [
+            if (typeof refresh.animate === 'function') {
+                refresh.animate(
+                    [
+                        { transform: 'scale(0.96)' },
+                        { transform: 'scale(1)' },
+                    ],
                     {
-                        transform: 'scale(0.96)',
-                    },
-                    {
-                        transform: 'scale(1)',
-                    },
-                ],
-                {
-                    duration: 220,
-                    easing: 'ease-out',
-                }
-            );
-        }
+                        duration: 220,
+                        easing: 'ease-out',
+                    }
+                );
+            }
+        })
+        .catch(() => {
+            showValidation('Gagal memuat captcha baru, coba lagi');
+        });
     });
 });
