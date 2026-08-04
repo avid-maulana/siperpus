@@ -267,13 +267,15 @@
                 </button>
 
                     <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100">
-                            Edit Profil
+                        <a href="{{ route('profile.edit') }}" class="flex items-center justify-between px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100">
+                            <span>Edit Profil</span>
+                            <span class="material-symbols-outlined text-[18px] text-slate-400 ml-3">person</span>
                         </a>
                         <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="border-t border-slate-100">
                             @csrf
-                            <button id="logoutButton" type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 transition hover:bg-red-50 hover:text-red-700">
-                                Logout
+                            <button id="logoutButton" type="submit" class="w-full flex items-center justify-between px-4 py-3 text-sm text-red-600 transition hover:bg-red-50 hover:text-red-700">
+                                <span>Logout</span>
+                                <span id="logoutIcon" class="material-symbols-outlined text-[18px] text-red-500 logout-icon">logout</span>
                             </button>
                         </form>
                     </div>
