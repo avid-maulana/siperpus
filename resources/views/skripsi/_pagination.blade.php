@@ -57,7 +57,7 @@
             <li>
                 <a href="{{ $skripsis->nextPageUrl() }}#top"
                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
-                   class="pagination-link flex items-center justify-center px-4 py-2.5 rounded-xl text-slate-700 hover:text-[#212A37] hover:bg-slate-100 hover:text-slate-900 transition-all duration-200">
+                   class="pagination-link flex items-center justify-center px-4 py-2.5 rounded-xl text-slate-700 hover:text-[#212A37] hover:bg-slate-0 hover:text-slate-900 transition-all duration-200">
                     <span class="text-lg leading-none">&raquo;</span>
                 </a>
             </li>
