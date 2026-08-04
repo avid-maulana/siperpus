@@ -266,51 +266,20 @@
                     <span>Profil</span>
                 </button>
 
-
-                {{-- Profile Dropdown --}}
-                <div
-                    id="profileDropdown"
-                    class="invisible absolute
-                       right-0 top-full z-50
-                       mt-2 w-44
-                       translate-y-2
-                       overflow-hidden
-                       rounded-2xl
-                       border border-slate-200
-                       bg-white
-                       opacity-0
-                       shadow-xl shadow-slate-950/10
-                       transition-all duration-200">
-                    <a
-                        href="{{ route('profile.edit') }}"
-                        class="block px-4 py-3
-                           text-sm text-slate-700
-                           transition
-                           hover:bg-slate-100">
-                        Edit Profil
-                    </a>
-
-                    <form
-                        id="logoutForm"
-                        action="{{ route('logout') }}"
-                        method="POST"
-                        class="border-t border-slate-100">
-                        @csrf
-
-                        <button
-                            id="logoutButton"
-                            type="submit"
-                            class="w-full px-4 py-3
-                               text-left text-sm text-red-600
-                               transition
-                               hover:bg-red-50
-                               hover:text-red-700">
-                            Logout
-                        </button>
-                    </form>
+                    <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
+                        <a href="{{ route('profile.edit') }}" class="flex items-center justify-between px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100">
+                            <span>Edit Profil</span>
+                            <span class="material-symbols-outlined text-[18px] text-slate-400 ml-3">person</span>
+                        </a>
+                        <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="border-t border-slate-100">
+                            @csrf
+                            <button id="logoutButton" type="submit" class="w-full flex items-center justify-between px-4 py-3 text-sm text-red-600 transition hover:bg-red-50 hover:text-red-700">
+                                <span>Logout</span>
+                                <span id="logoutIcon" class="material-symbols-outlined text-[18px] text-red-500 logout-icon">logout</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-
             @endauth
         </nav>
     </div>
@@ -360,14 +329,21 @@
             profileMenuButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 const isOpen = profileDropdown.classList.contains('opacity-100');
+                const logoutIcon = document.getElementById('logoutIcon');
 
                 if (isOpen) {
                     profileDropdown.classList.add('invisible', 'opacity-0');
                     profileDropdown.classList.remove('opacity-100');
+                    if (logoutIcon) {
+                        logoutIcon.classList.remove('logout-enter');
+                    }
                     profileMenuButton.setAttribute('aria-expanded', 'false');
                 } else {
                     profileDropdown.classList.remove('invisible');
                     profileDropdown.classList.add('opacity-100');
+                    if (logoutIcon) {
+                        logoutIcon.classList.add('logout-enter');
+                    }
                     profileMenuButton.setAttribute('aria-expanded', 'true');
                 }
             });
@@ -388,3 +364,25 @@
         });
     });
 </script>
+
+<style>
+    .logout-icon {
+        opacity: 0;
+        transform: translateX(-8px);
+        transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+    }
+
+    .logout-icon.logout-enter {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    #logoutButton:hover .logout-icon {
+        transform: translateX(5px);
+    }
+
+    #logoutButton:hover {
+        background-color: #fee2e2;
+        color: #ef4444;
+    }
+</style>

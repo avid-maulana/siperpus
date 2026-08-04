@@ -6,7 +6,7 @@
     {{-- Cover + Title Overlay --}}
     <div class="relative overflow-hidden">
         <img
-            src="{{ $literature->cover_url ?: asset('asset/default-cover.jpg') }}"
+            src="{{ $literature->cover_url ?: asset('asset/cover.jpg') }}"
             alt="{{ $literature->title }}"
             class="h-64 w-full object-cover transition duration-500 group-hover:scale-105">
 
