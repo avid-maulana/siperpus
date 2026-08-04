@@ -1,5 +1,5 @@
 {{-- Form Tambah Literatur --}}
-<div class="mb-10 space-y-6 rounded-lg bg-white p-6 shadow-md">
+<div id="add-literature-form" class="space-y-6 rounded-[20px] bg-transparent p-0">
 
     <h3 class="text-xl font-semibold text-gray-700">
         Tambah Literatur
