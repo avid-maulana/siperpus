@@ -160,6 +160,9 @@
         </div>
     </div>
 
+{{-- Edit Literature Modal --}}
+@include('library.literatures._edit-modal')
+
     <script>
         document.body.appendChild(document.getElementById('deleteConfirmModal'));
 

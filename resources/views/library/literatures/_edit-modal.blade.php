@@ -167,23 +167,31 @@
         window.scrollTo(0, savedScrollY);
     }
 
-    function showEditModal(button) {
+    // make showEditModal available globally and robust to different data-attribute naming
+    window.showEditModal = function (button) {
         const modal = document.getElementById('editModal');
-        const content = modal.querySelector('.modal-content');
+        const content = modal ? modal.querySelector('.modal-content') : null;
         const form = document.getElementById('editForm');
-        const actionTemplate = form.dataset.actionTemplate;
+        if (!modal || !form) return;
 
-        form.action = actionTemplate.replace('__ID__', button.dataset.id);
+        const actionTemplate = form.getAttribute('data-action-template') || form.dataset.actionTemplate || '';
+        const id = button.getAttribute('data-id') || button.dataset.id || '';
+        form.action = actionTemplate.replace('__ID__', id);
 
-        form.elements['cover_url'].value = button.dataset.cover_url || '';
-        form.elements['title'].value = button.dataset.title || '';
-        form.elements['author'].value = button.dataset.author || '';
-        form.elements['publisher'].value = button.dataset.publisher || '';
-        form.elements['year'].value = button.dataset.year || '';
-        form.elements['file_url'].value = button.dataset.file_url || '';
-        form.elements['category_id'].value = button.dataset.category_id || '';
-        form.elements['detail'].value = button.dataset.detail || '';
-        form.elements['description'].value = button.dataset.description || '';
+        // helper to read attribute names that may use underscores or hyphens
+        const get = (attr) => {
+            return button.getAttribute('data-' + attr) ?? button.getAttribute('data-' + attr.replace('_', '-')) ?? button.dataset[attr] ?? '';
+        };
+
+        form.elements['cover_url'].value = get('cover_url');
+        form.elements['title'].value = get('title');
+        form.elements['author'].value = get('author');
+        form.elements['publisher'].value = get('publisher');
+        form.elements['year'].value = get('year');
+        form.elements['file_url'].value = get('file_url');
+        form.elements['category_id'].value = get('category_id');
+        form.elements['detail'].value = get('detail');
+        form.elements['description'].value = get('description');
 
         // Reset scroll internal modal ke atas setiap kali dibuka
         const body = document.getElementById('editModalBody');
@@ -195,10 +203,12 @@
         modal.classList.add('flex');
         requestAnimationFrame(() => {
             modal.classList.add('opacity-100');
-            content.classList.remove('scale-95');
-            content.classList.add('scale-100');
+            if (content) {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }
         });
-    }
+    };
 
     function hideEditModal(event) {
         if (event) event.stopPropagation();

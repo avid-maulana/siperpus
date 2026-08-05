@@ -102,31 +102,60 @@
     </div>
 </div>
 
+{{-- Edit Literature Modal --}}
+@include('library.literatures._edit-modal')
+
 <script>
     function toggleAddLiteratureForm() {
         const toggle = document.getElementById('add-literature-toggle');
         const panel = document.getElementById('add-literature-panel');
         const chevron = document.getElementById('add-literature-chevron');
+
         if (!toggle || !panel || !chevron) return;
 
         const isOpen = toggle.getAttribute('aria-expanded') === 'true';
 
         toggle.setAttribute('aria-expanded', String(!isOpen));
+
         panel.classList.toggle('grid-rows-[0fr]', isOpen);
         panel.classList.toggle('grid-rows-[1fr]', !isOpen);
+
         chevron.classList.toggle('rotate-180', !isOpen);
 
         if (!isOpen) {
             const firstField = panel.querySelector('input, select, textarea');
+
             if (firstField) {
-                window.requestAnimationFrame(() => firstField.focus({ preventScroll: true }));
+                window.requestAnimationFrame(() => {
+                    firstField.focus({
+                        preventScroll: true
+                    });
+                });
             }
         }
     }
 
+    function closeAddLiteratureForm() {
+        const toggle = document.getElementById('add-literature-toggle');
+        const panel = document.getElementById('add-literature-panel');
+        const chevron = document.getElementById('add-literature-chevron');
+
+        if (!toggle || !panel || !chevron) return;
+
+        // Kalau sudah tertutup, tidak perlu melakukan apa-apa
+        if (toggle.getAttribute('aria-expanded') !== 'true') {
+            return;
+        }
+
+        toggle.setAttribute('aria-expanded', 'false');
+
+        panel.classList.remove('grid-rows-[1fr]');
+        panel.classList.add('grid-rows-[0fr]');
+
+        chevron.classList.remove('rotate-180');
+    }
+
     @if ($errors->any() || old())
-        // Form sempat disubmit dan gagal validasi di server, jadi panel
-        // dibuka otomatis supaya pesan error langsung terlihat.
         document.addEventListener('DOMContentLoaded', () => {
             toggleAddLiteratureForm();
         });

@@ -18,7 +18,7 @@
                     placeholder="https://..."
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                 @error('cover_url')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -34,7 +34,7 @@
                     required
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                 @error('title')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -50,7 +50,7 @@
                     required
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                 @error('author')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -81,7 +81,7 @@
                     placeholder="Contoh: 2023"
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                 @error('year')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -98,7 +98,7 @@
                     placeholder="https://..."
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                 @error('file_url')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -113,13 +113,13 @@
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
                     <option value="">Pilih Kategori</option>
                     @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
-                            {{ $category->name }}
-                        </option>
+                    <option value="{{ $category->id }}" @selected(old('category_id')==$category->id)>
+                        {{ $category->name }}
+                    </option>
                     @endforeach
                 </select>
                 @error('category_id')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -135,7 +135,7 @@
                     placeholder="Isi detail tentang literatur"
                     class="w-full resize-none rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">{{ old('detail') }}</textarea>
                 @error('detail')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
 
@@ -151,7 +151,7 @@
                     placeholder="Deskripsi singkat literatur"
                     class="w-full resize-none rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">{{ old('description') }}</textarea>
                 @error('description')
-                    <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
                 @enderror
             </label>
         </div>
@@ -160,6 +160,7 @@
         <div class="mt-8 flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:justify-end">
             <button
                 type="reset"
+                onclick="closeAddLiteratureForm()"
                 class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-800">
                 Batal
             </button>
@@ -167,7 +168,7 @@
                 type="submit"
                 class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700 hover:shadow-lg active:scale-[0.98]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 Tambah Literatur
             </button>
