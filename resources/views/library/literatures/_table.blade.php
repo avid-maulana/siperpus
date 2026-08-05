@@ -93,23 +93,23 @@
                                 </button>
 
                                 <form
-                                    action="{{ route('library.destroyLiterature', $literature->id) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus literatur ini?')"
-                                >
-                                    @csrf
-                                    @method('DELETE')
+    action="{{ route('library.destroyLiterature', $literature->id) }}"
+    method="POST"
+    class="delete-form"
+>
+    @csrf
+    @method('DELETE')
 
-                                    <button
-                                        type="submit"
-                                        class="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-xl
-                                               bg-red-50 px-3 text-xs font-medium
-                                               text-red-600 transition hover:bg-red-100"
-                                    >
-                                        <span class="material-symbols-outlined text-[16px]">delete</span>
-                                        Hapus
-                                    </button>
-                                </form>
+    <button
+        type="submit"
+        class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl
+               bg-red-50 px-3 text-sm font-medium text-red-600
+               transition hover:bg-red-100"
+    >
+        <span class="material-symbols-outlined text-[16px]">delete</span>
+        Hapus
+    </button>
+</form>
 
                             </div>
                         </td>
@@ -126,4 +126,32 @@
     </div>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Hapus Literatur?',
+            text: 'Data yang sudah dihapus tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fa fa-trash"></i> Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            focusCancel: true,
+            background: '#ffffff',
+            borderRadius: '18px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
 @include('library.literatures._pagination')
