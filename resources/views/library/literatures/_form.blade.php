@@ -1,26 +1,5 @@
 {{-- Form Tambah Literatur --}}
-<<<<<<< HEAD
 <div id="add-literature-form" class="space-y-6 rounded-[20px] bg-transparent p-0">
-=======
-<div class="mx-auto mb-10 max-w-5xl rounded-3xl bg-white shadow-xl ring-1 ring-gray-100">
-    <div class="border-b border-gray-100 px-8 py-6">
-        <div class="flex items-center gap-4">
-            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-2xl font-bold tracking-tight text-gray-900">
-                    Tambah Literatur
-                </h3>
-                <p class="mt-1 text-sm text-gray-500">
-                    Lengkapi detail literatur baru di bawah ini
-                </p>
-            </div>
-        </div>
-    </div>
->>>>>>> 22929ca862b2076cf70ca281a107730a1249ebf5
 
     <form action="{{ route('library.storeLiterature') }}" method="POST" class="px-8 py-7">
         @csrf
@@ -186,7 +165,7 @@
             </button>
             <button
                 type="submit"
-                class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98]">
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700 hover:shadow-lg active:scale-[0.98]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
