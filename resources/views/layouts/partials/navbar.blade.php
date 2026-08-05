@@ -232,7 +232,7 @@
 
 
             {{-- Profile Menu --}}
-            <div class="relative">
+            <div class="relative flex h-[72px] items-center">
                 <button
                     id="profileMenuButton"
                     type="button"
@@ -254,7 +254,7 @@
                     <span>Profil</span>
                 </button>
 
-                <div id="profileDropdown" class="absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-950/10 opacity-0 transition-all duration-200 invisible">
+                <div id="profileDropdown" class="invisible absolute right-0 top-full z-50 mt-2 w-56 translate-y-2 rounded-2xl border border-slate-200 bg-white p-1.5 opacity-0 shadow-xl shadow-slate-950/10 transition-all duration-200 ease-out">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-700 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900">
                         <span class="material-symbols-outlined text-[20px]">
                             person
@@ -318,33 +318,36 @@
         const profileMenuButton = document.getElementById('profileMenuButton');
         const profileDropdown = document.getElementById('profileDropdown');
 
+        const openProfileDropdown = () => {
+            const logoutIcon = document.getElementById('logoutIcon');
+            profileDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-2');
+            profileDropdown.classList.add('opacity-100', 'translate-y-0');
+            if (logoutIcon) logoutIcon.classList.add('logout-enter');
+            profileMenuButton.setAttribute('aria-expanded', 'true');
+        };
+
+        const closeProfileDropdown = () => {
+            const logoutIcon = document.getElementById('logoutIcon');
+            profileDropdown.classList.add('invisible', 'opacity-0', 'translate-y-2');
+            profileDropdown.classList.remove('opacity-100', 'translate-y-0');
+            if (logoutIcon) logoutIcon.classList.remove('logout-enter');
+            profileMenuButton.setAttribute('aria-expanded', 'false');
+        };
+
         if (profileMenuButton && profileDropdown) {
             profileMenuButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 const isOpen = profileDropdown.classList.contains('opacity-100');
-                const logoutIcon = document.getElementById('logoutIcon');
 
                 if (isOpen) {
-                    profileDropdown.classList.add('invisible', 'opacity-0');
-                    profileDropdown.classList.remove('opacity-100');
-                    if (logoutIcon) {
-                        logoutIcon.classList.remove('logout-enter');
-                    }
-                    profileMenuButton.setAttribute('aria-expanded', 'false');
+                    closeProfileDropdown();
                 } else {
-                    profileDropdown.classList.remove('invisible');
-                    profileDropdown.classList.add('opacity-100');
-                    if (logoutIcon) {
-                        logoutIcon.classList.add('logout-enter');
-                    }
-                    profileMenuButton.setAttribute('aria-expanded', 'true');
+                    openProfileDropdown();
                 }
             });
 
             window.addEventListener('click', function() {
-                profileDropdown.classList.add('invisible', 'opacity-0');
-                profileDropdown.classList.remove('opacity-100');
-                profileMenuButton.setAttribute('aria-expanded', 'false');
+                closeProfileDropdown();
             });
 
             profileDropdown.addEventListener('click', function(event) {

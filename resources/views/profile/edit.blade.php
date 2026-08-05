@@ -12,7 +12,6 @@ $passwordInputBase = 'w-full rounded-xl border bg-white px-4 py-3 text-sm text-s
     <div class="mx-auto max-w-3xl px-6 py-10 lg:px-8">
         {{-- Header --}}
         <div class="mb-8">
-            <p class="text-sm font-medium text-slate-500">SIPERPUS DTEI</p>
             <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">Edit Profil</h1>
             <p class="mt-2 text-sm leading-6 text-slate-500">
                 Kelola keamanan akun dan perbarui password Anda.
