@@ -36,7 +36,7 @@
         <form
             id="editForm"
             method="POST"
-            data-action-template="{{ url('/library/literature') }}/__ID__"
+            data-action-template="{{ url('/library/update-literature') }}/__ID__"
             class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')

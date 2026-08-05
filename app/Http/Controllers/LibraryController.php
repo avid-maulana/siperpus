@@ -18,11 +18,11 @@ class LibraryController extends Controller
     public function index()
     {
         return view('library.index', [
-            'types'             => Type::all(),
-            'categories'        => Category::with('type')->get(),
-            'totalTypes'        => Type::count(),
-            'totalCategories'   => Category::count(),
-            'totalLiteratures'  => Literature::count(),
+            'types'            => Type::all(),
+            'categories'       => Category::with('type')->get(),
+            'totalTypes'       => Type::count(),
+            'totalCategories'  => Category::count(),
+            'totalLiteratures' => Literature::count(),
         ]);
     }
 
@@ -35,8 +35,9 @@ class LibraryController extends Controller
     public function indexLiterature()
     {
         return view('library.literatures.index', [
-            'types'       => Type::all(),
-            'categories'  => Category::all(),
+            'types'      => Type::all(),
+            'categories' => Category::all(),
+
             'literatures' => Literature::with('category')
                 ->latest()
                 ->paginate(10),
@@ -68,7 +69,9 @@ class LibraryController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        Type::findOrFail($id)->update($validated);
+        $type = Type::findOrFail($id);
+
+        $type->update($validated);
 
         return redirect()
             ->route('library.index')
@@ -77,7 +80,9 @@ class LibraryController extends Controller
 
     public function destroyType($id)
     {
-        Type::findOrFail($id)->delete();
+        $type = Type::findOrFail($id);
+
+        $type->delete();
 
         return redirect()
             ->route('library.index')
@@ -93,7 +98,7 @@ class LibraryController extends Controller
     public function storeCategory(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'    => 'required|string|max:255',
             'type_id' => 'required|exists:types,id',
         ]);
 
@@ -107,11 +112,13 @@ class LibraryController extends Controller
     public function updateCategory(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'    => 'required|string|max:255',
             'type_id' => 'required|exists:types,id',
         ]);
 
-        Category::findOrFail($id)->update($validated);
+        $category = Category::findOrFail($id);
+
+        $category->update($validated);
 
         return redirect()
             ->route('library.index')
@@ -120,7 +127,9 @@ class LibraryController extends Controller
 
     public function destroyCategory($id)
     {
-        Category::findOrFail($id)->delete();
+        $category = Category::findOrFail($id);
+
+        $category->delete();
 
         return redirect()
             ->route('library.index')
@@ -136,21 +145,24 @@ class LibraryController extends Controller
     public function storeLiterature(Request $request)
     {
         $validated = $request->validate([
-            'cover_url'   => 'required|string|max:255',
+            'cover_url'   => 'required|url|max:2048',
             'title'       => 'required|string|max:255',
             'author'      => 'required|string|max:255',
             'publisher'   => 'nullable|string|max:255',
-            'year'        => 'required|integer',
-            'file_url'    => 'required|url',
+            'year'        => 'required|integer|min:1900|max:' . date('Y'),
+            'file_url'    => 'required|url|max:2048',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'detail'      => 'nullable|string',
         ]);
 
+        /*
+         * Detail disimpan dalam format JSON.
+         */
         if (!empty($validated['detail'])) {
             $validated['detail'] = json_encode([
                 'description' => $validated['detail'],
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
         }
 
         Literature::create($validated);
@@ -162,25 +174,50 @@ class LibraryController extends Controller
 
     public function updateLiterature(Request $request, $id)
     {
+        /*
+         * Ambil literature terlebih dahulu.
+         */
+        $literature = Literature::findOrFail($id);
+
+        /*
+         * Cover URL dibuat nullable.
+         *
+         * Jika user tidak memilih "Ganti Cover",
+         * input ini boleh kosong dan cover lama akan tetap digunakan.
+         */
         $validated = $request->validate([
-            'cover_url'   => 'required|string|max:255',
+            'cover_url'   => 'nullable|url|max:2048',
             'title'       => 'required|string|max:255',
             'author'      => 'required|string|max:255',
             'publisher'   => 'nullable|string|max:255',
-            'year'        => 'required|integer',
-            'file_url'    => 'required|url',
+            'year'        => 'required|integer|min:1900|max:' . date('Y'),
+            'file_url'    => 'required|url|max:2048',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'detail'      => 'nullable|string',
         ]);
 
+        /*
+         * Kalau cover baru tidak diberikan,
+         * jangan update kolom cover_url.
+         */
+        if (empty($validated['cover_url'])) {
+            unset($validated['cover_url']);
+        }
+
+        /*
+         * Detail disimpan dalam format JSON.
+         */
         if (!empty($validated['detail'])) {
             $validated['detail'] = json_encode([
                 'description' => $validated['detail'],
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
         }
 
-        Literature::findOrFail($id)->update($validated);
+        /*
+         * Update literature.
+         */
+        $literature->update($validated);
 
         return redirect()
             ->route('library.indexLiterature')
@@ -189,7 +226,9 @@ class LibraryController extends Controller
 
     public function destroyLiterature($id)
     {
-        Literature::findOrFail($id)->delete();
+        $literature = Literature::findOrFail($id);
+
+        $literature->delete();
 
         return redirect()
             ->route('library.indexLiterature')
