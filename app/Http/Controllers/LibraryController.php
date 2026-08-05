@@ -145,7 +145,7 @@ class LibraryController extends Controller
     public function storeLiterature(Request $request)
     {
         $validated = $request->validate([
-            'cover_url'   => 'required|url|max:2048',
+            'cover_url' => 'nullable|url',
             'title'       => 'required|string|max:255',
             'author'      => 'required|string|max:255',
             'publisher'   => 'nullable|string|max:255',

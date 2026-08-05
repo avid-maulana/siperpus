@@ -5,20 +5,29 @@
         @csrf
 
         <div class="grid gap-6 md:grid-cols-2">
+      
             {{-- Cover --}}
             <label class="block">
                 <span class="mb-2 block text-sm font-semibold text-gray-700">
-                    Cover (URL Gambar) <span class="text-red-500">*</span>
+                    Cover (URL Gambar)
+                    <span class="font-normal text-gray-400">(Opsional)</span>
                 </span>
+
                 <input
-                    type="text"
+                    type="url"
                     name="cover_url"
                     value="{{ old('cover_url') }}"
-                    required
-                    placeholder="https://..."
+                    placeholder="https://example.com/cover.jpg"
                     class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">
+
+                <p class="mt-2 text-xs text-gray-500">
+                    Kosongkan jika ingin menggunakan cover default.
+                </p>
+
                 @error('cover_url')
-                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">
+                    {{ $message }}
+                </span>
                 @enderror
             </label>
 

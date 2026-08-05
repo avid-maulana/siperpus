@@ -45,8 +45,20 @@
             <div id="editModalBody" class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8">
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <label class="block sm:col-span-2">
-                        <span class="mb-2 block text-sm font-semibold text-slate-700">Cover URL</span>
-                        <input type="url" name="cover_url" required placeholder="https://example.com/cover.jpg" class="input-field w-full">
+                        <span class="mb-2 block text-sm font-semibold text-slate-700">
+                            Cover URL
+                            <span class="font-normal text-slate-400">(Opsional)</span>
+                        </span>
+
+                        <input
+                            type="url"
+                            name="cover_url"
+                            placeholder="https://example.com/cover.jpg"
+                            class="input-field w-full">
+
+                        <p class="mt-2 text-xs text-slate-500">
+                            Kosongkan jika ingin menggunakan cover default.
+                        </p>
                     </label>
 
                     <label class="block sm:col-span-2">
@@ -168,7 +180,7 @@
     }
 
     // make showEditModal available globally and robust to different data-attribute naming
-    window.showEditModal = function (button) {
+    window.showEditModal = function(button) {
         const modal = document.getElementById('editModal');
         const content = modal ? modal.querySelector('.modal-content') : null;
         const form = document.getElementById('editForm');
