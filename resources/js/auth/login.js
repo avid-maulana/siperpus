@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('loginForm');
-    const button = document.getElementById('loginButton');
-    const arrow = document.getElementById('loginArrow');
-    const overlay = document.getElementById('loadingOverlay');
-    const captcha = document.getElementById('captcha');
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const arrow = document.getElementById("loginArrow");
+    const overlay = document.getElementById("loadingOverlay");
+    const captcha = document.getElementById("captcha");
 
     // Hentikan jika bukan halaman login
     if (!form || !button || !overlay) {
@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const inputs = [
-        document.getElementById('username'),
-        document.getElementById('password'),
+        document.getElementById("username"),
+        document.getElementById("password"),
         captcha,
     ];
 
@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(overlayTimer);
 
         overlayTimer = setTimeout(() => {
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
+            overlay.classList.remove("hidden");
+            overlay.classList.add("flex");
 
             requestAnimationFrame(() => {
-                overlay.classList.remove('opacity-0');
-                overlay.classList.add('opacity-100');
+                overlay.classList.remove("opacity-0");
+                overlay.classList.add("opacity-100");
             });
         }, 180);
     };
@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const hideOverlay = () => {
         clearTimeout(overlayTimer);
 
-        overlay.classList.remove('opacity-100');
-        overlay.classList.add('opacity-0');
+        overlay.classList.remove("opacity-100");
+        overlay.classList.add("opacity-0");
 
         setTimeout(() => {
-            overlay.classList.add('hidden');
-            overlay.classList.remove('flex');
+            overlay.classList.add("hidden");
+            overlay.classList.remove("flex");
         }, 300);
     };
 
@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * Efek tombol ketika form disubmit.
      */
     const setButtonActive = () => {
-        button.classList.add('btn-press');
+        button.classList.add("btn-press", "btn-loading");
 
         if (arrow) {
-            arrow.classList.add('translate-x-1');
+            arrow.classList.add("translate-x-1");
         }
     };
 
@@ -65,17 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
      * Enter:
      * username -> password -> captcha -> submit
      */
-    form.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') {
+    form.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") {
             return;
         }
 
         const activeIndex = inputs.indexOf(document.activeElement);
 
-        if (
-            activeIndex > -1 &&
-            activeIndex < inputs.length - 1
-        ) {
+        if (activeIndex > -1 && activeIndex < inputs.length - 1) {
             event.preventDefault();
 
             inputs[activeIndex + 1]?.focus();
@@ -85,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Ketika form disubmit.
      */
-    form.addEventListener('submit', () => {
+    form.addEventListener("submit", () => {
         setButtonActive();
         showOverlay();
 
@@ -96,13 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
      * Reset state ketika user kembali menggunakan
      * tombol Back browser.
      */
-    window.addEventListener('pageshow', () => {
+    window.addEventListener("pageshow", () => {
         hideOverlay();
 
-        button.classList.remove('btn-press');
+        button.classList.remove("btn-press");
 
         if (arrow) {
-            arrow.classList.remove('translate-x-1');
+            arrow.classList.remove("translate-x-1");
         }
     });
 
@@ -110,43 +107,34 @@ document.addEventListener('DOMContentLoaded', () => {
      * Validasi karakter input CAPTCHA.
      */
     if (captcha) {
-        captcha.addEventListener('input', function () {
-            this.value = this.value.replace(
-                /[^0-9+\-*/xX]/g,
-                ''
-            );
+        captcha.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9+\-*/xX]/g, "");
         });
 
-        captcha.addEventListener('keypress', (event) => {
-            if (
-                !/[0-9+\-*/xX]/.test(event.key) &&
-                event.key !== 'Enter'
-            ) {
+        captcha.addEventListener("keypress", (event) => {
+            if (!/[0-9+\-*/xX]/.test(event.key) && event.key !== "Enter") {
                 event.preventDefault();
             }
         });
 
-        captcha.addEventListener('paste', (event) => {
+        captcha.addEventListener("paste", (event) => {
             event.preventDefault();
 
-            const text = (
-                event.clipboardData ||
-                window.clipboardData
-            )
-                .getData('text')
-                .replace(/[^0-9+\-*/xX]/g, '');
+            const text = (event.clipboardData || window.clipboardData)
+                .getData("text")
+                .replace(/[^0-9+\-*/xX]/g, "");
 
             captcha.setRangeText(
                 text,
                 captcha.selectionStart,
                 captcha.selectionEnd,
-                'end'
+                "end",
             );
 
             captcha.dispatchEvent(
-                new Event('input', {
+                new Event("input", {
                     bubbles: true,
-                })
+                }),
             );
         });
     }

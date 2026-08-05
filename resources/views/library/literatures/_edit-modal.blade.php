@@ -101,9 +101,32 @@
                         <textarea name="detail" rows="3" required placeholder="Masukkan detail literatur" class="input-field w-full resize-none"></textarea>
                     </label>
 
+                    {{-- Deskripsi --}}
                     <label class="block sm:col-span-2">
-                        <span class="mb-2 block text-sm font-semibold text-slate-700">Deskripsi</span>
-                        <textarea name="description" rows="4" required placeholder="Masukkan deskripsi singkat literatur" class="input-field w-full resize-none"></textarea>
+                        <span class="mb-2 block text-sm font-semibold text-slate-700">
+                            Deskripsi <span class="text-red-500">*</span>
+                        </span>
+
+                        <textarea
+                            id="edit-description"
+                            name="description"
+                            rows="4"
+                            required
+                            maxlength="255"
+                            placeholder="Masukkan deskripsi singkat literatur"
+                            class="input-field w-full resize-none"></textarea>
+
+                        <div class="mt-1 flex items-center justify-between">
+                            <span class="text-xs text-slate-400">
+                                Maksimal 255 karakter.
+                            </span>
+
+                            <span
+                                id="edit-description-count"
+                                class="text-xs font-medium text-slate-400">
+                                0 / 255 karakter
+                            </span>
+                        </div>
                     </label>
                 </div>
             </div>
@@ -160,6 +183,30 @@
 
     let savedScrollY = 0;
 
+    const editDescription = document.getElementById('edit-description');
+    const editDescriptionCount = document.getElementById('edit-description-count');
+
+    function updateEditDescriptionCount() {
+        if (!editDescription || !editDescriptionCount) return;
+
+        const length = editDescription.value.length;
+        const maxLength = 255;
+
+        editDescriptionCount.textContent = `${length} / ${maxLength} karakter`;
+
+        if (length >= 230) {
+            editDescriptionCount.classList.remove('text-slate-400');
+            editDescriptionCount.classList.add('text-red-500');
+        } else {
+            editDescriptionCount.classList.remove('text-red-500');
+            editDescriptionCount.classList.add('text-slate-400');
+        }
+    }
+
+    if (editDescription) {
+        editDescription.addEventListener('input', updateEditDescriptionCount);
+    }
+
     function lockBodyScroll() {
         savedScrollY = window.scrollY;
         document.body.style.position = 'fixed';
@@ -204,6 +251,7 @@
         form.elements['category_id'].value = get('category_id');
         form.elements['detail'].value = get('detail');
         form.elements['description'].value = get('description');
+        updateEditDescriptionCount();
 
         // Reset scroll internal modal ke atas setiap kali dibuka
         const body = document.getElementById('editModalBody');

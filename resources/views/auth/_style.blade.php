@@ -90,7 +90,8 @@
         transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover,
+    .btn-primary.btn-loading {
         background: #1D4ED8;
         color: #ffffff;
         box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);

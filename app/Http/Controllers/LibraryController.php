@@ -152,7 +152,7 @@ class LibraryController extends Controller
             'year'        => 'required|integer|min:1900|max:' . date('Y'),
             'file_url'    => 'required|url|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
             'detail'      => 'nullable|string',
         ]);
 
@@ -193,7 +193,7 @@ class LibraryController extends Controller
             'year'        => 'required|integer|min:1900|max:' . date('Y'),
             'file_url'    => 'required|url|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
             'detail'      => 'nullable|string',
         ]);
 

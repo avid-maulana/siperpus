@@ -5,7 +5,7 @@
         @csrf
 
         <div class="grid gap-6 md:grid-cols-2">
-      
+
             {{-- Cover --}}
             <label class="block">
                 <span class="mb-2 block text-sm font-semibold text-gray-700">
@@ -153,14 +153,32 @@
                 <span class="mb-2 block text-sm font-semibold text-gray-700">
                     Deskripsi <span class="text-red-500">*</span>
                 </span>
+
                 <textarea
+                    id="add-description"
                     name="description"
                     rows="4"
                     required
+                    maxlength="255"
                     placeholder="Deskripsi singkat literatur"
                     class="w-full resize-none rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:outline-none">{{ old('description') }}</textarea>
+
+                <div class="mt-1 flex items-center justify-between">
+                    <span class="text-xs text-gray-400">
+                        Maksimal 255 karakter.
+                    </span>
+
+                    <span
+                        id="add-description-count"
+                        class="text-xs font-medium text-gray-400">
+                        0 / 255 karakter
+                    </span>
+                </div>
+
                 @error('description')
-                <span class="mt-2 block text-xs font-medium text-red-500">{{ $message }}</span>
+                <span class="mt-2 block text-xs font-medium text-red-500">
+                    {{ $message }}
+                </span>
                 @enderror
             </label>
         </div>
@@ -184,3 +202,36 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const description = document.getElementById('add-description');
+    const counter = document.getElementById('add-description-count');
+
+    if (!description || !counter) {
+        return;
+    }
+
+    const maxLength = 255;
+    const warningLength = 230;
+
+    function updateDescriptionCount() {
+        const length = description.value.length;
+
+        counter.textContent = `${length} / ${maxLength} karakter`;
+
+        if (length >= warningLength) {
+            counter.classList.remove('text-gray-400');
+            counter.classList.add('text-red-500');
+        } else {
+            counter.classList.remove('text-red-500');
+            counter.classList.add('text-gray-400');
+        }
+    }
+
+    description.addEventListener('input', updateDescriptionCount);
+
+    // Hitung old('description') ketika halaman dimuat
+    updateDescriptionCount();
+});
+</script>
