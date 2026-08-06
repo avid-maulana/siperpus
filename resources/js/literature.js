@@ -213,24 +213,18 @@
     // Reset
     // ==========================
 
+    // ==========================
+    // Reset
+    // ==========================
+
     resetButton?.addEventListener("click", () => {
         search.value = "";
-
         type.value = "";
-
         category.value = "";
 
-        clearButton.classList.add("hidden");
+        clearButton?.classList.add("hidden");
 
-        resetButton?.addEventListener("click", () => {
-            search.value = "";
-            type.value = "";
-            category.value = "";
-
-            clearButton.classList.add("hidden");
-
-            loadData(form.action);
-        });
+        loadData(form.action);
     });
 
     // ==========================

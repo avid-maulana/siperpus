@@ -14,73 +14,136 @@
 
     {{-- Hero --}}
     <section class="relative -mt-20 overflow-hidden">
+
+        {{-- Background --}}
         <img
             src="{{ asset('gambar/rak 4.png') }}"
             alt="Universitas Negeri Malang"
             class="absolute inset-0 h-full w-full object-cover">
 
-        <div class="absolute inset-0 bg-gradient-to-r from-[#212A37]/95 via-[#212A37]/80 to-[#212A37]/60"></div>
+        {{-- Overlay --}}
+        <div class="absolute inset-0 bg-gradient-to-r from-[#212A37]/95 via-[#212A37]/85 to-[#212A37]/65"></div>
 
+        {{-- Hero Content --}}
         <div class="relative mx-auto flex min-h-[500px] max-w-7xl items-center px-4 py-24 sm:px-6 lg:px-8">
-            <div class="max-w-3xl">
-                <h1 class="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-                    Temukan Literatur Akademik Terbaik.
-                </h1>
 
-                <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                    Jelajahi koleksi buku, jurnal, modul, dan berbagai referensi akademik
-                    berdasarkan judul, penulis, tipe, maupun kategori untuk mendukung
-                    pembelajaran dan penelitian.
-                </p>
+            <div class="grid w-full items-center gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+
+                {{-- Left Content --}}
+                <div class="max-w-3xl">
+
+                    <h1 class="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+                        Temukan Literatur
+                        <span class="block">
+                            Akademik Terbaik.
+                        </span>
+                    </h1>
+
+                    <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+                        Jelajahi koleksi buku, jurnal, modul, dan berbagai referensi akademik
+                        berdasarkan judul, penulis, tipe, maupun kategori untuk mendukung
+                        pembelajaran dan penelitian.
+                    </p>
+
+                </div>
+
+
+                {{-- Repository Statistic --}}
+                <div class="hidden justify-end lg:flex">
+
+                    <div class="group relative w-full max-w-[300px] overflow-hidden
+                                rounded-3xl border border-white/15
+                                bg-white/10 p-7
+                                shadow-2xl shadow-black/10
+                                backdrop-blur-md
+                                transition-all duration-300
+                                hover:border-white/25
+                                hover:bg-white/[0.13]">
+
+                        {{-- Decoration --}}
+                        <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.06]"></div>
+
+                        <div class="relative">
+
+                            {{-- Icon --}}
+                            <div class="flex h-12 w-12 items-center justify-center
+                                        rounded-2xl border border-white/10
+                                        bg-white/10 text-white">
+
+                                <span class="material-symbols-outlined text-2xl">
+                                    menu_book
+                                </span>
+
+                            </div>
+
+
+                            {{-- Label --}}
+                            <p class="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+                                Total Repository
+                            </p>
+
+
+                            {{-- Total --}}
+                            <h2
+                                id="result-info"
+                                class="mt-2 whitespace-nowrap text-4xl font-bold tracking-tight text-white">
+
+                                {{ number_format($literatures->total(),0,',','.') }}
+
+                                <span class="text-base font-medium text-white/60">
+                                    Literatur
+                                </span>
+
+                            </h2>
+
+
+                            {{-- Description --}}
+                            <p class="mt-3 text-sm leading-6 text-white/50">
+                                Koleksi literatur akademik yang tersedia.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
+
     </section>
+
 
     {{-- Search Card --}}
     <div class="relative z-20 mx-auto -mt-14 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative overflow-hidden rounded-[28px] border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-[#f8fafc] p-6 shadow-[0_25px_80px_-25px_rgba(15,23,42,0.35)] ring-1 ring-slate-100 sm:p-8">
 
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(33,42,55,0.10),_transparent_45%)]"></div>
+        <div class="relative overflow-hidden
+                    rounded-[28px]
+                    border border-slate-200/80
+                    bg-gradient-to-br from-white via-slate-50 to-[#f8fafc]
+                    p-6
+                    shadow-[0_25px_80px_-25px_rgba(15,23,42,0.35)]
+                    ring-1 ring-slate-100
+                    sm:p-8">
 
-            <div class="relative grid gap-8 lg:grid-cols-[280px_1px_minmax(0,1fr)] lg:items-center">
+            {{-- Decoration --}}
+            <div class="pointer-events-none absolute inset-0
+                        bg-[radial-gradient(circle_at_top_left,_rgba(33,42,55,0.08),_transparent_45%)]">
+            </div>
 
-                {{-- Statistik --}}
-                <div class="flex items-center gap-5">
 
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#212A37] text-white shadow-lg shadow-slate-900/20">
-                        <span class="material-symbols-outlined text-3xl">
-                            menu_book
-                        </span>
-                    </div>
+            {{-- Search --}}
+            <div class="relative w-full">
 
-                    <div>
-                        <p class="text-sm font-semibold text-slate-500">
-                            Total Repository
-                        </p>
-
-                        <h2 id="result-info" class="mt-2 whitespace-nowrap text-3xl font-bold text-slate-900">
-                            {{ number_format($literatures->total(),0,',','.') }}
-
-                            <span class="text-lg font-medium text-slate-500">
-                                Literatur
-                            </span>
-                        </h2>
-                    </div>
-
-                </div>
-
-                {{-- Divider --}}
-                <div class="hidden h-20 w-px bg-slate-200 lg:block"></div>
-
-                {{-- Search --}}
-                <div class="w-full">
-                    @include('literatures._search')
-                </div>
+                @include('literatures._search')
 
             </div>
 
         </div>
+
     </div>
+
 
     {{-- Result --}}
     <section

@@ -74,10 +74,13 @@
         width: 100%;
         height: 50px;
         border-radius: 14px;
-        background: #F1F4F8;
-        color: #46566D;
+
+        /* Default langsung biru */
+        background: #2563EB;
+        color: #ffffff;
+
         border: none;
-        box-shadow: none;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.20);
 
         display: inline-flex;
         align-items: center;
@@ -90,30 +93,27 @@
         transition:
             background-color 0.3s ease,
             color 0.3s ease,
-            box-shadow 0.3s ease;
+            box-shadow 0.3s ease,
+            transform 0.18s ease;
     }
 
-    /* Hover tetap aktif walaupun form belum lengkap */
     .btn-primary:hover {
         background: #1D4ED8;
         color: #ffffff;
-        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.30);
     }
 
-    /* Otomatis biru ketika semua input sudah terisi */
     .btn-primary.is-ready {
         background: #2563EB;
         color: #ffffff;
         box-shadow: 0 8px 20px rgba(37, 99, 235, 0.20);
     }
 
-    /* Form lengkap + hover */
     .btn-primary.is-ready:hover {
         background: #1D4ED8;
         box-shadow: 0 10px 24px rgba(37, 99, 235, 0.30);
     }
 
-    /* Saat proses login */
     .btn-primary.btn-loading {
         background: #1D4ED8;
         color: #ffffff;

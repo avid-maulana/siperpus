@@ -2,34 +2,49 @@ import "./bootstrap";
 import "./skripsi";
 import "./literature";
 import "./navbar";
-import "./home";
 
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("page-loader");
     const page = document.getElementById("page-content");
 
-    // ================================
-    // ANIMASI MASUK HALAMAN
-    // ================================
+    /*
+    |--------------------------------------------------------------------------
+    | Animasi Masuk Halaman
+    |--------------------------------------------------------------------------
+    */
+
     if (page) {
         requestAnimationFrame(() => {
             page.classList.add("page-enter");
         });
     }
 
-    // ================================
-    // LOADER SAAT PINDAH HALAMAN
-    // ================================
+    /*
+    |--------------------------------------------------------------------------
+    | Loader Saat Pindah Halaman
+    |--------------------------------------------------------------------------
+    */
+
     document.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", function () {
-            // Link AJAX tidak menggunakan page loader
+            /*
+            |--------------------------------------------------------------------------
+            | Link AJAX tidak menggunakan page loader
+            |--------------------------------------------------------------------------
+            */
+
             if (this.hasAttribute("data-ajax-page")) {
                 return;
             }
 
             const href = this.getAttribute("href");
 
-            // Abaikan link yang tidak melakukan navigasi halaman
+            /*
+            |--------------------------------------------------------------------------
+            | Abaikan Link yang Tidak Melakukan Navigasi
+            |--------------------------------------------------------------------------
+            */
+
             if (
                 !href ||
                 href.startsWith("#") ||
@@ -40,11 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | Tampilkan Loader
+            |--------------------------------------------------------------------------
+            */
+
             if (loader) {
-                loader.classList.remove(
-                    "opacity-0",
-                    "invisible"
-                );
+                loader.classList.remove("opacity-0", "invisible");
 
                 loader.classList.add("opacity-100");
             }
@@ -52,38 +70,62 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| Fix Back / Forward Browser
+|--------------------------------------------------------------------------
+|
+| Ketika halaman dikembalikan dari browser cache (bfcache),
+| loader harus dipastikan hilang dan content kembali terlihat.
+|
+*/
 
-// ====================================
-// FIX KETIKA KEMBALI DENGAN BACK/FORWARD
-// ====================================
 window.addEventListener("pageshow", (event) => {
     const loader = document.getElementById("page-loader");
     const page = document.getElementById("page-content");
 
-    // Pastikan loader selalu hilang
+    /*
+    |--------------------------------------------------------------------------
+    | Pastikan Loader Hilang
+    |--------------------------------------------------------------------------
+    */
+
     if (loader) {
         loader.classList.remove("opacity-100");
-        loader.classList.add(
-            "opacity-0",
-            "invisible"
-        );
+
+        loader.classList.add("opacity-0", "invisible");
     }
 
-    // Pastikan content terlihat kembali
+    /*
+    |--------------------------------------------------------------------------
+    | Pastikan Content Terlihat
+    |--------------------------------------------------------------------------
+    */
+
     if (page) {
         page.classList.add("page-enter");
     }
 
-    // Jika halaman berasal dari bfcache,
-    // cek apakah stylesheet Vite masih tersedia
+    /*
+    |--------------------------------------------------------------------------
+    | Cek Stylesheet Setelah bfcache
+    |--------------------------------------------------------------------------
+    */
+
     if (event.persisted) {
         const stylesheets = Array.from(
-            document.querySelectorAll('link[rel="stylesheet"]')
+            document.querySelectorAll('link[rel="stylesheet"]'),
         );
 
         const viteStylesheetExists = stylesheets.some((link) =>
-            link.href.includes("/build/assets/")
+            link.href.includes("/build/assets/"),
         );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reload Jika Stylesheet Vite Hilang
+        |--------------------------------------------------------------------------
+        */
 
         if (!viteStylesheetExists) {
             window.location.reload();

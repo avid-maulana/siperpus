@@ -26,7 +26,7 @@
 
     {{-- Footer --}}
     @include('layouts.partials.footer')
-
+    @stack('scripts')
 </body>
 
 </html>

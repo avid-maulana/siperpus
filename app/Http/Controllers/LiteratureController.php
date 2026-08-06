@@ -6,46 +6,35 @@ use App\Models\Category;
 use App\Models\Literature;
 use App\Models\Type;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class LiteratureController extends Controller
 {
-    /**
-     * Homepage
-     */
-    public function home()
-    {
-        return view('home', [
-            'literatureCount' => Literature::count(),
-            'categoryCount'   => Category::count(),
-            'userCount'       => \App\Models\User::count(),
-            'typeCount'       => Type::count(),
-
-            'kbkCount' => DB::connection('master')
-                ->table('data_kbk')
-                ->count(),
-
-            'latestLiteratures' => Literature::with('category')
-                ->latest()
-                ->take(6)
-                ->get(),
-        ]);
-    }
-
     /**
      * Daftar Literatur
      */
     public function index(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Type Options
+        |--------------------------------------------------------------------------
+        */
+
         $typeOptions = Type::orderBy('name')
             ->pluck('name');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Literature Query
+        |--------------------------------------------------------------------------
+        */
 
         $query = Literature::with([
             'category',
             'type',
         ]);
 
-        // kode selanjutnya tetap
 
         /*
         |--------------------------------------------------------------------------
@@ -55,37 +44,66 @@ class LiteratureController extends Controller
 
         if ($request->filled('search')) {
 
-            $keyword = trim($request->search);
+            $keyword = trim(
+                $request->search
+            );
 
             $query->where(function ($q) use ($keyword) {
 
-                $q->where('title', 'like', "%{$keyword}%")
-                    ->orWhere('author', 'like', "%{$keyword}%")
-                    ->orWhere('description', 'like', "%{$keyword}%");
+                $q->where(
+                    'title',
+                    'like',
+                    "%{$keyword}%"
+                )
+                    ->orWhere(
+                        'author',
+                        'like',
+                        "%{$keyword}%"
+                    )
+                    ->orWhere(
+                        'description',
+                        'like',
+                        "%{$keyword}%"
+                    );
             });
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | Filter Tipe
+        | Filter Type
         |--------------------------------------------------------------------------
         */
 
         if ($request->filled('type')) {
 
-            $query->where('type', $request->type);
+            $query->whereHas(
+                'category.type',
+                function ($q) use ($request) {
+
+                    $q->where(
+                        'name',
+                        $request->type
+                    );
+                }
+            );
         }
+
 
         /*
         |--------------------------------------------------------------------------
-        | Filter Kategori
+        | Filter Category
         |--------------------------------------------------------------------------
         */
 
         if ($request->filled('category_id')) {
 
-            $query->where('category_id', $request->category_id);
+            $query->where(
+                'category_id',
+                $request->category_id
+            );
         }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -97,6 +115,7 @@ class LiteratureController extends Controller
             ->latest()
             ->paginate(12)
             ->withQueryString();
+
 
         /*
         |--------------------------------------------------------------------------
@@ -112,9 +131,10 @@ class LiteratureController extends Controller
             ]);
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | First Load
+        | Normal Request
         |--------------------------------------------------------------------------
         */
 

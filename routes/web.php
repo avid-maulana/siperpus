@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\LiteratureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkripsiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,53 +17,93 @@ use App\Http\Controllers\SkripsiController;
 */
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+
+    Route::get('/login', [LoginController::class, 'showLoginForm'])
+        ->name('login');
+
     Route::post('/login', [LoginController::class, 'login']);
 });
+
 
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
+
 /*
 |--------------------------------------------------------------------------
-| Member
+| Authenticated User
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
 
-    // Welcome
-    Route::get('/', [LiteratureController::class, 'home'])
+    /*
+    |--------------------------------------------------------------------------
+    | Homepage / Dashboard
+    |--------------------------------------------------------------------------
+    |
+    | HomeController menangani halaman utama.
+    |
+    | Tampilan admin / member nantinya dibedakan dari home.blade.php.
+    |
+    */
+
+    Route::get('/', [HomeController::class, 'index'])
         ->name('home');
 
-    // Literatur
+
+    /*
+    |--------------------------------------------------------------------------
+    | Literatur
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/literatures', [LiteratureController::class, 'index'])
         ->name('literatures.index');
 
-    // Skripsi
+
+    /*
+    |--------------------------------------------------------------------------
+    | Skripsi
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/skripsi', [SkripsiController::class, 'index'])
         ->name('skripsi.index');
 
-    // PDF Viewer
+
+    /*
+    |--------------------------------------------------------------------------
+    | PDF Viewer
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/pdf-viewer', function () {
 
         return view('pdf_viewer', [
-            'pdfPath' => request('path')
+            'pdfPath' => request('path'),
         ]);
-
     })->name('pdf.viewer');
 
-    // Profile
+
+    /*
+    |--------------------------------------------------------------------------
+    | Profile
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/profile/edit', [ProfileController::class, 'edit'])
         ->name('profile.edit');
+
 
     Route::put('/profile/update', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+
     /*
     |--------------------------------------------------------------------------
-    | Admin
+    | Admin / Library Management
     |--------------------------------------------------------------------------
     */
 
@@ -69,40 +112,75 @@ Route::middleware('auth')->group(function () {
         ->name('library.')
         ->group(function () {
 
-            // Dashboard
+            /*
+            |--------------------------------------------------------------------------
+            | Library Management Dashboard
+            |--------------------------------------------------------------------------
+            */
+
             Route::get('/', [LibraryController::class, 'index'])
                 ->name('index');
 
-            // Kelola Literatur
+
+            /*
+            |--------------------------------------------------------------------------
+            | Kelola Literatur
+            |--------------------------------------------------------------------------
+            */
+
             Route::get('/literatures', [LibraryController::class, 'indexLiterature'])
                 ->name('indexLiterature');
 
-            // Type
+
+            /*
+            |--------------------------------------------------------------------------
+            | Type
+            |--------------------------------------------------------------------------
+            */
+
             Route::post('/store-type', [LibraryController::class, 'storeType'])
                 ->name('storeType');
+
 
             Route::put('/update-type/{id}', [LibraryController::class, 'updateType'])
                 ->name('updateType');
 
+
             Route::delete('/destroy-type/{id}', [LibraryController::class, 'destroyType'])
                 ->name('destroyType');
 
-            // Category
+
+            /*
+            |--------------------------------------------------------------------------
+            | Category
+            |--------------------------------------------------------------------------
+            */
+
             Route::post('/store-category', [LibraryController::class, 'storeCategory'])
                 ->name('storeCategory');
+
 
             Route::put('/update-category/{id}', [LibraryController::class, 'updateCategory'])
                 ->name('updateCategory');
 
+
             Route::delete('/destroy-category/{id}', [LibraryController::class, 'destroyCategory'])
                 ->name('destroyCategory');
 
-            // Literature
+
+            /*
+            |--------------------------------------------------------------------------
+            | Literature
+            |--------------------------------------------------------------------------
+            */
+
             Route::post('/store-literature', [LibraryController::class, 'storeLiterature'])
                 ->name('storeLiterature');
 
+
             Route::put('/update-literature/{id}', [LibraryController::class, 'updateLiterature'])
                 ->name('updateLiterature');
+
 
             Route::delete('/destroy-literature/{id}', [LibraryController::class, 'destroyLiterature'])
                 ->name('destroyLiterature');
