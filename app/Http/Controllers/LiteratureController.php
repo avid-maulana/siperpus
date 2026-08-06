@@ -37,16 +37,15 @@ class LiteratureController extends Controller
      */
     public function index(Request $request)
     {
-        $typeOptions = Literature::select('type')
-            ->distinct()
-            ->pluck('type')
-            ->filter()
-            ->values();
+        $typeOptions = Type::orderBy('name')
+            ->pluck('name');
 
         $query = Literature::with([
             'category',
             'type',
         ]);
+
+        // kode selanjutnya tetap
 
         /*
         |--------------------------------------------------------------------------
