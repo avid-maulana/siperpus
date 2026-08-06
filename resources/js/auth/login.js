@@ -18,6 +18,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let overlayTimer = null;
 
+    const updateLoginButton = () => {
+        const isComplete = inputs.every((input) => {
+            return input && input.value.trim() !== "";
+        });
+
+        button.disabled = !isComplete;
+    };
+
+    inputs.forEach((input) => {
+        input?.addEventListener("input", updateLoginButton);
+    });
+
+    updateLoginButton();
+
     /**
      * Menampilkan loading overlay.
      */

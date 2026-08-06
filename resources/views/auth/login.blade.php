@@ -9,9 +9,9 @@
 
     {{-- CSS & JavaScript --}}
     @vite([
-        'resources/css/app.css',
-        'resources/js/auth/login.js',
-        'resources/js/auth/captcha.js',
+    'resources/css/app.css',
+    'resources/js/auth/login.js',
+    'resources/js/auth/captcha.js',
     ])
 
     {{-- Style khusus halaman login --}}
@@ -25,16 +25,13 @@
         id="loadingOverlay"
         class="fixed inset-0 z-[60] hidden items-center justify-center
                bg-slate-950/70 backdrop-blur-sm opacity-0
-               transition-opacity duration-300"
-    >
+               transition-opacity duration-300">
         <div
             class="flex flex-col items-center rounded-3xl border border-white/10
-                   bg-white/95 px-8 py-7 shadow-2xl"
-        >
+                   bg-white/95 px-8 py-7 shadow-2xl">
             <div
                 class="h-12 w-12 animate-spin rounded-full
-                       border-4 border-slate-200 border-t-blue-600"
-            ></div>
+                       border-4 border-slate-200 border-t-blue-600"></div>
 
             <p class="mt-4 text-sm font-semibold text-slate-700">
                 Sedang masuk...
@@ -51,14 +48,12 @@
             src="{{ asset('asset/um.jpg') }}"
             alt="Gedung Universitas Negeri Malang"
             class="absolute inset-0 h-full w-full
-                   scale-110 object-cover opacity-25"
-        >
+                   scale-110 object-cover opacity-25">
 
         {{-- Gradient Overlay --}}
         <div
             class="absolute inset-0 bg-gradient-to-br
-                   from-black/70 via-slate-950/80 to-black/75"
-        ></div>
+                   from-black/70 via-slate-950/80 to-black/75"></div>
 
     </div>
 
@@ -66,14 +61,12 @@
     {{-- Main Content --}}
     <main
         class="relative z-10 flex min-h-screen
-               items-center justify-center px-6"
-    >
+               items-center justify-center px-6">
 
         {{-- Login Card --}}
         <div
             class="w-full max-w-[430px]
-                   rounded-[28px] bg-white p-10 shadow-2xl"
-        >
+                   rounded-[28px] bg-white p-10 shadow-2xl">
 
             {{-- Header --}}
             <div class="mb-10 text-center">
@@ -81,8 +74,7 @@
                 <img
                     src="{{ asset('asset/logo.png') }}"
                     alt="Logo SIPERPUS"
-                    class="mx-auto mb-5 w-16"
-                >
+                    class="mx-auto mb-5 w-16">
 
                 <h1 class="text-3xl font-bold tracking-wide">
                     SIPERPUS
@@ -99,20 +91,19 @@
             {{-- Validation Errors --}}
             @if ($errors->any())
 
-                <div
-                    class="mb-6 rounded-xl border
-                           border-red-200 bg-red-50 p-4"
-                >
+            <div
+                class="mb-6 rounded-xl border
+                           border-red-200 bg-red-50 p-4">
 
-                    @foreach ($errors->all() as $error)
+                @foreach ($errors->all() as $error)
 
-                        <p class="text-sm text-red-600">
-                            {{ $error }}
-                        </p>
+                <p class="text-sm text-red-600">
+                    {{ $error }}
+                </p>
 
-                    @endforeach
+                @endforeach
 
-                </div>
+            </div>
 
             @endif
 
@@ -122,8 +113,7 @@
                 id="loginForm"
                 method="POST"
                 action="{{ route('login') }}"
-                class="space-y-6"
-            >
+                class="space-y-6">
 
                 @csrf
 
@@ -142,8 +132,7 @@
                         class="peer w-full rounded-2xl bg-slate-100
                                px-5 pb-2 pt-6 outline-none transition
                                focus:bg-white focus:ring-2
-                               focus:ring-blue-600"
-                    >
+                               focus:ring-blue-600">
 
                     <label
                         for="username"
@@ -160,8 +149,7 @@
 
                                peer-not-placeholder-shown:top-2
                                peer-not-placeholder-shown:-translate-y-0
-                               peer-not-placeholder-shown:text-xs"
-                    >
+                               peer-not-placeholder-shown:text-xs">
                         Username
                     </label>
 
@@ -181,8 +169,7 @@
                         class="peer w-full rounded-2xl bg-slate-100
                                px-5 pb-2 pt-6 outline-none transition
                                focus:bg-white focus:ring-2
-                               focus:ring-blue-600"
-                    >
+                               focus:ring-blue-600">
 
                     <label
                         for="password"
@@ -199,8 +186,7 @@
 
                                peer-not-placeholder-shown:top-2
                                peer-not-placeholder-shown:-translate-y-0
-                               peer-not-placeholder-shown:text-xs"
-                    >
+                               peer-not-placeholder-shown:text-xs">
                         Password
                     </label>
 
@@ -217,28 +203,11 @@
                     <button
                         id="loginButton"
                         type="submit"
+                        disabled
                         class="btn-primary group"
-                        aria-label="Sign In"
-                    >
+                        aria-label="Login">
 
-                        <span>
-                            Login
-                        </span>
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="2.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                            />
-                        </svg>
+                        <span>Login</span>
 
                     </button>
 

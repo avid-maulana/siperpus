@@ -74,8 +74,10 @@
         width: 100%;
         height: 50px;
         border-radius: 14px;
+
         background: #F1F4F8;
         color: #46566D;
+
         border: none;
         box-shadow: none;
 
@@ -85,15 +87,65 @@
         gap: 10px;
 
         font-weight: 600;
-        cursor: pointer;
 
-        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease,
+            box-shadow 0.3s ease,
+            transform 0.2s ease;
     }
 
-    .btn-primary:hover,
+
+    /* =========================
+   BUTTON BELUM AKTIF
+========================= */
+
+    .btn-primary:disabled {
+        background: #F1F4F8;
+        color: #94A3B8;
+
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+
+    /* Hilangkan hover ketika disabled */
+    .btn-primary:disabled:hover {
+        background: #F1F4F8;
+        color: #94A3B8;
+
+        box-shadow: none;
+        transform: none;
+    }
+
+
+    /* =========================
+   BUTTON SUDAH AKTIF
+========================= */
+
+    .btn-primary:not(:disabled) {
+        background: #2563EB;
+        color: #ffffff;
+
+        cursor: pointer;
+
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.20);
+    }
+
+
+    /* Hover hanya ketika aktif */
+    .btn-primary:not(:disabled):hover {
+        background: #1D4ED8;
+
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.30);
+    }
+
+
+    /* Loading */
     .btn-primary.btn-loading {
         background: #1D4ED8;
         color: #ffffff;
+
         box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
     }
 
