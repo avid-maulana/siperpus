@@ -23,8 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return input && input.value.trim() !== "";
         });
 
-        button.disabled = !isComplete;
+        button.classList.toggle("is-ready", isComplete);
     };
+
+    inputs.forEach((input) => {
+        input?.addEventListener("input", updateLoginButton);
+    });
+
+    updateLoginButton();
 
     inputs.forEach((input) => {
         input?.addEventListener("input", updateLoginButton);

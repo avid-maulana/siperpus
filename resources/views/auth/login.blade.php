@@ -203,9 +203,8 @@
                     <button
                         id="loginButton"
                         type="submit"
-                        disabled
                         class="btn-primary group"
-                        aria-label="Login">
+                        aria-label="Sign In">
 
                         <span>Login</span>
 
