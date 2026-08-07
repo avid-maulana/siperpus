@@ -6,7 +6,7 @@
     ADMIN DASHBOARD JAVASCRIPT
 ========================================================== --}}
 @push('scripts')
-    @vite('resources/js/home/admin.js')
+@vite('resources/js/home/admin.js')
 @endpush
 
 
@@ -14,7 +14,7 @@
 
 <div class="min-h-screen bg-slate-50 text-slate-800">
 
-    <main class="mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6 lg:px-8">
+    <main class="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 lg:px-8">
 
         {{-- =========================================================
             HEADER
@@ -27,12 +27,6 @@
 
                 {{-- Welcome --}}
                 <div>
-
-                    <p
-                        class="text-xs font-semibold uppercase
-                               tracking-[0.18em] text-blue-600">
-                        SIPERPUS DTEI
-                    </p>
 
                     <h1
                         class="mt-2 text-3xl font-bold
