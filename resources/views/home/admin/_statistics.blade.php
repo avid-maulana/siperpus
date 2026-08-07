@@ -1,22 +1,25 @@
 {{-- =========================================================
     STATISTICS
-========================================================== --}}
+========================================================= --}}
 
 <style>
     .stat-card {
         position: relative;
         isolation: isolate;
         overflow: hidden;
+
         padding: 2px;
         border-radius: 1rem;
-        background: #e2e8f0;
+
+        background: #334155;
 
         transition:
             transform 0.48s cubic-bezier(0.23, 1, 0.32, 1),
             box-shadow 0.48s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    /* Rotating border */
+
+    /* Rotating Border */
     .stat-card::before {
         content: "";
         position: absolute;
@@ -32,8 +35,8 @@
             from 0deg,
             transparent 0deg,
             transparent 90deg,
-            #2563eb 170deg,
-            #2563eb 200deg,
+            rgba(255, 255, 255, 0.9) 170deg,
+            rgba(255, 255, 255, 0.9) 200deg,
             transparent 280deg,
             transparent 360deg
         );
@@ -48,7 +51,8 @@
         transition: opacity 0.3s ease;
     }
 
-    /* Card background */
+
+    /* Card Background */
     .stat-card::after {
         content: "";
         position: absolute;
@@ -57,8 +61,10 @@
         inset: 2px;
 
         border-radius: calc(1rem - 2px);
-        background: #ffffff;
+
+        background: #212A37;
     }
+
 
     /* Hover */
     .stat-card:hover::before {
@@ -66,13 +72,15 @@
         animation-play-state: running;
     }
 
+
     .stat-card:hover {
-        transform: translateY(-5px) scale(1.015);
+        transform: scale(1.015);
 
         box-shadow:
-            0 8px 20px rgba(37, 99, 235, 0.16),
-            0 20px 40px rgba(15, 23, 42, 0.06);
+            0 12px 28px rgba(15, 23, 42, 0.18),
+            0 24px 48px rgba(15, 23, 42, 0.12);
     }
+
 
     @keyframes stat-border-spin {
         from {
@@ -91,36 +99,53 @@
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
 
-        {{-- Total Literatur --}}
+        {{-- =====================================================
+            TOTAL LITERATUR
+        ====================================================== --}}
         <div class="stat-card group">
 
-            <div class="relative z-10 rounded-[14px] bg-white p-6">
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div>
-                        <p class="text-sm font-medium text-slate-500">
+
+                        <p class="text-sm font-medium text-slate-300">
                             Total Literatur
                         </p>
 
-                        <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
                             @if ($literatureCount >= 1000000)
+
                                 {{ rtrim(rtrim(number_format($literatureCount / 1000000, 1, ',', ''), '0'), ',') }}M
+
                             @elseif ($literatureCount >= 1000)
+
                                 {{ rtrim(rtrim(number_format($literatureCount / 1000, 1, ',', ''), '0'), ',') }}K
+
                             @else
+
                                 {{ $literatureCount }}
+
                             @endif
+
                         </p>
+
                     </div>
 
+
+                    {{-- Icon --}}
                     <div
                         class="flex h-12 w-12 shrink-0 items-center justify-center
-                               rounded-xl bg-blue-50 text-blue-600
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
                                transition-all duration-300
                                group-hover:scale-110
-                               group-hover:bg-blue-600
-                               group-hover:text-white">
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
 
                         <span class="material-symbols-outlined">
                             library_books
@@ -130,10 +155,13 @@
 
                 </div>
 
+
+                {{-- Footer --}}
                 <div class="mt-5 flex items-center gap-2">
 
                     <span
-                        class="h-1.5 w-1.5 rounded-full bg-blue-500
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
                                transition-transform duration-300
                                group-hover:scale-150">
                     </span>
@@ -149,36 +177,54 @@
         </div>
 
 
-        {{-- Total Kategori --}}
+
+        {{-- =====================================================
+            TOTAL KATEGORI
+        ====================================================== --}}
         <div class="stat-card group">
 
-            <div class="relative z-10 rounded-[14px] bg-white p-6">
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div>
-                        <p class="text-sm font-medium text-slate-500">
+
+                        <p class="text-sm font-medium text-slate-300">
                             Total Kategori
                         </p>
 
-                        <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
                             @if ($categoryCount >= 1000000)
+
                                 {{ rtrim(rtrim(number_format($categoryCount / 1000000, 1, ',', ''), '0'), ',') }}M
+
                             @elseif ($categoryCount >= 1000)
+
                                 {{ rtrim(rtrim(number_format($categoryCount / 1000, 1, ',', ''), '0'), ',') }}K
+
                             @else
+
                                 {{ $categoryCount }}
+
                             @endif
+
                         </p>
+
                     </div>
 
+
+                    {{-- Icon --}}
                     <div
                         class="flex h-12 w-12 shrink-0 items-center justify-center
-                               rounded-xl bg-blue-50 text-blue-600
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
                                transition-all duration-300
                                group-hover:scale-110
-                               group-hover:bg-blue-600
-                               group-hover:text-white">
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
 
                         <span class="material-symbols-outlined">
                             category
@@ -188,10 +234,13 @@
 
                 </div>
 
+
+                {{-- Footer --}}
                 <div class="mt-5 flex items-center gap-2">
 
                     <span
-                        class="h-1.5 w-1.5 rounded-full bg-blue-500
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
                                transition-transform duration-300
                                group-hover:scale-150">
                     </span>
@@ -207,36 +256,54 @@
         </div>
 
 
-        {{-- Total KBK --}}
+
+        {{-- =====================================================
+            TOTAL KBK
+        ====================================================== --}}
         <div class="stat-card group">
 
-            <div class="relative z-10 rounded-[14px] bg-white p-6">
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div>
-                        <p class="text-sm font-medium text-slate-500">
+
+                        <p class="text-sm font-medium text-slate-300">
                             Total KBK
                         </p>
 
-                        <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
                             @if ($kbkCount >= 1000000)
+
                                 {{ rtrim(rtrim(number_format($kbkCount / 1000000, 1, ',', ''), '0'), ',') }}M
+
                             @elseif ($kbkCount >= 1000)
+
                                 {{ rtrim(rtrim(number_format($kbkCount / 1000, 1, ',', ''), '0'), ',') }}K
+
                             @else
+
                                 {{ $kbkCount }}
+
                             @endif
+
                         </p>
+
                     </div>
 
+
+                    {{-- Icon --}}
                     <div
                         class="flex h-12 w-12 shrink-0 items-center justify-center
-                               rounded-xl bg-blue-50 text-blue-600
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
                                transition-all duration-300
                                group-hover:scale-110
-                               group-hover:bg-blue-600
-                               group-hover:text-white">
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
 
                         <span class="material-symbols-outlined">
                             school
@@ -246,10 +313,13 @@
 
                 </div>
 
+
+                {{-- Footer --}}
                 <div class="mt-5 flex items-center gap-2">
 
                     <span
-                        class="h-1.5 w-1.5 rounded-full bg-blue-500
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
                                transition-transform duration-300
                                group-hover:scale-150">
                     </span>
@@ -265,36 +335,54 @@
         </div>
 
 
-        {{-- Anggota Terdaftar --}}
+
+        {{-- =====================================================
+            ANGGOTA TERDAFTAR
+        ====================================================== --}}
         <div class="stat-card group">
 
-            <div class="relative z-10 rounded-[14px] bg-white p-6">
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div>
-                        <p class="text-sm font-medium text-slate-500">
+
+                        <p class="text-sm font-medium text-slate-300">
                             Anggota Terdaftar
                         </p>
 
-                        <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
                             @if ($userCount >= 1000000)
+
                                 {{ rtrim(rtrim(number_format($userCount / 1000000, 1, ',', ''), '0'), ',') }}M
+
                             @elseif ($userCount >= 1000)
+
                                 {{ rtrim(rtrim(number_format($userCount / 1000, 1, ',', ''), '0'), ',') }}K
+
                             @else
+
                                 {{ $userCount }}
+
                             @endif
+
                         </p>
+
                     </div>
 
+
+                    {{-- Icon --}}
                     <div
                         class="flex h-12 w-12 shrink-0 items-center justify-center
-                               rounded-xl bg-blue-50 text-blue-600
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
                                transition-all duration-300
                                group-hover:scale-110
-                               group-hover:bg-blue-600
-                               group-hover:text-white">
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
 
                         <span class="material-symbols-outlined">
                             group
@@ -304,10 +392,13 @@
 
                 </div>
 
+
+                {{-- Footer --}}
                 <div class="mt-5 flex items-center gap-2">
 
                     <span
-                        class="h-1.5 w-1.5 rounded-full bg-blue-500
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
                                transition-transform duration-300
                                group-hover:scale-150">
                     </span>

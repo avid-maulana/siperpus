@@ -1,4 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
+    // =========================================================
+    // ELEMENTS
+    // =========================================================
+
     const form = document.getElementById("filterForm");
 
     const search = document.getElementById("searchInput");
@@ -10,11 +14,25 @@
 
     const loading = document.getElementById("loading-bar");
     const result = document.getElementById("resultsContainer");
-    const resultInfo = document.getElementById("result-info");
 
-    if (!form || !loading || !result || !resultInfo) return;
+    // Elemen utama yang benar-benar wajib
+    if (!form || !search || !type || !category || !result) {
+        console.error("Literature filter: elemen utama tidak ditemukan.", {
+            form,
+            search,
+            type,
+            category,
+            result,
+        });
+
+        return;
+    }
 
     let controller = null;
+
+    // =========================================================
+    // SCROLL
+    // =========================================================
 
     const scrollToTop = () => {
         const pageContent = document.getElementById("page-content");
@@ -34,19 +52,32 @@
         });
     };
 
-    // ==========================
-    // Loading
-    // ==========================
+    // =========================================================
+    // LOADING BAR
+    // =========================================================
 
     const showLoading = () => {
+        if (!loading) return;
+
         loading.style.opacity = "1";
         loading.style.width = "30%";
 
-        setTimeout(() => (loading.style.width = "60%"), 100);
-        setTimeout(() => (loading.style.width = "85%"), 250);
+        setTimeout(() => {
+            if (loading) {
+                loading.style.width = "60%";
+            }
+        }, 100);
+
+        setTimeout(() => {
+            if (loading) {
+                loading.style.width = "85%";
+            }
+        }, 250);
     };
 
     const hideLoading = () => {
+        if (!loading) return;
+
         loading.style.width = "100%";
 
         setTimeout(() => {
@@ -55,29 +86,41 @@
         }, 200);
     };
 
+    // =========================================================
+    // RESULT LOADING STATE
+    // =========================================================
+
     const renderLoadingState = () => {
         result.innerHTML = `
-            <div class="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+            <div
+                class="rounded-3xl border border-slate-200
+                       bg-white p-10 text-center shadow-sm">
 
-                <div class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-900"></div>
+                <div
+                    class="mx-auto mb-4 h-12 w-12
+                           animate-spin rounded-full
+                           border-4 border-slate-200
+                           border-t-slate-900">
+                </div>
 
                 <p class="text-sm font-semibold text-slate-700">
                     Memuat hasil pencarian...
                 </p>
 
                 <p class="mt-2 text-sm text-slate-500">
-                    Harap tunggu sebentar sambil kami mencari literatur yang sesuai.
+                    Harap tunggu sebentar sambil kami mencari
+                    literatur yang sesuai.
                 </p>
 
             </div>
         `;
     };
 
-    // ==========================
+    // =========================================================
     // AJAX
-    // ==========================
+    // =========================================================
 
-    const loadData = async (url, showLoader = true) => {
+    const loadData = async (url, showLoader = true, shouldScroll = true) => {
         if (controller) {
             controller.abort();
         }
@@ -90,39 +133,35 @@
         }
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(url.toString(), {
+                method: "GET",
+
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
+                    Accept: "text/html",
                 },
 
                 signal: controller.signal,
             });
 
             if (!response.ok) {
-                throw new Error("Gagal memuat data");
+                throw new Error(`Gagal memuat data: ${response.status}`);
             }
 
             const html = await response.text();
 
+            // Ganti hanya bagian result
             result.innerHTML = html;
 
-            const meta = result.querySelector("#result-meta");
+            // Update URL browser tanpa reload
+            history.replaceState({}, "", url.toString());
 
-            if (meta) {
-                resultInfo.innerHTML = `
-                    ${Number(meta.dataset.total).toLocaleString("id-ID")}
-                    <span class="text-lg font-medium text-slate-500">
-                        Literatur
-                    </span>
-                `;
+            if (shouldScroll) {
+                scrollToTop();
             }
-
-            history.replaceState({}, "", url);
-
-            scrollToTop();
         } catch (error) {
             if (error.name !== "AbortError") {
-                console.error(error);
+                console.error("Literature AJAX Error:", error);
             }
         } finally {
             if (showLoader) {
@@ -131,51 +170,74 @@
         }
     };
 
-    // ==========================
-    // Search
-    // ==========================
+    // =========================================================
+    // BUILD URL
+    // =========================================================
 
-    const triggerSearch = (page = null, showLoader = true) => {
-        const url = new URL(form.action);
+    const buildUrl = (page = null) => {
+        const url = new URL(form.action, window.location.origin);
 
-        if (search.value.trim() !== "") {
-            url.searchParams.set("search", search.value.trim());
+        // SEARCH
+        const keyword = search.value.trim();
+
+        if (keyword !== "") {
+            url.searchParams.set("search", keyword);
         }
 
+        // TYPE
         if (type.value !== "") {
             url.searchParams.set("type", type.value);
         }
 
+        // CATEGORY
         if (category.value !== "") {
             url.searchParams.set("category_id", category.value);
         }
 
+        // PAGE
         if (page) {
             url.searchParams.set("page", page);
         }
 
+        return url;
+    };
+
+    // =========================================================
+    // TRIGGER SEARCH
+    // =========================================================
+
+    const triggerSearch = (page = null, showLoader = true) => {
+        const url = buildUrl(page);
+
         loadData(url, showLoader);
     };
 
-    // ==========================
-    // Search Input
-    // ==========================
+    // =========================================================
+    // SEARCH INPUT
+    // Tidak AJAX saat mengetik
+    // =========================================================
 
     search.addEventListener("input", () => {
-        clearButton.classList.toggle("hidden", search.value.trim() === "");
+        clearButton?.classList.toggle("hidden", search.value.trim() === "");
     });
 
+    // =========================================================
+    // ENTER SEARCH
+    // =========================================================
+
     search.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
+        if (event.key !== "Enter") {
+            return;
+        }
 
         event.preventDefault();
 
         triggerSearch();
     });
 
-    // ==========================
-    // Search Button
-    // ==========================
+    // =========================================================
+    // SEARCH BUTTON
+    // =========================================================
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -183,21 +245,27 @@
         triggerSearch();
     });
 
-    // ==========================
-    // Filter
-    // ==========================
+    // =========================================================
+    // TYPE
+    // Langsung AJAX ketika berubah
+    // =========================================================
 
-    type?.addEventListener("change", () => {
+    type.addEventListener("change", () => {
         triggerSearch();
     });
 
-    category?.addEventListener("change", () => {
+    // =========================================================
+    // CATEGORY
+    // Langsung AJAX ketika berubah
+    // =========================================================
+
+    category.addEventListener("change", () => {
         triggerSearch();
     });
 
-    // ==========================
-    // Clear Search
-    // ==========================
+    // =========================================================
+    // CLEAR SEARCH
+    // =========================================================
 
     clearButton?.addEventListener("click", () => {
         search.value = "";
@@ -209,51 +277,55 @@
         triggerSearch();
     });
 
-    // ==========================
-    // Reset
-    // ==========================
-
-    // ==========================
-    // Reset
-    // ==========================
+    // =========================================================
+    // RESET
+    // =========================================================
 
     resetButton?.addEventListener("click", () => {
+        // Kosongkan semua
         search.value = "";
         type.value = "";
         category.value = "";
 
         clearButton?.classList.add("hidden");
 
-        loadData(form.action);
+        // Request URL bersih
+        const url = new URL(form.action, window.location.origin);
+
+        loadData(url);
     });
 
-    // ==========================
-    // Pagination AJAX
-    // ==========================
+    // =========================================================
+    // PAGINATION AJAX
+    // =========================================================
 
     document.addEventListener("click", (event) => {
         const link = event.target.closest("[data-ajax-page]");
 
-        if (!link) return;
+        if (!link) {
+            return;
+        }
 
         event.preventDefault();
 
-        const page = new URL(link.href).searchParams.get("page");
+        const url = new URL(link.href);
+
+        const page = url.searchParams.get("page");
 
         triggerSearch(page, false);
     });
 
-    // ==========================
-    // Browser Back / Forward
-    // ==========================
+    // =========================================================
+    // BROWSER BACK / FORWARD
+    // =========================================================
 
     window.addEventListener("popstate", () => {
-        loadData(window.location.href);
+        loadData(new URL(window.location.href), true, false);
     });
 
-    // ==========================
-    // Initial State
-    // ==========================
+    // =========================================================
+    // INITIAL STATE
+    // =========================================================
 
     clearButton?.classList.toggle("hidden", search.value.trim() === "");
 });

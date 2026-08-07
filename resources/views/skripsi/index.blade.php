@@ -105,8 +105,7 @@
                                     class="flex h-11 w-11 items-center justify-center
                                        rounded-xl bg-[#212A37]
                                        text-white shadow-sm
-                                       transition-transform duration-300
-                                       group-hover:scale-105">
+                                       transition-transform duration-300">
 
                                     <span class="material-symbols-outlined text-[22px]">
                                         menu_book
@@ -131,7 +130,19 @@
 
                                 <h2 class="text-5xl font-bold tracking-tight text-[#212A37]">
 
-                                    {{ number_format($totalSkripsis, 0, ',', '.') }}
+                                    @if ($totalSkripsis >= 1000000)
+
+                                        {{ rtrim(rtrim(number_format($totalSkripsis / 1000000, 1, ',', ''), '0'), ',') }}M+
+
+                                    @elseif ($totalSkripsis >= 1000)
+
+                                        {{ rtrim(rtrim(number_format($totalSkripsis / 1000, 1, ',', ''), '0'), ',') }}K+
+
+                                    @else
+
+                                        {{ $totalSkripsis }}
+
+                                    @endif
 
                                 </h2>
 
@@ -164,28 +175,41 @@
     </section>
 
     {{-- Search & Filter --}}
-    @include('skripsi._filter')
+    <div class="relative z-20 mx-auto -mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+        @include('skripsi._filter')
+    </div>
 
-    {{-- Result Info --}}
+
+    {{-- Result --}}
     <div class="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        <p class="text-normal font-semibold">
+        {{-- Result Info --}}
+        <div class="mb-6">
+            <p class="text-sm font-semibold text-slate-500">
+                Menampilkan
+            </p>
 
-            Menampilkan
+            <h2
+                id="result-info"
+                class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
 
-        </p>
+                {{ number_format($skripsis->total(), 0, ',', '.') }}
 
-        <h2
-            id="result-info"
-            class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+                <span class="font-semibold">
+                    skripsi tersedia
+                </span>
+            </h2>
+        </div>
 
-            {{ number_format($skripsis->total(), 0, ',', '.') }}
 
-            <span class="font-semibold">
-                skripsi tersedia
-            </span>
+        {{-- Cards --}}
+        <section
+            id="skripsi-result"
+            class="pb-16">
 
-        </h2>
+            @include('skripsi._result')
+
+        </section>
 
     </div>
 

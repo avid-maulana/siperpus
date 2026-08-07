@@ -24,7 +24,7 @@
             href="{{ route('library.indexLiterature') }}"
             class="inline-flex shrink-0 items-center gap-1
                    text-sm font-semibold text-blue-600
-                   transition hover:text-blue-700">
+                   transition hover:text-[blue-700]">
 
             Lihat Semua
 

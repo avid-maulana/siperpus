@@ -1,16 +1,53 @@
-﻿<form id="filterForm" action="{{ route('literatures.index') }}" method="GET">
+﻿<style>
+    /* Hilangkan tombol X bawaan input type="search" */
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+        -webkit-appearance: none;
+        appearance: none;
+    }
 
-    <div class="space-y-3">
+    input[type="search"]::-ms-clear,
+    input[type="search"]::-ms-reveal {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+</style>
 
-        <div class="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,4fr)_180px_220px_56px] lg:items-center">
+<form
+    id="filterForm"
+    action="{{ route('literatures.index') }}"
+    method="GET"
+    class="w-full">
 
-            {{-- Search --}}
+    <div class="grid grid-cols-1 gap-3
+            lg:grid-cols-[minmax(0,1fr)_190px_230px_54px]
+            lg:items-end">
+
+        {{-- SEARCH --}}
+        <div>
+
+            <label
+                for="searchInput"
+                class="mb-1.5 block text-xs font-semibold
+                   uppercase tracking-wider text-slate-500">
+                Pencarian
+            </label>
+
             <div class="group relative">
 
-                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                    <span class="material-symbols-outlined text-slate-400">
+                <div class="pointer-events-none absolute inset-y-0 left-0
+                        flex items-center pl-4">
+
+                    <span class="material-symbols-outlined
+                             text-[21px] text-slate-400
+                             transition-colors
+                             group-focus-within:text-[#212A37]">
                         search
                     </span>
+
                 </div>
 
                 <input
@@ -21,14 +58,33 @@
                     spellcheck="false"
                     value="{{ request('search') }}"
                     placeholder="Cari judul, penulis, atau kata kunci..."
-                    class="w-full rounded-2xl border border-slate-300 bg-white py-3.5 pl-12 pr-28 text-slate-700 shadow-sm transition duration-300 placeholder:text-slate-400 focus:border-[#212A37] focus:shadow-[0_0_0_4px_rgba(33,42,55,.08)] focus:outline-none">
+                    class="h-[52px] w-full
+                       rounded-xl
+                       border border-slate-300
+                       bg-white
+                       pl-12 pr-28
+                       text-sm text-slate-700
+                       shadow-sm
+                       outline-none
+                       transition-all duration-200
+                       placeholder:text-slate-400
+                       focus:border-[#212A37]
+                       focus:ring-4
+                       focus:ring-slate-100">
 
                 <button
                     id="clearSearch"
                     type="button"
-                    class="hidden absolute right-24 top-1/2 -translate-y-1/2 rounded-full bg-slate-100 p-1 text-slate-500 hover:bg-slate-200">
+                    title="Hapus pencarian"
+                    class="absolute right-[102px] top-1/2
+                       hidden -translate-y-1/2
+                       rounded-full p-1
+                       text-slate-400
+                       transition
+                       hover:bg-slate-100
+                       hover:text-slate-700">
 
-                    <span class="material-symbols-outlined text-base">
+                    <span class="material-symbols-outlined text-[18px]">
                         close
                     </span>
 
@@ -36,45 +92,102 @@
 
                 <button
                     type="submit"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-950 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800">
-
+                    class="absolute right-1.5 top-1/2
+                       h-10 -translate-y-1/2
+                       rounded-lg
+                       bg-[#212A37]
+                       px-5
+                       text-sm font-semibold text-white
+                       transition-all duration-200
+                       hover:bg-[#18202b]">
                     Search
-
                 </button>
 
             </div>
+        </div>
 
-            {{-- Type --}}
+
+        {{-- TYPE --}}
+        <div>
+
+            <label
+                for="typeSelect"
+                class="mb-1.5 block text-xs font-semibold
+                   uppercase tracking-wider text-slate-500">
+                Tipe
+            </label>
+
             <div class="relative">
 
                 <select
                     id="typeSelect"
                     name="type"
-                    class="w-full appearance-none rounded-2xl border border-slate-300 bg-white py-3.5 pl-4 pr-10 shadow-sm focus:border-[#212A37] focus:outline-none">
+                    class="h-[52px] w-full
+                       appearance-none
+                       rounded-xl
+                       border border-slate-300
+                       bg-white
+                       pl-4 pr-10
+                       text-sm text-slate-700
+                       shadow-sm
+                       outline-none
+                       transition-all duration-200
+                       focus:border-[#212A37]
+                       focus:ring-4
+                       focus:ring-slate-100">
 
                     <option value="">Semua Tipe</option>
 
                     @foreach($types as $type)
-                    <option value="{{ $type }}" @selected(request('type')==$type)>
+                    <option
+                        value="{{ $type }}"
+                        @selected(request('type')==$type)>
                         {{ ucfirst($type) }}
                     </option>
                     @endforeach
 
                 </select>
 
-                <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <span class="material-symbols-outlined
+                         pointer-events-none
+                         absolute right-3 top-1/2
+                         -translate-y-1/2
+                         text-[20px] text-slate-400">
                     keyboard_arrow_down
                 </span>
 
             </div>
+        </div>
 
-            {{-- Category --}}
+
+        {{-- CATEGORY --}}
+        <div>
+
+            <label
+                for="categorySelect"
+                class="mb-1.5 block text-xs font-semibold
+                   uppercase tracking-wider text-slate-500">
+                Kategori
+            </label>
+
             <div class="relative">
 
                 <select
                     id="categorySelect"
                     name="category_id"
-                    class="w-full appearance-none rounded-2xl border border-slate-300 bg-white py-3.5 pl-4 pr-10 shadow-sm focus:border-[#212A37] focus:outline-none">
+                    class="h-[52px] w-full
+                       appearance-none
+                       rounded-xl
+                       border border-slate-300
+                       bg-white
+                       pl-4 pr-10
+                       text-sm text-slate-700
+                       shadow-sm
+                       outline-none
+                       transition-all duration-200
+                       focus:border-[#212A37]
+                       focus:ring-4
+                       focus:ring-slate-100">
 
                     <option value="">Semua Kategori</option>
 
@@ -83,28 +196,50 @@
                         value="{{ $category->id }}"
                         data-type="{{ $category->type }}"
                         @selected(request('category_id')==$category->id)>
-
                         {{ $category->name }}
-
                     </option>
                     @endforeach
 
                 </select>
 
-                <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <span class="material-symbols-outlined
+                         pointer-events-none
+                         absolute right-3 top-1/2
+                         -translate-y-1/2
+                         text-[20px] text-slate-400">
                     keyboard_arrow_down
                 </span>
 
             </div>
+        </div>
 
-            {{-- Reset --}}
+
+        {{-- RESET --}}
+        <div>
+
+            <span class="mb-1.5 block text-center
+                     text-xs font-semibold
+                     uppercase tracking-wider text-slate-500">
+                Reset
+            </span>
+
             <button
                 type="button"
                 id="resetSearch"
                 title="Reset Filter"
-                class="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:bg-slate-50 hover:border-slate-400">
+                class="flex h-[52px] w-[54px]
+                   items-center justify-center
+                   rounded-xl
+                   border border-slate-300
+                   bg-white
+                   text-slate-600
+                   shadow-sm
+                   transition-all duration-200
+                   hover:border-[#212A37]
+                   hover:bg-[#212A37]
+                   hover:text-white">
 
-                <span class="material-symbols-outlined">
+                <span class="material-symbols-outlined text-[22px]">
                     restart_alt
                 </span>
 
@@ -112,10 +247,10 @@
 
         </div>
 
-        <p class="text-sm text-slate-500">
-            Cari referensi dengan cepat berdasarkan judul, penulis, tipe, maupun kategori.
-        </p>
-
     </div>
+
+    <p class="mt-3 text-xs leading-5 text-slate-500">
+        Cari referensi berdasarkan judul, penulis, tipe, maupun kategori.
+    </p>
 
 </form>
