@@ -15,25 +15,114 @@ $judul = strip_tags($skripsi->judul ?? '');
 <div class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-xl">
 
     <!-- Header -->
-    <div class="border-b border-slate-100 bg-slate-50 px-6 py-5">
-        <div class="mb-3 inline-flex items-center rounded-full bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500 shadow-sm">
-            Skripsi
+    <!-- Header -->
+    <div class="relative overflow-hidden border-b border-slate-200 bg-[#1b2330] px-6 py-6">
+
+        {{-- Background --}}
+        {{-- Background --}}
+        <div class="pointer-events-none absolute inset-0
+            bg-gradient-to-br
+            from-[#263241]
+            via-[#212A37]
+            to-[#1b2430]">
         </div>
 
-        <!-- Judul dengan KBK -->
-        <div class="relative">
-            <h2 class="max-h-[3.6em] overflow-hidden text-[15px] font-semibold leading-tight text-slate-900 transition-all duration-300 ease-out group-hover:max-h-[300px] group-hover:pb-1"
-                title="{{ $judul }}">
-                {{ $judul }}
-            </h2>
+        {{-- Glow --}}
+        <div class="pointer-events-none absolute -right-16 -top-16
+                h-48 w-48 rounded-full bg-white/[0.04] blur-3xl">
+        </div>
 
-            <div class="mt-1 text-[16px] font-medium text-slate-500">
-                KBK : {{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}
+        {{-- Content --}}
+        <div class="relative z-10">
+
+            {{-- Label --}}
+            <div class="inline-flex items-center gap-2 text-white/60">
+
+                <span class="material-symbols-outlined text-[16px]">
+                    school
+                </span>
+
+                <span class="text-[10px] font-semibold uppercase tracking-[0.18em]">
+                    Skripsi
+                </span>
+
             </div>
 
-            <!-- Gradient fade saat tidak hover -->
-            <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-0"></div>
+
+            {{-- Title --}}
+            {{-- Title --}}
+            <div class="relative mt-4">
+
+                <h2
+                    class="max-h-[4.5em] overflow-hidden
+                    text-[16px] font-semibold leading-[1.5]
+                    text-white
+                    transition-[max-height] duration-500 ease-in-out
+                    group-hover:max-h-[500px]"
+                    title="{{ $judul }}">
+
+                    {{ $judul }}
+
+                </h2>
+
+                {{-- Fade --}}
+                <div
+                    class="pointer-events-none absolute
+                    inset-x-0 bottom-0
+                    h-8
+                    bg-gradient-to-t
+                    from-[#212A37]
+                    via-[#212A37]/75
+                    to-transparent
+                    transition-opacity duration-300
+                    group-hover:opacity-0">
+                </div>
+
+            </div>
+
+
+            {{-- KBK --}}
+            <div class="mt-5">
+
+                <div class="inline-flex max-w-full items-center gap-3
+                        rounded-xl border border-white/15
+                        bg-white/[0.08]
+                        px-3.5 py-2.5
+                        transition-colors duration-300
+                        group-hover:bg-white/[0.12]">
+
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center
+                            rounded-lg bg-white/10 text-white/70">
+
+                        <span class="material-symbols-outlined text-[18px]">
+                            account_tree
+                        </span>
+
+                    </div>
+
+                    <div class="min-w-0">
+
+                        <div class="text-[9px] font-semibold uppercase
+                                tracking-[0.15em] text-white/40">
+                            KBK
+                        </div>
+
+                        <div
+                            class="mt-0.5 truncate text-xs font-semibold text-white/85"
+                            title="{{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}">
+
+                            {{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
     <!-- Content -->

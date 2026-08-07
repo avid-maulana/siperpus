@@ -16,6 +16,18 @@ class LiteratureController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
+        | Total Seluruh Literatur
+        |--------------------------------------------------------------------------
+        |
+        | Tidak terpengaruh search, filter type, maupun category.
+        |
+        */
+
+        $totalLiteratures = Literature::count();
+
+
+        /*
+        |--------------------------------------------------------------------------
         | Type Options
         |--------------------------------------------------------------------------
         */
@@ -139,9 +151,12 @@ class LiteratureController extends Controller
         */
 
         return view('literatures.index', [
-            'literatures' => $literatures,
-            'types'       => $typeOptions,
-            'categories'  => Category::all(),
+            'literatures'      => $literatures,
+            'types'            => $typeOptions,
+            'categories'       => Category::all(),
+
+            // Total keseluruhan repository
+            'totalLiteratures' => $totalLiteratures,
         ]);
     }
 }

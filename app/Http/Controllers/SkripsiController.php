@@ -21,6 +21,19 @@ class SkripsiController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Total Seluruh Skripsi Repository
+        |--------------------------------------------------------------------------
+        | Tidak terpengaruh search maupun filter KBK.
+        */
+
+        $totalSkripsis = Skripsi::where('status_judul', 'SELESAI')
+            ->whereHas('isi', function ($query) {
+                $query->where('status', 'DITERIMA');
+            })
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
         | Query Skripsi
         |--------------------------------------------------------------------------
         */
@@ -114,8 +127,9 @@ class SkripsiController extends Controller
         |--------------------------------------------------------------------------
         */
         return view('skripsi.index', [
-            'skripsis' => $skripsis,
-            'kbks'      => $kbks,
+            'skripsis'      => $skripsis,
+            'kbks'          => $kbks,
+            'totalSkripsis' => $totalSkripsis,
         ]);
     }
 }

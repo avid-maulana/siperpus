@@ -49,57 +49,115 @@
 
 
                 {{-- Repository Statistic --}}
+                {{-- Repository Statistic --}}
                 <div class="hidden justify-end lg:flex">
 
-                    <div class="group relative w-full max-w-[300px] overflow-hidden
-                                rounded-3xl border border-white/15
-                                bg-white/10 p-7
-                                shadow-2xl shadow-black/10
-                                backdrop-blur-md
-                                transition-all duration-300
-                                hover:border-white/25
-                                hover:bg-white/[0.13]">
+                    <div
+                        class="group relative w-full max-w-[280px]
+               rotate-[2deg]
+               rounded-sm
+               bg-[#fffdf4]
+               px-7 pb-7 pt-9
+               shadow-[0_18px_45px_rgba(0,0,0,0.28)]
+               transition-all duration-300
+               hover:rotate-0
+               hover:-translate-y-1
+               hover:shadow-[0_24px_55px_rgba(0,0,0,0.32)]">
 
-                        {{-- Decoration --}}
-                        <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.06]"></div>
+                        {{-- Tape --}}
+                        <div
+                            class="absolute -top-4 left-1/2
+                   h-8 w-24
+                   -translate-x-1/2
+                   -rotate-2
+                   bg-white/60
+                   shadow-sm
+                   backdrop-blur-[2px]">
+                        </div>
 
+
+                        {{-- Fold Corner --}}
+                        <div
+                            class="absolute bottom-0 right-0
+                   h-8 w-8
+                   bg-gradient-to-tl
+                   from-[#e8e4d5]
+                   to-[#fffdf4]
+                   shadow-[-3px_-3px_6px_rgba(0,0,0,0.06)]">
+                        </div>
+
+
+                        {{-- Content --}}
                         <div class="relative">
 
-                            {{-- Icon --}}
-                            <div class="flex h-12 w-12 items-center justify-center
-                                        rounded-2xl border border-white/10
-                                        bg-white/10 text-white">
+                            {{-- Header --}}
+                            <div class="flex items-center justify-between">
 
-                                <span class="material-symbols-outlined text-2xl">
-                                    menu_book
-                                </span>
+                                {{-- Icon --}}
+                                <div
+                                    class="flex h-11 w-11 items-center justify-center
+                                    rounded-xl
+                                    bg-[#212A37]
+                                    text-white
+                                    shadow-sm
+                                    transition-transform duration-300">
+
+                                    <span class="material-symbols-outlined text-[22px]">
+                                        menu_book
+                                    </span>
+
+                                </div>
+
+
 
                             </div>
 
 
                             {{-- Label --}}
-                            <p class="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+                            <p
+                                class="mt-6 text-[11px] font-bold uppercase
+                                text-slate-500">
+
                                 Total Repository
+
                             </p>
 
 
                             {{-- Total --}}
-                            <h2
-                                id="result-info"
-                                class="mt-2 whitespace-nowrap text-4xl font-bold tracking-tight text-white">
+                            <div class="mt-2 flex items-end gap-2">
 
-                                {{ number_format($literatures->total(),0,',','.') }}
+                                <h2
+                                    class="text-5xl font-bold
+                                    tracking-tight
+                                    text-[#212A37]">
 
-                                <span class="text-base font-medium text-white/60">
+                                    {{ number_format($totalLiteratures, 0, ',', '.') }}
+
+                                </h2>
+
+                                <span
+                                    class="mb-1.5 text-sm font-semibold
+                                    text-slate-500">
+
                                     Literatur
+
                                 </span>
 
-                            </h2>
+                            </div>
+
+
+                            {{-- Divider --}}
+                            <div class="my-4 border-t border-dashed border-slate-300"></div>
 
 
                             {{-- Description --}}
-                            <p class="mt-3 text-sm leading-6 text-white/50">
-                                Koleksi literatur akademik yang tersedia.
+                            <p
+                                class="text-sm leading-6
+                                text-slate-500">
+
+                                Total koleksi literatur akademik
+                                yang tersedia di repository.
+
                             </p>
 
                         </div>
