@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
@@ -38,15 +39,11 @@ Route::post('/logout', [LoginController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
+
     /*
     |--------------------------------------------------------------------------
     | Homepage / Dashboard
     |--------------------------------------------------------------------------
-    |
-    | HomeController menangani halaman utama.
-    |
-    | Tampilan admin / member nantinya dibedakan dari home.blade.php.
-    |
     */
 
     Route::get('/', [HomeController::class, 'index'])
@@ -88,6 +85,184 @@ Route::middleware('auth')->group(function () {
 
 
     /*
+|--------------------------------------------------------------------------
+| PDF Proxy
+|--------------------------------------------------------------------------
+*/
+
+    Route::get('/pdf-proxy', function () {
+
+        $url = request('url');
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Validasi URL
+    |--------------------------------------------------------------------------
+    */
+
+        if (!$url || !filter_var($url, FILTER_VALIDATE_URL)) {
+
+            abort(
+                400,
+                'URL PDF tidak valid.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Batasi Domain
+    |--------------------------------------------------------------------------
+    */
+
+        $host = parse_url($url, PHP_URL_HOST);
+
+        $allowedHosts = [
+            'tei.um.ac.id',
+            'elektro.um.ac.id',
+        ];
+
+
+        if (!in_array($host, $allowedHosts, true)) {
+
+            abort(
+                403,
+                'Domain PDF tidak diizinkan.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Ambil PDF
+    |--------------------------------------------------------------------------
+    */
+
+        try {
+
+            $response = Http::timeout(120)
+                ->connectTimeout(30)
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0 Safari/537.36',
+                    'Accept' => 'application/pdf,application/octet-stream,*/*',
+                ])
+                ->withOptions([
+                    'allow_redirects' => [
+                        'max' => 5,
+                        'strict' => true,
+                    ],
+                ])
+                ->get($url);
+        } catch (\Throwable $e) {
+
+            logger()->error('PDF Proxy Exception', [
+                'url' => $url,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            abort(
+                502,
+                'PDF tidak dapat diambil dari server.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Cek HTTP Status
+    |--------------------------------------------------------------------------
+    */
+
+        if (!$response->successful()) {
+
+            logger()->error('PDF Proxy HTTP Error', [
+                'url' => $url,
+                'status' => $response->status(),
+                'content_type' => $response->header('Content-Type'),
+            ]);
+
+            abort(
+                502,
+                'Server PDF mengembalikan status ' . $response->status()
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Cek Content-Type
+    |--------------------------------------------------------------------------
+    */
+
+        $contentType = strtolower(
+            $response->header('Content-Type', '')
+        );
+
+
+        if (
+            $contentType &&
+            !str_contains($contentType, 'application/pdf') &&
+            !str_contains($contentType, 'application/octet-stream')
+        ) {
+
+            logger()->error('PDF Proxy Invalid Content Type', [
+                'url' => $url,
+                'content_type' => $contentType,
+            ]);
+
+            abort(
+                502,
+                'Server tidak mengembalikan file PDF.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Ambil Isi PDF
+    |--------------------------------------------------------------------------
+    */
+
+        $body = $response->body();
+
+
+        if (empty($body)) {
+
+            logger()->error('PDF Proxy Empty Response', [
+                'url' => $url,
+                'status' => $response->status(),
+            ]);
+
+            abort(
+                502,
+                'File PDF kosong.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Return PDF
+    |--------------------------------------------------------------------------
+    */
+
+        return response(
+            $body,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="document.pdf"',
+                'Content-Length' => strlen($body),
+                'Cache-Control' => 'private, max-age=3600',
+                'Accept-Ranges' => 'bytes',
+            ]
+        );
+    })->name('pdf.proxy');
+
+    /*
     |--------------------------------------------------------------------------
     | Profile
     |--------------------------------------------------------------------------
@@ -111,6 +286,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('library')
         ->name('library.')
         ->group(function () {
+
 
             /*
             |--------------------------------------------------------------------------
