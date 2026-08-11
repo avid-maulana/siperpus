@@ -118,7 +118,7 @@
 
                             {{-- Label --}}
                             <p class="mt-6 text-[11px] font-bold uppercase
-                                  tracking-[0.18em] text-slate-500">
+                                text-slate-500">
 
                                 Total Repository
 
@@ -212,14 +212,6 @@
         </section>
 
     </div>
-
-    <section
-        id="skripsi-result"
-        class="mx-auto mt-6 max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-
-        @include('skripsi._result')
-
-    </section>
 
 </div>
 
