@@ -2,6 +2,7 @@ import "./bootstrap";
 import "./skripsi";
 import "./literature";
 import "./navbar";
+import "./home/user";
 
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("page-loader");
@@ -27,23 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", function () {
-            /*
-            |--------------------------------------------------------------------------
-            | Link AJAX tidak menggunakan page loader
-            |--------------------------------------------------------------------------
-            */
-
             if (this.hasAttribute("data-ajax-page")) {
                 return;
             }
 
             const href = this.getAttribute("href");
-
-            /*
-            |--------------------------------------------------------------------------
-            | Abaikan Link yang Tidak Melakukan Navigasi
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 !href ||
@@ -55,15 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Tampilkan Loader
-            |--------------------------------------------------------------------------
-            */
-
             if (loader) {
                 loader.classList.remove("opacity-0", "invisible");
-
                 loader.classList.add("opacity-100");
             }
         });
@@ -78,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 | Ketika halaman dikembalikan dari browser cache (bfcache),
 | loader harus dipastikan hilang dan content kembali terlihat.
 |
+|--------------------------------------------------------------------------
 */
 
 window.addEventListener("pageshow", (event) => {
@@ -92,7 +75,6 @@ window.addEventListener("pageshow", (event) => {
 
     if (loader) {
         loader.classList.remove("opacity-100");
-
         loader.classList.add("opacity-0", "invisible");
     }
 
