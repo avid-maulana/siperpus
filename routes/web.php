@@ -436,6 +436,40 @@ Route::middleware(['auth', 'role'])
 
         /*
         |--------------------------------------------------------------------------
+        | Literatur - Tambah
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/literatures',
+            [LiteratureController::class, 'store']
+        )->name('storeLiterature');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Literatur - Update
+        |--------------------------------------------------------------------------
+        */
+
+        Route::put(
+            '/literatures/{literature}',
+            [LiteratureController::class, 'update']
+        )->name('updateLiterature');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Literatur - Hapus
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/literatures/{literature}',
+            [LiteratureController::class, 'destroy']
+        )->name('destroyLiterature');
+        /*
+        |--------------------------------------------------------------------------
         | Kelola Repository Tesis & Disertasi
         |--------------------------------------------------------------------------
         |
