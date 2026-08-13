@@ -3,6 +3,7 @@ import "./skripsi";
 import "./literature";
 import "./navbar";
 import "./home/user";
+import "./disertasi/repository";
 
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("page-loader");
