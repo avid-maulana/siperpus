@@ -42,9 +42,6 @@ class PraktikIndustri extends Model
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Relasi laporan ke detail tim.
-     */
     public function detailTim()
     {
         return $this->belongsTo(
@@ -61,10 +58,6 @@ class PraktikIndustri extends Model
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Semua file revisi yang pernah tersedia
-     * untuk laporan Praktik Industri.
-     */
     public function fileLaporan()
     {
         return $this->hasMany(
@@ -81,11 +74,6 @@ class PraktikIndustri extends Model
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Mengambil file revisi terbaru yang memiliki file.
-     *
-     * Revisi dengan file NULL atau kosong tidak dihitung.
-     */
     public function fileTerbaru()
     {
         return $this->hasOne(
@@ -105,52 +93,19 @@ class PraktikIndustri extends Model
     |--------------------------------------------------------------------------
     */
 
-    /**
-     * Mengambil tanggal terakhir file aktif diperbarui.
-     *
-     * Prioritas:
-     *
-     * 1. updated_at file revisi terbaru
-     * 2. updated_at laporan utama
-     */
     public function getTanggalTerakhirDiperbaruiAttribute()
     {
-        if ($this->relationLoaded('fileTerbaru')) {
-
-            return $this->fileTerbaru?->updated_at
-                ?? $this->updated_at;
-        }
-
         return $this->fileTerbaru?->updated_at
             ?? $this->updated_at;
     }
 
 
     /*
-|--------------------------------------------------------------------------
-| URL FILE LAPORAN UTAMA
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | URL FILE LAPORAN UTAMA
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Menghasilkan URL file laporan utama.
-     *
-     * Jika database menyimpan:
-     *
-     *     /revisi/revisi_xxx.pdf
-     *
-     * maka diarahkan ke:
-     *
-     *     https://tei.um.ac.id/simpi/public/storage/revisi/revisi_xxx.pdf
-     *
-     * Jika database hanya menyimpan:
-     *
-     *     laporan_xxx.pdf
-     *
-     * maka diarahkan ke:
-     *
-     *     https://tei.um.ac.id/simpi/public/storage/laporan-pi/laporan_xxx.pdf
-     */
     public function getFileLaporanUrlAttribute()
     {
         return $this->makeFileUrl(
@@ -159,15 +114,12 @@ class PraktikIndustri extends Model
     }
 
 
-/*
-|--------------------------------------------------------------------------
-| URL FILE REVISI TERBARU
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | URL FILE REVISI TERBARU
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Menghasilkan URL file revisi terbaru.
-     */
     public function getFileRevisiUrlAttribute()
     {
         return $this->makeFileUrl(
@@ -176,21 +128,18 @@ class PraktikIndustri extends Model
     }
 
 
-/*
-|--------------------------------------------------------------------------
-| URL FILE AKTIF
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | URL FILE AKTIF
+    |--------------------------------------------------------------------------
+    |
+    | Prioritas:
+    |
+    | 1. Revisi terbaru
+    | 2. File laporan utama
+    |
+    */
 
-    /**
-     * Menghasilkan URL file yang digunakan
-     * pada halaman Praktik Industri.
-     *
-     * Prioritas:
-     *
-     * 1. Revisi terbaru
-     * 2. File laporan utama
-     */
     public function getFileAktifUrlAttribute()
     {
         $file = $this->fileTerbaru?->file
@@ -200,62 +149,75 @@ class PraktikIndustri extends Model
     }
 
 
-/*
-|--------------------------------------------------------------------------
-| HELPER URL FILE
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER URL FILE
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Mengubah path database menjadi URL file
-     * pada server SIMPI.
-     */
     protected function makeFileUrl($path)
     {
-        if (!$path) {
+        if (empty($path)) {
             return null;
         }
 
         /*
-    |--------------------------------------------------------------------------
-    | Bersihkan slash di awal
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Ambil base URL dari .env
+        |--------------------------------------------------------------------------
+        */
 
+        $baseUrl = env('SIMPI_STORAGE_URL');
+
+        if (empty($baseUrl)) {
+            return null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Bersihkan slash
+        |--------------------------------------------------------------------------
+        */
+
+        $baseUrl = rtrim($baseUrl, '/');
         $path = ltrim($path, '/');
 
 
         /*
-    |--------------------------------------------------------------------------
-    | Jika path sudah memiliki folder
-    |--------------------------------------------------------------------------
-    |
-    | Contoh:
-    |
-    | revisi/revisi_xxx.pdf
-    | laporan-pi/laporan_xxx.pdf
-    |
-    */
+        |--------------------------------------------------------------------------
+        | FILE REVISI
+        |--------------------------------------------------------------------------
+        |
+        | Database:
+        |
+        | /revisi/revisi_1786197107.pdf
+        |
+        | Menjadi:
+        |
+        | {SIMPI_STORAGE_URL}/revisi/revisi_1786197107.pdf
+        |
+        */
 
-        if (
-            str_starts_with($path, 'revisi/')
-            || str_starts_with($path, 'laporan-pi/')
-        ) {
-            return 'https://tei.um.ac.id/simpi/public/storage/' . $path;
+        if (str_starts_with($path, 'revisi/')) {
+            return $baseUrl . '/' . $path;
         }
 
 
         /*
-    |--------------------------------------------------------------------------
-    | File laporan biasa
-    |--------------------------------------------------------------------------
-    |
-    | Contoh database:
-    |
-    | laporan_691_176653455.pdf
-    |
-    */
+        |--------------------------------------------------------------------------
+        | FILE LAPORAN
+        |--------------------------------------------------------------------------
+        |
+        | Database:
+        |
+        | laporan_270_1727923781.pdf
+        |
+        | Menjadi:
+        |
+        | {SIMPI_STORAGE_URL}/laporan-pi/laporan_270_1727923781.pdf
+        |
+        */
 
-        return 'https://tei.um.ac.id/simpi/public/storage/laporan-pi/' . $path;
+        return $baseUrl . '/laporan-pi/' . $path;
     }
 }
