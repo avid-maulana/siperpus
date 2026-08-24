@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response =
                 await fetch(
-                    buildUrl(url),
+                    buildUrl(url, true),
                     {
                         method: "GET",
 
@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.history.pushState(
                     {},
                     "",
-                    buildUrl(url),
+                    buildUrl(url, true),
                 );
             }
 
@@ -459,65 +459,6 @@ document.addEventListener("DOMContentLoaded", () => {
         },
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | SEARCH INPUT
-    |--------------------------------------------------------------------------
-    */
-
-    const searchInput =
-        searchForm?.querySelector(
-            '[name="search"]',
-        );
-
-    searchInput?.addEventListener(
-        "input",
-        () => {
-            clearTimeout(
-                searchTimer,
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | Jangan request untuk 1–2 karakter
-            |--------------------------------------------------------------------------
-            */
-
-            const value =
-                searchInput.value.trim();
-
-            if (
-                value.length > 0 &&
-                value.length < 3
-            ) {
-                return;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Debounce
-            |--------------------------------------------------------------------------
-            */
-
-            searchTimer =
-                setTimeout(() => {
-                    const action =
-                        searchForm.action ||
-                        window.location.pathname;
-
-                    fetchResult(action, {
-                        pushState: true,
-                        scroll: false,
-                    });
-                }, 400);
-        },
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAGINATION CLICK
-    |--------------------------------------------------------------------------
-    */
 
     document.addEventListener(
         "click",

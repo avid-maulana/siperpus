@@ -603,24 +603,43 @@ class PraktikIndustriAdminController extends Controller
 
 
         /*
-        |--------------------------------------------------------------------------
-        | VIEW
-        |--------------------------------------------------------------------------
-        */
+|--------------------------------------------------------------------------
+| VIEW
+|--------------------------------------------------------------------------
+*/
 
-        return view(
-            'library.praktik-industri.index',
+// Request dari JS (fetch/AJAX) -> balas JSON berisi partial HTML.
+if ($request->ajax() || $request->wantsJson()) {
+
+    return response()->json([
+
+        'result' => view(
+            'library.praktik-industri._result',
             [
-                'laporan' =>
-                    $paginator,
-
-                'search' =>
-                    $search,
+                'laporan' => $paginator,
             ]
-        );
+        )->render(),
+
+        'pagination' => view(
+            'library.praktik-industri._pagination',
+            [
+                'laporan' => $paginator,
+            ]
+        )->render(),
+
+    ]);
+
+}
+
+// Load halaman biasa -> tetap render full page seperti sekarang.
+return view(
+    'library.praktik-industri.index',
+    [
+        'laporan' => $paginator,
+        'search'  => $search,
+    ]
+);
     }
-
-
     /**
      * Menampilkan seluruh riwayat laporan berdasarkan nomor kelompok.
      *
