@@ -4,59 +4,58 @@
 
 @section('content')
 
-<div class="min-h-screen bg-slate-50">
+{{-- =========================================================
+    HERO
+========================================================= --}}
+<section class="relative -mt-20 overflow-hidden">
 
-    {{-- ============================================================ --}}
-    {{-- HERO --}}
-    {{-- ============================================================ --}}
+    {{-- Background --}}
+    <img
+        src="{{ asset('gambar/rak 3.png') }}"
+        alt="Repository Disertasi"
+        class="absolute inset-0 h-full w-full object-cover">
 
-    <section class="relative overflow-hidden bg-slate-900">
+    {{-- Overlay --}}
+    <div
+        class="absolute inset-0
+               bg-gradient-to-r
+               from-[#212A37]/95
+               via-[#212A37]/85
+               to-[#212A37]/65">
+    </div>
 
-        <div class="absolute inset-0">
 
-            <img
-                src="{{ asset('gambar/rak 3.png') }}"
-                alt=""
-                class="h-full w-full object-cover opacity-30">
-
-            <div
-                class="absolute inset-0
-                       bg-gradient-to-r
-                       from-slate-950
-                       via-slate-900/90
-                       to-slate-900/50">
-            </div>
-
-        </div>
-
+    {{-- Hero Content --}}
+    <div
+        class="relative mx-auto flex min-h-[500px]
+               max-w-7xl items-center
+               px-4 pb-24 pt-28
+               sm:px-6 lg:px-8">
 
         <div
-            class="relative mx-auto
-                   max-w-7xl
-                   px-6 py-20
-                   lg:px-8">
+            class="grid w-full items-center gap-12
+                   lg:grid-cols-[minmax(0,1fr)_300px]">
 
+            {{-- =====================================================
+                LEFT CONTENT
+            ====================================================== --}}
             <div class="max-w-3xl">
 
                 {{-- Label --}}
-
                 <div
-                    class="mb-5 inline-flex
-                           items-center gap-2
+                    class="mb-6 inline-flex items-center gap-2
                            rounded-full
                            border border-white/10
                            bg-white/10
                            px-4 py-2
                            text-sm font-medium
                            text-white
-                           backdrop-blur">
+                           shadow-sm
+                           backdrop-blur-md">
 
                     <span
-                        class="material-symbols-outlined
-                               text-[18px]">
-
+                        class="material-symbols-outlined text-[18px]">
                         school
-
                     </span>
 
                     Pascasarjana
@@ -65,552 +64,245 @@
 
 
                 {{-- Title --}}
-
                 <h1
-                    class="text-4xl
-                           font-bold
-                           tracking-tight
-                           text-white
-                           sm:text-5xl">
+                    class="text-4xl font-bold leading-tight
+                           tracking-tight text-white
+                           sm:text-5xl lg:text-6xl">
 
-                    Repository Disertasi
+                    Temukan Koleksi
+
+                    <span class="block">
+                        Disertasi Akademik.
+                    </span>
 
                 </h1>
 
 
                 {{-- Description --}}
-
                 <p
-                    class="mt-5
-                           max-w-2xl
-                           text-base
-                           leading-7
+                    class="mt-5 max-w-2xl
+                           text-base leading-8
                            text-slate-300
                            sm:text-lg">
 
-                    Temukan dan akses koleksi disertasi
-                    yang telah tersedia di repository
-                    perpustakaan.
+                    Jelajahi koleksi disertasi akademik yang telah
+                    tersedia di repository perpustakaan untuk
+                    mendukung kebutuhan pembelajaran dan penelitian.
 
                 </p>
 
             </div>
 
-        </div>
 
-    </section>
-
-
-    {{-- ============================================================ --}}
-    {{-- CONTENT --}}
-    {{-- ============================================================ --}}
-
-    <section
-        class="mx-auto
-               max-w-7xl
-               px-6 py-10
-               lg:px-8">
-
-
-        {{-- ======================================================== --}}
-        {{-- FILTER --}}
-        {{-- ======================================================== --}}
-
-        @include('dissertations._filter')
-
-
-        {{-- ======================================================== --}}
-        {{-- RESULT --}}
-        {{-- ======================================================== --}}
-
-        <div
-            id="dissertationResult"
-            class="mt-8">
-
-            @include(
-                'dissertations._result',
-                [
-                    'dissertations' => $dissertations,
-                    'currentPage' => $currentPage,
-                    'lastPage' => $lastPage,
-                    'total' => $total,
-                ]
-            )
-
-        </div>
-
-    </section>
-
-</div>
-
-@endsection
-
-
-{{-- ================================================================ --}}
-{{-- JAVASCRIPT --}}
-{{-- ================================================================ --}}
-
-@push('scripts')
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    /*
-    |--------------------------------------------------------------------------
-    | ELEMENT
-    |--------------------------------------------------------------------------
-    */
-
-    const form =
-        document.getElementById(
-            'dissertationSearchForm'
-        );
-
-    const input =
-        document.getElementById(
-            'dissertationSearchInput'
-        );
-
-    const result =
-        document.getElementById(
-            'dissertationResult'
-        );
-
-    const loading =
-        document.getElementById(
-            'dissertationSearchLoading'
-        );
-
-    const clearButton =
-        document.getElementById(
-            'dissertationClearSearch'
-        );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDASI
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        !form ||
-        !input ||
-        !result
-    ) {
-
-        return;
-
-    }
-
-
-    let searchTimer = null;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SHOW LOADING
-    |--------------------------------------------------------------------------
-    */
-
-    function showLoading() {
-
-        if (!loading) {
-            return;
-        }
-
-        loading.classList.remove(
-            'hidden'
-        );
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | HIDE LOADING
-    |--------------------------------------------------------------------------
-    */
-
-    function hideLoading() {
-
-        if (!loading) {
-            return;
-        }
-
-        loading.classList.add(
-            'hidden'
-        );
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | LOAD DISERTASI
-    |--------------------------------------------------------------------------
-    */
-
-    async function loadDissertations(
-        page = 1,
-        updateUrl = true
-    ) {
-
-        const search =
-            input.value.trim();
-
-
-        const params =
-            new URLSearchParams();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
-
-        if (search.length > 0) {
-
-            params.set(
-                'search',
-                search
-            );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | PAGE
-        |--------------------------------------------------------------------------
-        */
-
-        params.set(
-            'page',
-            page
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOADING
-        |--------------------------------------------------------------------------
-        */
-
-        showLoading();
-
-
-        result.classList.add(
-            'opacity-50',
-            'pointer-events-none',
-            'transition-opacity',
-            'duration-200'
-        );
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${form.action}?${params.toString()}`,
-                    {
-                        method: 'GET',
-
-                        headers: {
-
-                            'X-Requested-With':
-                                'XMLHttpRequest',
-
-                            'Accept':
-                                'text/html',
-
-                        },
-
-                    }
-                );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | HTTP ERROR
-            |--------------------------------------------------------------------------
-            */
-
-            if (!response.ok) {
-
-                throw new Error(
-                    `HTTP ${response.status}`
-                );
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | HTML
-            |--------------------------------------------------------------------------
-            */
-
-            const html =
-                await response.text();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE RESULT
-            |--------------------------------------------------------------------------
-            */
-
-            result.innerHTML =
-                html;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE URL
-            |--------------------------------------------------------------------------
-            */
-
-            if (updateUrl) {
-
-                const newUrl =
-                    `${form.action}?${params.toString()}`;
-
-
-                window.history.replaceState(
-                    {},
-                    '',
-                    newUrl
-                );
-
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SCROLL
-            |--------------------------------------------------------------------------
-            */
-
-            if (page > 1) {
-
-                result.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-
-            }
-
-
-        } catch (error) {
-
-            console.error(
-                'Gagal mengambil data disertasi:',
-                error
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ERROR STATE
-            |--------------------------------------------------------------------------
-            */
-
-            result.innerHTML = `
+            {{-- =====================================================
+                REPOSITORY STICKY NOTE
+            ====================================================== --}}
+            <div class="hidden justify-end lg:flex">
 
                 <div
-                    class="rounded-2xl
-                           border border-red-200
-                           bg-red-50
-                           px-6 py-12
-                           text-center">
+                    class="group relative w-full max-w-[270px]
+                           rotate-[2deg]
+                           bg-[#fffdf4]
+                           px-7 pb-7 pt-9
+                           shadow-[0_18px_45px_rgba(0,0,0,0.28)]
+                           transition-all duration-300
+                           hover:-translate-y-1
+                           hover:rotate-0
+                           hover:shadow-[0_24px_55px_rgba(0,0,0,0.32)]">
 
-                    <span
-                        class="material-symbols-outlined
-                               text-[32px]
-                               text-red-400">
-
-                        error
-
-                    </span>
-
-
-                    <h3
-                        class="mt-4
-                               text-base
-                               font-bold
-                               text-red-800">
-
-                        Gagal memuat data disertasi
-
-                    </h3>
+                    {{-- Tape --}}
+                    <div
+                        class="absolute -top-4 left-1/2
+                               h-8 w-24
+                               -translate-x-1/2 -rotate-2
+                               bg-white/60
+                               shadow-sm
+                               backdrop-blur-[2px]">
+                    </div>
 
 
-                    <p
-                        class="mt-2
-                               text-sm
-                               text-red-600">
+                    {{-- Fold --}}
+                    <div
+                        class="absolute bottom-0 right-0
+                               h-8 w-8
+                               bg-gradient-to-tl
+                               from-[#e8e4d5]
+                               to-[#fffdf4]
+                               shadow-[-3px_-3px_6px_rgba(0,0,0,0.06)]">
+                    </div>
 
-                        Silakan coba lagi beberapa saat.
 
-                    </p>
+                    <div class="relative">
+
+                        {{-- Icon --}}
+                        <div
+                            class="flex h-11 w-11
+                                   items-center justify-center
+                                   rounded-xl
+                                   bg-[#212A37]
+                                   text-white
+                                   shadow-sm">
+
+                            <span
+                                class="material-symbols-outlined text-[22px]">
+                                school
+                            </span>
+
+                        </div>
+
+
+                        {{-- Label --}}
+                        <p
+                            class="mt-6
+                                   text-[11px]
+                                   font-bold
+                                   uppercase
+                                   tracking-wide
+                                   text-slate-500">
+
+                            Total Repository
+
+                        </p>
+
+
+                        {{-- Total --}}
+                        <div class="mt-2 flex items-end gap-2">
+
+                            <h2
+                                class="text-5xl
+                                       font-bold
+                                       tracking-tight
+                                       text-[#212A37]">
+
+                                @if ($total >= 1000000)
+
+                                    {{ rtrim(
+                                        rtrim(
+                                            number_format(
+                                                $total / 1000000,
+                                                1,
+                                                ',',
+                                                ''
+                                            ),
+                                            '0'
+                                        ),
+                                        ','
+                                    ) }}M+
+
+                                @elseif ($total >= 1000)
+
+                                    {{ rtrim(
+                                        rtrim(
+                                            number_format(
+                                                $total / 1000,
+                                                1,
+                                                ',',
+                                                ''
+                                            ),
+                                            '0'
+                                        ),
+                                        ','
+                                    ) }}K+
+
+                                @else
+
+                                    {{ $total }}
+
+                                @endif
+
+                            </h2>
+
+                            <span
+                                class="mb-1.5
+                                       text-sm
+                                       font-semibold
+                                       text-slate-500">
+
+                                Disertasi
+
+                            </span>
+
+                        </div>
+
+
+                        {{-- Divider --}}
+                        <div
+                            class="my-4
+                                   border-t
+                                   border-dashed
+                                   border-slate-300">
+                        </div>
+
+
+                        {{-- Description --}}
+                        <p
+                            class="text-sm
+                                   leading-6
+                                   text-slate-500">
+
+                            Total koleksi disertasi akademik
+                            yang tersedia di repository.
+
+                        </p>
+
+                    </div>
 
                 </div>
 
-            `;
+            </div>
 
-        } finally {
+        </div>
 
-            hideLoading();
+    </div>
 
-
-            result.classList.remove(
-                'opacity-50',
-                'pointer-events-none'
-            );
-
-        }
-
-    }
+</section>
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SEARCH DEBOUNCE
-    |--------------------------------------------------------------------------
-    */
+{{-- =========================================================
+    SEARCH CARD
+========================================================= --}}
+<div
+    class="relative z-20 mx-auto -mt-12
+           max-w-7xl
+           px-4
+           sm:px-6
+           lg:px-8">
 
-    input.addEventListener(
-        'input',
-        () => {
+    <div
+        class="rounded-[24px]
+               border border-slate-200
+               bg-white
+               px-6 py-5
+               shadow-[0_20px_50px_-20px_rgba(15,23,42,0.22)]
+               sm:px-7">
 
-            clearTimeout(
-                searchTimer
-            );
+        @include('dissertations._filter')
 
+    </div>
 
-            searchTimer =
-                setTimeout(
-                    () => {
-
-                        loadDissertations(
-                            1
-                        );
-
-                    },
-                    400
-                );
-
-        }
-    );
+</div>
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PAGINATION
-    |--------------------------------------------------------------------------
-    |
-    | _pagination.blade.php menggunakan:
-    |
-    | data-dissertation-page="..."
-    |
-    */
+{{-- =========================================================
+    RESULT
+========================================================= --}}
+<section
+    id="dissertationResult"
+    class="mx-auto mt-8
+           max-w-7xl
+           px-4 pb-12
+           sm:px-6 lg:px-8">
 
-    result.addEventListener(
-        'click',
-        (event) => {
+    @include(
+        'dissertations._result',
+        [
+            'dissertations' => $dissertations,
+            'currentPage' => $currentPage,
+            'lastPage' => $lastPage,
+            'total' => $total,
+        ]
+    )
 
-            const button =
-                event.target.closest(
-                    '[data-dissertation-page]'
-                );
+</section>
 
-
-            if (!button) {
-                return;
-            }
-
-
-            event.preventDefault();
-
-
-            const page =
-                parseInt(
-                    button.dataset.dissertationPage,
-                    10
-                );
-
-
-            if (
-                !page ||
-                page < 1
-            ) {
-
-                return;
-
-            }
-
-
-            loadDissertations(
-                page
-            );
-
-        }
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR SEARCH
-    |--------------------------------------------------------------------------
-    */
-
-    if (clearButton) {
-
-        clearButton.addEventListener(
-            'click',
-            () => {
-
-                input.value = '';
-
-                loadDissertations(
-                    1
-                );
-
-            }
-        );
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ENTER
-    |--------------------------------------------------------------------------
-    */
-
-    form.addEventListener(
-        'submit',
-        (event) => {
-
-            event.preventDefault();
-
-
-            clearTimeout(
-                searchTimer
-            );
-
-
-            loadDissertations(
-                1
-            );
-
-        }
-    );
-
-
-});
-</script>
-
-@endpush
+@endsection

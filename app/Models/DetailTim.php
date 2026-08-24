@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class DetailTim extends Model
+{
+    protected $connection = 'simpi';
+
+    protected $table = 'detail_tims';
+
+    public function tim()
+    {
+        return $this->belongsTo(Tim::class, 'tim_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+}

@@ -2,14 +2,7 @@
 |--------------------------------------------------------------------------
 | User Homepage
 |--------------------------------------------------------------------------
-|
 | JavaScript khusus halaman homepage pengguna SIPERPUS.
-|
-| Semua interaksi yang hanya digunakan oleh homepage user
-| diletakkan di file ini.
-|
-| Jangan masukkan fitur dashboard admin ke file ini.
-|
 |--------------------------------------------------------------------------
 */
 
@@ -19,32 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /*
 |--------------------------------------------------------------------------
-| Initialize User Homepage
+| User Homepage Initialization
 |--------------------------------------------------------------------------
 */
 
 function initUserHomepage() {
-    /*
-    |--------------------------------------------------------------------------
-    | Homepage Guard
-    |--------------------------------------------------------------------------
-    */
-
     const homepage = document.getElementById("userHomepage");
 
     if (!homepage) {
         return;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Initialize Features
-    |--------------------------------------------------------------------------
-    */
-
     initHeroSlider();
-    initLiteratureCards();
-    initHeroFilterButtons();
+    initHeroSearch();
 }
 
 /*
@@ -60,110 +40,83 @@ function initHeroSlider() {
         return;
     }
 
-    let current = 0;
+    let currentIndex = 0;
 
     const showSlide = (index) => {
-        slides.forEach((slide, i) => {
-            if (i === index) {
-                /*
-                |--------------------------------------------------------------------------
-                | Reset Animation
-                |--------------------------------------------------------------------------
-                */
-
-                slide.style.animation = "none";
-
-                /*
-                | Trigger reflow
-                */
-
-                slide.offsetHeight;
-
-                slide.style.animation = "";
-
-                slide.classList.add("active");
-            } else {
-                slide.classList.remove("active");
-            }
+        slides.forEach((slide, slideIndex) => {
+            slide.classList.toggle("active", slideIndex === index);
         });
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | Initial Slide
-    |--------------------------------------------------------------------------
-    */
+    showSlide(currentIndex);
 
-    showSlide(current);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Slider
-    |--------------------------------------------------------------------------
-    */
+    if (slides.length <= 1) {
+        return;
+    }
 
     setInterval(() => {
-        current = (current + 1) % slides.length;
+        currentIndex = (currentIndex + 1) % slides.length;
 
-        showSlide(current);
+        showSlide(currentIndex);
     }, 7000);
 }
 
 /*
 |--------------------------------------------------------------------------
-| Literature Cards
+| Hero Search
 |--------------------------------------------------------------------------
 */
 
-function initLiteratureCards() {
-    const cards = document.querySelectorAll("[data-literature-card]");
+function initHeroSearch() {
+    /*
+    |--------------------------------------------------------------------------
+    | Elements
+    |--------------------------------------------------------------------------
+    */
 
-    if (!cards.length) {
-        return;
-    }
+    const form = document.getElementById("heroSearchForm");
 
-    cards.forEach((card) => {
-        /*
-        |--------------------------------------------------------------------------
-        | Future Interaction
-        |--------------------------------------------------------------------------
-        |
-        | - card animation
-        | - quick preview
-        | - bookmark
-        | - tracking
-        |
-        */
-    });
-}
-
-/*
-|--------------------------------------------------------------------------
-| Hero Filter Buttons
-|--------------------------------------------------------------------------
-|
-| Mengatur:
-| - Temukan Literatur
-| - Temukan Skripsi
-|
-| Tombol hanya mengubah mode pencarian.
-| Tidak langsung melakukan redirect.
-|
-|--------------------------------------------------------------------------
-*/
-
-function initHeroFilterButtons() {
-    const literatureBtn = document.getElementById("filterLiteratureBtn");
-
-    const skripsiBtn = document.getElementById("filterSkripsiBtn");
-
-    const searchForm = document.getElementById("heroSearchForm");
+    const input = document.getElementById("search");
 
     const filterTarget = document.getElementById("filterTarget");
 
-    const searchInput = document.getElementById("search");
-
     const searchError = document.getElementById("search-error");
+
+    /*
+    |--------------------------------------------------------------------------
+    | Category Button
+    |--------------------------------------------------------------------------
+    */
+
+    const categoryButton = document.getElementById("searchCategoryButton");
+
+    const categoryDropdown = document.getElementById("searchCategoryDropdown");
+
+    const categoryLabel = document.getElementById("searchCategoryLabel");
+
+    const categoryIcon = document.getElementById("searchCategoryIcon");
+
+    const categoryArrow = document.getElementById("searchCategoryArrow");
+
+    /*
+    |--------------------------------------------------------------------------
+    | Quick Filter Buttons
+    |--------------------------------------------------------------------------
+    */
+
+    const literatureButton = document.getElementById("filterLiteratureBtn");
+
+    const skripsiButton = document.getElementById("filterSkripsiBtn");
+
+    /*
+    |--------------------------------------------------------------------------
+    | Category Options
+    |--------------------------------------------------------------------------
+    */
+
+    const categoryOptions = document.querySelectorAll(
+        ".search-category-option",
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -171,13 +124,13 @@ function initHeroFilterButtons() {
     |--------------------------------------------------------------------------
     */
 
-    if (!literatureBtn || !skripsiBtn || !searchForm || !filterTarget) {
+    if (!form || !input || !filterTarget) {
         return;
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Button Style
+    | Button Styles
     |--------------------------------------------------------------------------
     */
 
@@ -199,46 +152,172 @@ function initHeroFilterButtons() {
 
     /*
     |--------------------------------------------------------------------------
-    | Set Active Button
+    | Set Quick Filter State
     |--------------------------------------------------------------------------
     */
 
-    const setActiveButton = (activeButton, inactiveButton) => {
+    const setQuickFilterState = (filter) => {
         /*
-        | Active
+        |--------------------------------------------------------------------------
+        | Literature
+        |--------------------------------------------------------------------------
         */
 
-        activeButton.classList.remove(...inactiveClasses);
+        if (literatureButton) {
+            literatureButton.classList.remove(
+                ...activeClasses,
+                ...inactiveClasses,
+            );
 
-        activeButton.classList.add(...activeClasses);
+            if (filter === "literature") {
+                literatureButton.classList.add(...activeClasses);
+            } else {
+                literatureButton.classList.add(...inactiveClasses);
+            }
+        }
 
         /*
-        | Inactive
+        |--------------------------------------------------------------------------
+        | Skripsi
+        |--------------------------------------------------------------------------
         */
 
-        inactiveButton.classList.remove(...activeClasses);
+        if (skripsiButton) {
+            skripsiButton.classList.remove(
+                ...activeClasses,
+                ...inactiveClasses,
+            );
 
-        inactiveButton.classList.add(...inactiveClasses);
+            if (filter === "skripsi") {
+                skripsiButton.classList.add(...activeClasses);
+            } else {
+                skripsiButton.classList.add(...inactiveClasses);
+            }
+        }
     };
 
     /*
     |--------------------------------------------------------------------------
-    | Apply Search Mode
+    | Open Dropdown
     |--------------------------------------------------------------------------
     */
 
-    const applyMode = (mode) => {
-        const button = mode === "skripsi" ? skripsiBtn : literatureBtn;
+    const openCategoryDropdown = () => {
+        if (!categoryDropdown || !categoryButton) {
+            return;
+        }
 
-        const route = button.dataset.route;
+        categoryDropdown.classList.remove("hidden");
+
+        categoryButton.setAttribute("aria-expanded", "true");
+
+        if (categoryArrow) {
+            categoryArrow.classList.add("rotate-180");
+        }
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Close Dropdown
+    |--------------------------------------------------------------------------
+    */
+
+    const closeCategoryDropdown = () => {
+        if (!categoryDropdown || !categoryButton) {
+            return;
+        }
+
+        categoryDropdown.classList.add("hidden");
+
+        categoryButton.setAttribute("aria-expanded", "false");
+
+        if (categoryArrow) {
+            categoryArrow.classList.remove("rotate-180");
+        }
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Toggle Dropdown
+    |--------------------------------------------------------------------------
+    */
+
+    const toggleCategoryDropdown = () => {
+        if (!categoryDropdown) {
+            return;
+        }
+
+        const isClosed = categoryDropdown.classList.contains("hidden");
+
+        if (isClosed) {
+            openCategoryDropdown();
+        } else {
+            closeCategoryDropdown();
+        }
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Clear Search Error
+    |--------------------------------------------------------------------------
+    */
+
+    const clearSearchError = () => {
+        if (searchError) {
+            searchError.classList.add("hidden");
+        }
+
+        input.classList.remove("border-red-400", "ring-4", "ring-red-400/20");
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Apply Search Category
+    |--------------------------------------------------------------------------
+    */
+
+    const applyCategory = (element) => {
+        if (!element) {
+            return;
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | Update Target
+        | Read Dataset
         |--------------------------------------------------------------------------
         */
 
-        filterTarget.value = mode;
+        const filter = element.dataset.filter || "";
+
+        const label = element.dataset.label || "";
+
+        const icon = element.dataset.icon || "category";
+
+        const route = element.dataset.route || "";
+
+        const placeholder = element.dataset.placeholder || "";
+
+        /*
+        |--------------------------------------------------------------------------
+        | Route Guard
+        |--------------------------------------------------------------------------
+        */
+
+        if (!route) {
+            console.warn("Search category tidak memiliki route:", filter);
+
+            closeCategoryDropdown();
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Hidden Filter
+        |--------------------------------------------------------------------------
+        */
+
+        filterTarget.value = filter;
 
         /*
         |--------------------------------------------------------------------------
@@ -246,83 +325,167 @@ function initHeroFilterButtons() {
         |--------------------------------------------------------------------------
         */
 
-        if (route) {
-            searchForm.action = route;
+        form.action = route;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Category Label
+        |--------------------------------------------------------------------------
+        */
+
+        if (categoryLabel) {
+            categoryLabel.textContent = label;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Update Button State
+        | Update Category Icon
         |--------------------------------------------------------------------------
         */
 
-        if (mode === "skripsi") {
-            setActiveButton(skripsiBtn, literatureBtn);
-
-            if (searchInput) {
-                searchInput.placeholder =
-                    "Cari judul skripsi, penulis, atau kata kunci...";
-            }
-        } else {
-            setActiveButton(literatureBtn, skripsiBtn);
-
-            if (searchInput) {
-                searchInput.placeholder =
-                    "Cari judul literatur, penulis, atau kata kunci...";
-            }
+        if (categoryIcon) {
+            categoryIcon.textContent = icon;
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Placeholder
+        |--------------------------------------------------------------------------
+        */
+
+        if (placeholder) {
+            input.placeholder = placeholder;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Quick Filter
+        |--------------------------------------------------------------------------
+        */
+
+        setQuickFilterState(filter);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Clear Validation
+        |--------------------------------------------------------------------------
+        */
+
+        clearSearchError();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Close Dropdown
+        |--------------------------------------------------------------------------
+        */
+
+        closeCategoryDropdown();
     };
 
     /*
     |--------------------------------------------------------------------------
-    | Temukan Literatur
+    | Category Button Click
     |--------------------------------------------------------------------------
     */
 
-    literatureBtn.addEventListener("click", (event) => {
-        event.preventDefault();
+    if (categoryButton) {
+        categoryButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-        applyMode("literature");
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Temukan Skripsi
-    |--------------------------------------------------------------------------
-    */
-
-    skripsiBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-
-        applyMode("skripsi");
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default
-    |--------------------------------------------------------------------------
-    */
-
-    applyMode("literature");
-
-    /*
-    |--------------------------------------------------------------------------
-    | Search Validation
-    |--------------------------------------------------------------------------
-    */
-
-    if (!searchInput) {
-        return;
+            toggleCategoryDropdown();
+        });
     }
 
-    searchForm.addEventListener("submit", (event) => {
-        const keyword = searchInput.value.trim();
+    /*
+    |--------------------------------------------------------------------------
+    | Category Option Click
+    |--------------------------------------------------------------------------
+    */
+
+    categoryOptions.forEach((option) => {
+        option.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            applyCategory(option);
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Literature Quick Button
+    |--------------------------------------------------------------------------
+    */
+
+    if (literatureButton) {
+        literatureButton.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            applyCategory(literatureButton);
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Skripsi Quick Button
+    |--------------------------------------------------------------------------
+    */
+
+    if (skripsiButton) {
+        skripsiButton.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            applyCategory(skripsiButton);
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Close Dropdown When Clicking Outside
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener("click", (event) => {
+        if (!categoryDropdown || !categoryButton) {
+            return;
+        }
+
+        const clickedDropdown = categoryDropdown.contains(event.target);
+
+        const clickedButton = categoryButton.contains(event.target);
+
+        if (!clickedDropdown && !clickedButton) {
+            closeCategoryDropdown();
+        }
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Close Dropdown With Escape
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeCategoryDropdown();
+        }
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Search Submit Validation
+    |--------------------------------------------------------------------------
+    */
+
+    form.addEventListener("submit", (event) => {
+        const keyword = input.value.trim();
 
         /*
-        |--------------------------------------------------------------------------
-        | Empty Search
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Empty Keyword
+            |--------------------------------------------------------------------------
+            */
 
         if (!keyword) {
             event.preventDefault();
@@ -331,51 +494,44 @@ function initHeroFilterButtons() {
                 searchError.classList.remove("hidden");
             }
 
-            searchInput.classList.add(
-                "border-red-400",
-                "ring-4",
-                "ring-red-400/20",
-            );
+            input.classList.add("border-red-400", "ring-4", "ring-red-400/20");
 
-            searchInput.focus();
+            input.focus();
 
             return;
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Valid Search
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Valid Keyword
+            |--------------------------------------------------------------------------
+            */
 
-        if (searchError) {
-            searchError.classList.add("hidden");
-        }
-
-        searchInput.classList.remove(
-            "border-red-400",
-            "ring-4",
-            "ring-red-400/20",
-        );
+        clearSearchError();
     });
 
     /*
     |--------------------------------------------------------------------------
-    | Search Input
+    | Clear Error While Typing
     |--------------------------------------------------------------------------
     */
 
-    searchInput.addEventListener("input", () => {
-        if (searchInput.value.trim() !== "") {
-            if (searchError) {
-                searchError.classList.add("hidden");
-            }
-
-            searchInput.classList.remove(
-                "border-red-400",
-                "ring-4",
-                "ring-red-400/20",
-            );
+    input.addEventListener("input", () => {
+        if (input.value.trim() !== "") {
+            clearSearchError();
         }
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Category
+    |--------------------------------------------------------------------------
+    |
+    | Homepage selalu dimulai dari Literatur.
+    |--------------------------------------------------------------------------
+    */
+
+    if (literatureButton) {
+        applyCategory(literatureButton);
+    }
 }

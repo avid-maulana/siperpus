@@ -1,40 +1,40 @@
 @php
-    $repository = $thesis->repository ?? null;
+$repository = $thesis->repository ?? null;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Bersihkan judul dari HTML
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| Bersihkan judul dari HTML
+|--------------------------------------------------------------------------
+*/
 
-    $judulRaw = $thesis->judul_karya ?? '-';
+$judulRaw = $thesis->judul_karya ?? '-';
 
-    $judul = html_entity_decode(
-        $judulRaw,
-        ENT_QUOTES | ENT_HTML5,
-        'UTF-8'
-    );
+$judul = html_entity_decode(
+$judulRaw,
+ENT_QUOTES | ENT_HTML5,
+'UTF-8'
+);
 
-    $judul = strip_tags($judul);
+$judul = strip_tags($judul);
 
-    $judul = trim(
-        preg_replace(
-            '/\s+/',
-            ' ',
-            $judul
-        )
-    );
+$judul = trim(
+preg_replace(
+'/\s+/',
+' ',
+$judul
+)
+);
 
 
-    $nama = $thesis->nama ?? '-';
+$nama = $thesis->nama ?? '-';
 
-    $nim = $thesis->nim ?? '-';
+$nim = $thesis->nim ?? '-';
 
-    $tanggalSidang =
-        $thesis->tgl_sidang ?? null;
+$tanggalSidang =
+$thesis->tgl_sidang ?? null;
 
-    $repositoryUrl =
-        $repository?->repository_url ?? null;
+$repositoryUrl =
+$repository?->repository_url ?? null;
 @endphp
 
 
@@ -291,7 +291,6 @@
 
         </div>
 
-
         {{-- ======================================================== --}}
         {{-- REPOSITORY BUTTON --}}
         {{-- ======================================================== --}}
@@ -301,25 +300,31 @@
             @if($repositoryUrl)
 
             <a
-                href="{{ $repositoryUrl }}"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="{{ route('pdf.viewer', [
+                'path'  => $repositoryUrl,
+                'title' => $judul,
+                'nama'  => $nama,
+                'nim'   => $nim,
+                'skripsi' => $judul,
+                'bab'   => 'Repository Tesis',
+            ]) }}"
                 class="flex w-full
-                           items-center justify-center
-                           gap-2 rounded-xl
-                           bg-slate-900
-                           px-4 py-3
-                           text-sm font-semibold
-                           text-white
-                           transition-all duration-200
-                           hover:bg-slate-700
-                           group-hover:shadow-md">
+                   items-center justify-center
+                   gap-2
+                   rounded-xl
+                   bg-slate-900
+                   px-4 py-3
+                   text-sm font-semibold
+                   text-white
+                   transition-all duration-200
+                   hover:bg-slate-700
+                   group-hover:shadow-md">
 
                 <span
                     class="material-symbols-outlined
-                               text-[19px]">
+                       text-[19px]">
 
-                    open_in_new
+                    visibility
 
                 </span>
 
@@ -331,16 +336,17 @@
 
             <div
                 class="flex w-full
-                           items-center justify-center
-                           gap-2 rounded-xl
-                           bg-slate-100
-                           px-4 py-3
-                           text-sm font-semibold
-                           text-slate-400">
+                   items-center justify-center
+                   gap-2
+                   rounded-xl
+                   bg-slate-100
+                   px-4 py-3
+                   text-sm font-semibold
+                   text-slate-400">
 
                 <span
                     class="material-symbols-outlined
-                               text-[19px]">
+                       text-[19px]">
 
                     link_off
 

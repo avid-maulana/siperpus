@@ -9,9 +9,15 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>{{ request('title', 'PDF Viewer') }}</title>
+    <title>
+        {{ request('title', 'PDF Viewer') }}
+    </title>
 
-    @vite(['resources/css/app.css'])
+
+    @vite([
+    'resources/css/app.css',
+    'resources/js/app.js'
+    ])
 
 
     <style>
@@ -20,11 +26,17 @@
         ========================================================== */
 
         #pdf-container {
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             gap: 20px;
+
             width: 100%;
+
             padding: 28px;
         }
 
@@ -34,9 +46,13 @@
         ========================================================== */
 
         .pdf-page {
+
             display: block;
+
             max-width: 100%;
+
             height: auto;
+
             background: white;
 
             box-shadow:
@@ -49,15 +65,21 @@
         ========================================================== */
 
         #pdf-container::-webkit-scrollbar {
+
             width: 8px;
         }
 
+
         #pdf-container::-webkit-scrollbar-track {
+
             background: transparent;
         }
 
+
         #pdf-container::-webkit-scrollbar-thumb {
+
             background: #cbd5e1;
+
             border-radius: 999px;
         }
 
@@ -69,65 +91,97 @@
         @media (max-width: 1023px) {
 
             .info-sidebar {
+
                 position: relative !important;
+
                 top: 0 !important;
             }
-
         }
 
 
         @media (max-width: 640px) {
 
             #pdf-container {
+
                 padding: 12px;
+
                 gap: 14px;
             }
 
+
             .pdf-page {
+
                 width: 100%;
             }
-
         }
     </style>
 
 </head>
 
 
-<body class="min-h-screen bg-slate-100 text-slate-800">
+<body
+    class="min-h-screen
+           bg-slate-100
+           text-slate-800">
 
 
     {{-- =========================================================
         HEADER
     ========================================================== --}}
 
-    {{-- =========================================================
-    HEADER
-========================================================= --}}
-
     <header
-        class="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
+        class="sticky
+               top-0
+               z-50
+               border-b
+               border-slate-200
+               bg-white
+               shadow-sm">
 
         <div
-            class="mx-auto flex min-h-[72px] max-w-[1600px] items-center gap-4 px-5 sm:px-7 lg:px-8">
+            class="mx-auto
+                   flex
+                   min-h-[72px]
+                   max-w-[1600px]
+                   items-center
+                   gap-4
+                   px-5
+                   sm:px-7
+                   lg:px-8">
 
-            {{-- Tombol Kembali --}}
+
+            {{-- =================================================
+                KEMBALI
+            ================================================== --}}
 
             <button
                 type="button"
                 onclick="history.back()"
-                class="group inline-flex shrink-0 items-center gap-2 rounded-xl
-                   bg-blue-600 px-4 py-2.5
-                   text-sm font-semibold text-white
-                   shadow-sm
-                   transition-all duration-200
-                   hover:bg-blue-700
-                   hover:shadow-md
-                   active:scale-[0.97]">
+                class="group
+                       inline-flex
+                       shrink-0
+                       items-center
+                       gap-2
+                       rounded-xl
+                       bg-blue-600
+                       px-4
+                       py-2.5
+                       text-sm
+                       font-semibold
+                       text-white
+                       shadow-sm
+                       transition-all
+                       duration-200
+                       hover:bg-blue-700
+                       hover:shadow-md
+                       active:scale-[0.97]">
 
-                {{-- Arrow SVG --}}
 
                 <svg
-                    class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5"
+                    class="h-5 w-5
+                           transition-transform
+                           duration-200
+                           group-hover:-translate-x-0.5"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -140,29 +194,38 @@
 
                 </svg>
 
+
                 Kembali
 
             </button>
 
 
-            {{-- Informasi Dokumen --}}
+            {{-- =================================================
+                INFORMASI DOKUMEN
+            ================================================== --}}
 
-            <div class="min-w-0">
+            <div
+                class="min-w-0">
 
-                {{-- Label --}}
 
                 <div
-                    class="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    class="text-[10px]
+                           font-semibold
+                           uppercase
+                           tracking-[0.18em]
+                           text-slate-400">
 
                     PDF VIEWER
 
                 </div>
 
 
-                {{-- BAB --}}
-
                 <h1
-                    class="mt-0.5 truncate text-lg font-semibold text-slate-800">
+                    class="mt-0.5
+                           truncate
+                           text-lg
+                           font-semibold
+                           text-slate-800">
 
                     {{ request('bab', request('title', 'Dokumen')) }}
 
@@ -181,10 +244,19 @@
     ========================================================== --}}
 
     <main
-        class="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-8">
+        class="mx-auto
+               max-w-[1600px]
+               px-4
+               py-5
+               sm:px-6
+               lg:px-8">
+
 
         <div
-            class="grid items-start gap-5 lg:grid-cols-[350px_minmax(0,1fr)]">
+            class="grid
+                   items-start
+                   gap-5
+                   lg:grid-cols-[350px_minmax(0,1fr)]">
 
 
             {{-- =================================================
@@ -192,11 +264,18 @@
             ================================================== --}}
 
             <aside
-                class="info-sidebar lg:sticky lg:top-[92px]">
+                class="info-sidebar
+                       lg:sticky
+                       lg:top-[92px]">
 
 
                 <div
-                    class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    class="overflow-hidden
+                           rounded-2xl
+                           border
+                           border-slate-200
+                           bg-white
+                           shadow-sm">
 
 
                     {{-- =================================================
@@ -204,24 +283,39 @@
                     ================================================== --}}
 
                     <div
-                        class="relative overflow-hidden bg-[#212A37] px-6 py-6">
+                        class="relative
+                               overflow-hidden
+                               bg-[#212A37]
+                               px-6
+                               py-6">
 
-                        {{-- Decorative glow --}}
 
                         <div
-                            class="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/[0.05] blur-3xl">
+                            class="pointer-events-none
+                                   absolute
+                                   -right-16
+                                   -top-16
+                                   h-40
+                                   w-40
+                                   rounded-full
+                                   bg-white/[0.05]
+                                   blur-3xl">
                         </div>
 
 
-                        <div class="relative">
+                        <div
+                            class="relative">
 
-                            <div class="flex items-center gap-2">
 
+                            <div
+                                class="flex
+                                       items-center
+                                       gap-2">
 
-                                {{-- Graduation cap SVG --}}
 
                                 <svg
-                                    class="h-5 w-5 text-white/70"
+                                    class="h-5 w-5
+                                           text-white/70"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -246,7 +340,10 @@
 
 
                                 <span
-                                    class="text-[11px] font-semibold uppercase text-white/70">
+                                    class="text-[11px]
+                                           font-semibold
+                                           uppercase
+                                           text-white/70">
 
                                     Informasi Skripsi
 
@@ -256,7 +353,10 @@
 
 
                             <p
-                                class="mt-2 text-xs leading-relaxed text-white/45">
+                                class="mt-2
+                                       text-xs
+                                       leading-relaxed
+                                       text-white/45">
 
                                 Informasi dokumen yang sedang kamu baca.
 
@@ -272,20 +372,34 @@
                         SIDEBAR CONTENT
                     ================================================== --}}
 
-                    <div class="p-6">
+                    <div
+                        class="p-6">
 
 
                         {{-- =================================================
                             NAMA
                         ================================================== --}}
 
-                        <div class="flex items-start gap-3">
+                        <div
+                            class="flex
+                                   items-start
+                                   gap-3">
 
 
                             <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200">
+                                class="flex
+                                       h-10
+                                       w-10
+                                       shrink-0
+                                       items-center
+                                       justify-center
+                                       rounded-xl
+                                       bg-slate-100
+                                       text-slate-500
+                                       ring-1
+                                       ring-inset
+                                       ring-slate-200">
 
-                                {{-- Person SVG --}}
 
                                 <svg
                                     class="h-5 w-5"
@@ -308,10 +422,15 @@
                             </div>
 
 
-                            <div class="min-w-0 flex-1">
+                            <div
+                                class="min-w-0
+                                       flex-1">
 
                                 <div
-                                    class="text-[10px] font-semibold uppercase text-slate-400">
+                                    class="text-[10px]
+                                           font-semibold
+                                           uppercase
+                                           text-slate-400">
 
                                     Nama Mahasiswa
 
@@ -319,7 +438,12 @@
 
 
                                 <div
-                                    class="mt-1 break-words text-sm font-semibold leading-relaxed text-slate-700">
+                                    class="mt-1
+                                           break-words
+                                           text-sm
+                                           font-semibold
+                                           leading-relaxed
+                                           text-slate-700">
 
                                     {{ request('nama', '-') }}
 
@@ -335,13 +459,27 @@
                             NIM
                         ================================================== --}}
 
-                        <div class="mt-6 flex items-start gap-3">
+                        <div
+                            class="mt-6
+                                   flex
+                                   items-start
+                                   gap-3">
 
 
                             <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200">
+                                class="flex
+                                       h-10
+                                       w-10
+                                       shrink-0
+                                       items-center
+                                       justify-center
+                                       rounded-xl
+                                       bg-slate-100
+                                       text-slate-500
+                                       ring-1
+                                       ring-inset
+                                       ring-slate-200">
 
-                                {{-- ID SVG --}}
 
                                 <svg
                                     class="h-5 w-5"
@@ -366,10 +504,16 @@
                             </div>
 
 
-                            <div class="min-w-0 flex-1">
+                            <div
+                                class="min-w-0
+                                       flex-1">
+
 
                                 <div
-                                    class="text-[10px] font-semibold uppercase text-slate-400">
+                                    class="text-[10px]
+                                           font-semibold
+                                           uppercase
+                                           text-slate-400">
 
                                     NIM
 
@@ -377,7 +521,12 @@
 
 
                                 <div
-                                    class="mt-1 break-words text-sm font-semibold leading-relaxed text-slate-700">
+                                    class="mt-1
+                                           break-words
+                                           text-sm
+                                           font-semibold
+                                           leading-relaxed
+                                           text-slate-700">
 
                                     {{ request('nim', '-') }}
 
@@ -393,13 +542,27 @@
                             JUDUL
                         ================================================== --}}
 
-                        <div class="mt-6 flex items-start gap-3">
+                        <div
+                            class="mt-6
+                                   flex
+                                   items-start
+                                   gap-3">
 
 
                             <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-200">
+                                class="flex
+                                       h-10
+                                       w-10
+                                       shrink-0
+                                       items-center
+                                       justify-center
+                                       rounded-xl
+                                       bg-slate-100
+                                       text-slate-500
+                                       ring-1
+                                       ring-inset
+                                       ring-slate-200">
 
-                                {{-- Book SVG --}}
 
                                 <svg
                                     class="h-5 w-5"
@@ -422,10 +585,16 @@
                             </div>
 
 
-                            <div class="min-w-0 flex-1">
+                            <div
+                                class="min-w-0
+                                       flex-1">
+
 
                                 <div
-                                    class="text-[10px] font-semibold uppercase text-slate-400">
+                                    class="text-[10px]
+                                           font-semibold
+                                           uppercase
+                                           text-slate-400">
 
                                     Judul Skripsi
 
@@ -433,7 +602,12 @@
 
 
                                 <div
-                                    class="mt-1 break-words text-sm font-semibold leading-relaxed text-slate-700">
+                                    class="mt-1
+                                           break-words
+                                           text-sm
+                                           font-semibold
+                                           leading-relaxed
+                                           text-slate-700">
 
                                     {{ request('skripsi', '-') }}
 
@@ -449,13 +623,27 @@
                             BAGIAN
                         ================================================== --}}
 
-                        <div class="mt-6 flex items-start gap-3">
+                        <div
+                            class="mt-6
+                                   flex
+                                   items-start
+                                   gap-3">
 
 
                             <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-inset ring-blue-100">
+                                class="flex
+                                       h-10
+                                       w-10
+                                       shrink-0
+                                       items-center
+                                       justify-center
+                                       rounded-xl
+                                       bg-blue-50
+                                       text-blue-600
+                                       ring-1
+                                       ring-inset
+                                       ring-blue-100">
 
-                                {{-- Document SVG --}}
 
                                 <svg
                                     class="h-5 w-5"
@@ -479,20 +667,39 @@
                             </div>
 
 
-                            <div class="min-w-0 flex-1">
+                            <div
+                                class="min-w-0
+                                       flex-1">
+
 
                                 <div
-                                    class="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+                                    class="text-[10px]
+                                           font-semibold
+                                           uppercase
+                                           tracking-[0.15em]
+                                           text-slate-400">
 
                                     Bagian
 
                                 </div>
 
 
-                                <div class="mt-1">
+                                <div
+                                    class="mt-1">
 
                                     <span
-                                        class="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-100">
+                                        class="inline-flex
+                                               items-center
+                                               rounded-lg
+                                               bg-blue-50
+                                               px-2.5
+                                               py-1
+                                               text-xs
+                                               font-semibold
+                                               text-blue-700
+                                               ring-1
+                                               ring-inset
+                                               ring-blue-100">
 
                                         {{ request('bab', request('title', '-')) }}
 
@@ -511,7 +718,9 @@
                         ================================================== --}}
 
                         <div
-                            class="my-6 border-t border-slate-100">
+                            class="my-6
+                                   border-t
+                                   border-slate-100">
                         </div>
 
 
@@ -523,13 +732,34 @@
                         <button
                             type="button"
                             onclick="history.back()"
-                            class="group flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition-all duration-200 hover:border-blue-600 hover:bg-blue-600 hover:text-white active:scale-[0.98]">
+                            class="group
+                                   flex
+                                   w-full
+                                   items-center
+                                   justify-center
+                                   gap-2
+                                   rounded-xl
+                                   border
+                                   border-slate-200
+                                   bg-white
+                                   px-4
+                                   py-3
+                                   text-sm
+                                   font-semibold
+                                   text-slate-600
+                                   transition-all
+                                   duration-200
+                                   hover:border-blue-600
+                                   hover:bg-blue-600
+                                   hover:text-white
+                                   active:scale-[0.98]">
 
-
-                            {{-- Arrow SVG --}}
 
                             <svg
-                                class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5"
+                                class="h-5 w-5
+                                       transition-transform
+                                       duration-200
+                                       group-hover:-translate-x-0.5"
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="currentColor"
@@ -560,7 +790,13 @@
             ================================================== --}}
 
             <section
-                class="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 shadow-sm">
+                class="min-w-0
+                       overflow-hidden
+                       rounded-2xl
+                       border
+                       border-slate-200
+                       bg-slate-200
+                       shadow-sm">
 
 
                 {{-- =================================================
@@ -569,18 +805,33 @@
 
                 <div
                     id="pdf-loading"
-                    class="flex min-h-[calc(100vh-120px)] items-center justify-center">
+                    class="flex
+                           min-h-[calc(100vh-120px)]
+                           items-center
+                           justify-center">
 
-                    <div class="text-center">
+
+                    <div
+                        class="text-center">
 
 
                         <div
-                            class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-blue-600">
+                            class="mx-auto
+                                   h-10
+                                   w-10
+                                   animate-spin
+                                   rounded-full
+                                   border-4
+                                   border-slate-300
+                                   border-t-blue-600">
                         </div>
 
 
                         <p
-                            class="mt-4 text-sm font-medium text-slate-600">
+                            class="mt-4
+                                   text-sm
+                                   font-medium
+                                   text-slate-600">
 
                             Memuat PDF...
 
@@ -599,7 +850,6 @@
                 <main
                     id="pdf-container"
                     class="hidden">
-
                 </main>
 
 
@@ -610,14 +860,32 @@
 
                 <div
                     id="pdf-error"
-                    class="hidden min-h-[calc(100vh-120px)] items-center justify-center px-6">
+                    class="hidden
+                           min-h-[calc(100vh-120px)]
+                           items-center
+                           justify-center
+                           px-6">
+
 
                     <div
-                        class="max-w-sm text-center">
+                        class="max-w-sm
+                               text-center">
 
 
                         <div
-                            class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500 ring-1 ring-inset ring-red-100">
+                            class="mx-auto
+                                   flex
+                                   h-14
+                                   w-14
+                                   items-center
+                                   justify-center
+                                   rounded-2xl
+                                   bg-red-50
+                                   text-red-500
+                                   ring-1
+                                   ring-inset
+                                   ring-red-100">
+
 
                             <svg
                                 class="h-7 w-7"
@@ -641,7 +909,10 @@
 
 
                         <h2
-                            class="mt-5 text-lg font-semibold text-slate-800">
+                            class="mt-5
+                                   text-lg
+                                   font-semibold
+                                   text-slate-800">
 
                             PDF gagal dimuat
 
@@ -649,7 +920,10 @@
 
 
                         <p
-                            class="mt-2 text-sm leading-relaxed text-slate-500">
+                            class="mt-2
+                                   text-sm
+                                   leading-relaxed
+                                   text-slate-500">
 
                             Dokumen tidak dapat ditampilkan.
                             Silakan kembali dan coba buka dokumen kembali.
@@ -660,7 +934,20 @@
                         <button
                             type="button"
                             onclick="history.back()"
-                            class="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]">
+                            class="mt-5
+                                   inline-flex
+                                   items-center
+                                   gap-2
+                                   rounded-xl
+                                   bg-blue-600
+                                   px-4
+                                   py-2.5
+                                   text-sm
+                                   font-semibold
+                                   text-white
+                                   transition
+                                   hover:bg-blue-700
+                                   active:scale-[0.98]">
 
 
                             <svg
@@ -698,229 +985,30 @@
         PDF CONFIG
     ========================================================== --}}
 
+    @if($pdfPath)
+
     <div
         id="pdf-config"
-        data-pdf-url="{{ route('pdf.proxy', ['url' => $pdfPath]) }}"
+        data-pdf-url="{{ route(
+                'pdf.proxy',
+                ['url' => $pdfPath]
+            ) }}"
+        data-source-url="{{ $pdfPath }}"
+        data-title="{{ request('title', 'Dokumen') }}"
         hidden>
     </div>
 
-
-
-    {{-- =========================================================
-        PDF.JS
-    ========================================================== --}}
-
-    <script type="module">
-        import * as pdfjsLib
-        from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
-
-
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
-
-
-        /* =====================================================
-           ELEMENT
-        ====================================================== */
-
-        const pdfConfig =
-            document.getElementById("pdf-config");
-
-
-        const pdfUrl =
-            pdfConfig.dataset.pdfUrl;
-
-
-        const container =
-            document.getElementById("pdf-container");
-
-
-        const loading =
-            document.getElementById("pdf-loading");
-
-
-        const error =
-            document.getElementById("pdf-error");
-
-
-
-        /* =====================================================
-           RENDER PDF
-        ====================================================== */
-
-        async function renderPDF() {
-
-            try {
-
-                const pdf =
-                    await pdfjsLib
-                    .getDocument(pdfUrl)
-                    .promise;
-
-
-                /* =================================================
-                   RENDER SEMUA HALAMAN
-                ================================================== */
-
-                for (
-                    let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++
-                ) {
-
-                    const page =
-                        await pdf.getPage(pageNumber);
-
-
-                    /* =================================================
-                       UKURAN ASLI
-                    ================================================== */
-
-                    const originalViewport =
-                        page.getViewport({
-                            scale: 1
-                        });
-
-
-                    /* =================================================
-                       HITUNG LEBAR PDF
-                    ================================================== */
-
-                    const pdfArea =
-                        container.parentElement;
-
-
-                    const availableWidth =
-                        pdfArea ?
-                        pdfArea.clientWidth - 56 :
-                        window.innerWidth - 56;
-
-
-                    const maxWidth =
-                        Math.min(
-                            900,
-                            Math.max(
-                                300,
-                                availableWidth
-                            )
-                        );
-
-
-                    const scale =
-                        maxWidth /
-                        originalViewport.width;
-
-
-                    const viewport =
-                        page.getViewport({
-                            scale: scale
-                        });
-
-
-                    /* =================================================
-                       CANVAS
-                    ================================================== */
-
-                    const canvas =
-                        document.createElement("canvas");
-
-
-                    canvas.className =
-                        "pdf-page";
-
-
-                    const context =
-                        canvas.getContext("2d");
-
-
-                    /* =================================================
-                       HIGH DPI
-                    ================================================== */
-
-                    const pixelRatio =
-                        window.devicePixelRatio || 1;
-
-
-                    canvas.width =
-                        Math.floor(
-                            viewport.width *
-                            pixelRatio
-                        );
-
-
-                    canvas.height =
-                        Math.floor(
-                            viewport.height *
-                            pixelRatio
-                        );
-
-
-                    canvas.style.width =
-                        `${viewport.width}px`;
-
-
-                    canvas.style.height =
-                        `${viewport.height}px`;
-
-
-                    /* =================================================
-                       RENDER
-                    ================================================== */
-
-                    await page.render({
-
-                        canvasContext: context,
-
-                        viewport: viewport,
-
-                        transform: [
-
-                            pixelRatio,
-                            0,
-                            0,
-                            pixelRatio,
-                            0,
-                            0
-
-                        ]
-
-                    }).promise;
-
-
-                    container.appendChild(canvas);
-
-                }
-
-
-                /* =================================================
-                   TAMPILKAN PDF
-                ================================================== */
-
-                loading.classList.add("hidden");
-
-                container.classList.remove("hidden");
-
-
-            } catch (err) {
-
-                console.error(
-                    "PDF Viewer Error:",
-                    err
-                );
-
-
-                loading.classList.add("hidden");
-
-                error.classList.remove("hidden");
-
-                error.classList.add("flex");
-
-            }
-
-        }
-
-
-        renderPDF();
-    </script>
-
+    @else
+
+    <div
+        id="pdf-config"
+        data-pdf-url=""
+        data-source-url=""
+        data-title="{{ request('title', 'Dokumen') }}"
+        hidden>
+    </div>
+
+    @endif
 
 </body>
 

@@ -6,6 +6,9 @@ use App\Models\Category;
 use App\Models\Literature;
 use App\Models\Type;
 use App\Models\User;
+use App\Models\PenjejakanPasca;
+use App\Models\Repository;
+use App\Models\Skripsi;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -21,10 +24,40 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        /*
+        |----------------------------------------------------------------------
+        | Literatur
+        |----------------------------------------------------------------------
+        */
+
         $literatureCount = Literature::count();
-        $categoryCount   = Category::count();
-        $typeCount       = Type::count();
-        $userCount       = User::count();
+
+
+        /*
+        |----------------------------------------------------------------------
+        | Kategori
+        |----------------------------------------------------------------------
+        */
+
+        $categoryCount = Category::count();
+
+
+        /*
+        |----------------------------------------------------------------------
+        | Type
+        |----------------------------------------------------------------------
+        */
+
+        $typeCount = Type::count();
+
+
+        /*
+        |----------------------------------------------------------------------
+        | User
+        |----------------------------------------------------------------------
+        */
+
+        $userCount = User::count();
 
 
         /*
@@ -40,24 +73,188 @@ class HomeController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Distribution by Type
+        | Total Skripsi
         |--------------------------------------------------------------------------
         |
-        | Relasi:
+        | Mengikuti logic SkripsiController:
         |
-        | Type
-        |   ↓
-        | Category
-        |   ↓
-        | Literature
+        | status_judul = SELESAI
+        | isi.status   = DITERIMA
         |
-        | Semua tipe tetap ditampilkan meskipun jumlah literaturnya 0.
+        */
+
+        $skripsiCount = Skripsi::query()
+            ->where(
+                'status_judul',
+                'SELESAI'
+            )
+            ->whereHas(
+                'isi',
+                function ($query) {
+                    $query->where(
+                        'status',
+                        'DITERIMA'
+                    );
+                }
+            )
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Base Query Tesis + Disertasi
+        |--------------------------------------------------------------------------
         |
+        | Mengikuti ThesisController dan DisertasiController:
+        |
+        | status = 4
+        | lampiran_produk tersedia
+        |
+        */
+
+        $penjejakanPasca = PenjejakanPasca::query()
+            ->where(
+                'status',
+                '4'
+            )
+            ->whereNotNull(
+                'lampiran_produk'
+            )
+            ->where(
+                'lampiran_produk',
+                '!=',
+                ''
+            )
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Repository Tesis / Disertasi
+        |--------------------------------------------------------------------------
+        |
+        | Ambil repository berdasarkan id_pengajuan.
+        |
+        */
+
+        $idPengajuan = $penjejakanPasca
+            ->pluck('id_pengajuan')
+            ->filter()
+            ->unique()
+            ->values();
+
+
+        $repositories = collect();
+
+        if ($idPengajuan->isNotEmpty()) {
+
+            $repositories = Repository::query()
+                ->whereIn(
+                    'id_pengajuan',
+                    $idPengajuan
+                )
+                ->get()
+                ->keyBy(
+                    'id_pengajuan'
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Tesis
+        |--------------------------------------------------------------------------
+        |
+        | Hanya:
+        |
+        | jenis_karya = thesis
+        | status      = active
+        |
+        */
+
+        $tesisCount = $penjejakanPasca
+            ->filter(
+                function ($item) use ($repositories) {
+
+                    $repository = $repositories->get(
+                        $item->id_pengajuan
+                    );
+
+                    if (!$repository) {
+                        return false;
+                    }
+
+                    return
+                        $repository->jenis_karya === 'thesis'
+                        &&
+                        $repository->status === 'active';
+                }
+            )
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Disertasi
+        |--------------------------------------------------------------------------
+        |
+        | Hanya:
+        |
+        | jenis_karya = dissertation
+        | status      = active
+        |
+        */
+
+        $disertasiCount = $penjejakanPasca
+            ->filter(
+                function ($item) use ($repositories) {
+
+                    $repository = $repositories->get(
+                        $item->id_pengajuan
+                    );
+
+                    if (!$repository) {
+                        return false;
+                    }
+
+                    return
+                        $repository->jenis_karya === 'dissertation'
+                        &&
+                        $repository->status === 'active';
+                }
+            )
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Seluruh Koleksi
+        |--------------------------------------------------------------------------
+        |
+        | Literatur
+        | + Skripsi
+        | + Tesis
+        | + Disertasi
+        |
+        */
+
+        $totalCollection =
+            $literatureCount
+            + $skripsiCount
+            + $tesisCount
+            + $disertasiCount;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Distribution by Type
+        |--------------------------------------------------------------------------
         */
 
         $typeChartData = Type::query()
             ->withCount([
                 'categories as literatures_count' => function ($query) {
+
                     $query->join(
                         'literatures',
                         'literatures.category_id',
@@ -66,15 +263,22 @@ class HomeController extends Controller
                     );
                 }
             ])
-            ->orderByDesc('literatures_count')
-            ->orderBy('name')
+            ->orderByDesc(
+                'literatures_count'
+            )
+            ->orderBy(
+                'name'
+            )
             ->get()
-            ->map(function ($type) {
-                return [
-                    'label' => $type->name,
-                    'value' => (int) $type->literatures_count,
-                ];
-            })
+            ->map(
+                function ($type) {
+
+                    return [
+                        'label' => $type->name,
+                        'value' => (int) $type->literatures_count,
+                    ];
+                }
+            )
             ->values();
 
 
@@ -82,23 +286,28 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         | Distribution by Category
         |--------------------------------------------------------------------------
-        |
-        | Semua kategori tetap ditampilkan.
-        | Kategori tanpa literatur akan memiliki value = 0.
-        |
         */
 
         $categoryChartData = Category::query()
-            ->withCount('literatures')
-            ->orderByDesc('literatures_count')
-            ->orderBy('name')
+            ->withCount(
+                'literatures'
+            )
+            ->orderByDesc(
+                'literatures_count'
+            )
+            ->orderBy(
+                'name'
+            )
             ->get()
-            ->map(function ($category) {
-                return [
-                    'label' => $category->name,
-                    'value' => (int) $category->literatures_count,
-                ];
-            })
+            ->map(
+                function ($category) {
+
+                    return [
+                        'label' => $category->name,
+                        'value' => (int) $category->literatures_count,
+                    ];
+                }
+            )
             ->values();
 
 
@@ -106,16 +315,6 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         | Skripsi Distribution by KBK
         |--------------------------------------------------------------------------
-        |
-        | data_judul   : database sisinta
-        | berkas_akhir : database sisinta
-        | data_kbk     : database master
-        |
-        | Skripsi dihitung jika:
-        |
-        | status_judul = SELESAI
-        | status berkas akhir = DITERIMA
-        |
         */
 
         $kbkTotals = DB::connection('sisinta')
@@ -156,25 +355,29 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         | Semua KBK
         |--------------------------------------------------------------------------
-        |
-        | KBK yang belum mempunyai skripsi tetap dikirim dengan value = 0.
-        |
         */
 
         $kbkChartData = DB::connection('master')
             ->table('data_kbk')
-            ->orderBy('nama_kbk')
+            ->orderBy(
+                'nama_kbk'
+            )
             ->get()
-            ->map(function ($kbk) use ($kbkTotals) {
-                return [
-                    'label' => $kbk->nama_kbk,
+            ->map(
+                function ($kbk) use ($kbkTotals) {
 
-                    'value' => (int) (
-                        $kbkTotals[$kbk->id] ?? 0
-                    ),
-                ];
-            })
-            ->sortByDesc('value')
+                    return [
+                        'label' => $kbk->nama_kbk,
+
+                        'value' => (int) (
+                            $kbkTotals[$kbk->id] ?? 0
+                        ),
+                    ];
+                }
+            )
+            ->sortByDesc(
+                'value'
+            )
             ->values();
 
 
@@ -197,14 +400,6 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         | Latest Login Activity
         |--------------------------------------------------------------------------
-        |
-        | status:
-        |
-        | 0 = Login
-        | 1 = Logout
-        |
-        | Card dashboard hanya menampilkan 5 LOGIN terbaru.
-        |
         */
 
         $latestLoginActivities = DB::connection('master')
@@ -240,9 +435,6 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         | Login / Logout Activity - 14 Days
         |--------------------------------------------------------------------------
-        |
-        | Digunakan pada popup "Lihat Semua Aktivitas".
-        |
         */
 
         $loginActivities = DB::connection('master')
@@ -280,48 +472,69 @@ class HomeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        return view('home', [
-            /*
-            |--------------------------------------------------------------------------
-            | Statistics
-            |--------------------------------------------------------------------------
-            */
+        return view(
+            'home',
+            [
 
-            'literatureCount' => $literatureCount,
-            'categoryCount'   => $categoryCount,
-            'typeCount'       => $typeCount,
-            'userCount'       => $userCount,
-            'kbkCount'        => $kbkCount,
+                /*
+                |--------------------------------------------------------------------------
+                | Statistics
+                |--------------------------------------------------------------------------
+                */
 
+                'literatureCount' => $literatureCount,
 
-            /*
-            |--------------------------------------------------------------------------
-            | Charts
-            |--------------------------------------------------------------------------
-            */
+                'skripsiCount' => $skripsiCount,
 
-            'kbkChartData'      => $kbkChartData,
-            'typeChartData'     => $typeChartData,
-            'categoryChartData' => $categoryChartData,
+                'tesisCount' => $tesisCount,
 
+                'disertasiCount' => $disertasiCount,
 
-            /*
-            |--------------------------------------------------------------------------
-            | Literature
-            |--------------------------------------------------------------------------
-            */
+                'totalCollection' => $totalCollection,
 
-            'latestLiteratures' => $latestLiteratures,
+                'categoryCount' => $categoryCount,
+
+                'typeCount' => $typeCount,
+
+                'userCount' => $userCount,
+
+                'kbkCount' => $kbkCount,
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | Login Activity
-            |--------------------------------------------------------------------------
-            */
+                /*
+                |--------------------------------------------------------------------------
+                | Charts
+                |--------------------------------------------------------------------------
+                */
 
-            'latestLoginActivities' => $latestLoginActivities,
-            'loginActivities'       => $loginActivities,
-        ]);
+                'kbkChartData' => $kbkChartData,
+
+                'typeChartData' => $typeChartData,
+
+                'categoryChartData' => $categoryChartData,
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Literature
+                |--------------------------------------------------------------------------
+                */
+
+                'latestLiteratures' => $latestLiteratures,
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Login Activity
+                |--------------------------------------------------------------------------
+                */
+
+                'latestLoginActivities' =>
+                $latestLoginActivities,
+
+                'loginActivities' =>
+                $loginActivities,
+            ]
+        );
     }
 }

@@ -1,12 +1,40 @@
 import "./bootstrap";
+
 import "./skripsi";
 import "./literature";
 import "./navbar";
+
 import "./home/user";
+
 import "./disertasi/repository";
+
+import "./pdf-viewer";
+
+/*
+|--------------------------------------------------------------------------
+| Praktik Industri
+|--------------------------------------------------------------------------
+|
+| User
+| - laporan.js
+|
+| Admin
+| - admin.js
+|
+*/
+
+import "./praktik-industri/laporan";
+import "./praktik-industri/admin";
+
+/*
+|--------------------------------------------------------------------------
+| Page Loader
+|--------------------------------------------------------------------------
+*/
 
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("page-loader");
+
     const page = document.getElementById("page-content");
 
     /*
@@ -29,11 +57,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", function () {
+            /*
+                    |--------------------------------------------------------------------------
+                    | Lewati Link AJAX
+                    |--------------------------------------------------------------------------
+                    */
+
             if (this.hasAttribute("data-ajax-page")) {
                 return;
             }
 
             const href = this.getAttribute("href");
+
+            /*
+                    |--------------------------------------------------------------------------
+                    | Link Tidak Perlu Loader
+                    |--------------------------------------------------------------------------
+                    */
 
             if (
                 !href ||
@@ -45,8 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            /*
+                    |--------------------------------------------------------------------------
+                    | Tampilkan Loader
+                    |--------------------------------------------------------------------------
+                    */
+
             if (loader) {
                 loader.classList.remove("opacity-0", "invisible");
+
                 loader.classList.add("opacity-100");
             }
         });
@@ -58,42 +105,45 @@ document.addEventListener("DOMContentLoaded", () => {
 | Fix Back / Forward Browser
 |--------------------------------------------------------------------------
 |
-| Ketika halaman dikembalikan dari browser cache (bfcache),
-| loader harus dipastikan hilang dan content kembali terlihat.
+| Ketika halaman dikembalikan dari browser cache
+| (bfcache), loader harus dipastikan hilang
+| dan content kembali terlihat.
 |
 |--------------------------------------------------------------------------
 */
 
 window.addEventListener("pageshow", (event) => {
     const loader = document.getElementById("page-loader");
+
     const page = document.getElementById("page-content");
 
     /*
-    |--------------------------------------------------------------------------
-    | Pastikan Loader Hilang
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Pastikan Loader Hilang
+        |--------------------------------------------------------------------------
+        */
 
     if (loader) {
         loader.classList.remove("opacity-100");
+
         loader.classList.add("opacity-0", "invisible");
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Pastikan Content Terlihat
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Pastikan Content Terlihat
+        |--------------------------------------------------------------------------
+        */
 
     if (page) {
         page.classList.add("page-enter");
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Cek Stylesheet Setelah bfcache
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Cek Stylesheet Setelah bfcache
+        |--------------------------------------------------------------------------
+        */
 
     if (event.persisted) {
         const stylesheets = Array.from(
@@ -105,10 +155,10 @@ window.addEventListener("pageshow", (event) => {
         );
 
         /*
-        |--------------------------------------------------------------------------
-        | Reload Jika Stylesheet Vite Hilang
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Reload Jika Stylesheet Vite Hilang
+            |--------------------------------------------------------------------------
+            */
 
         if (!viteStylesheetExists) {
             window.location.reload();

@@ -1,40 +1,40 @@
 @php
-$repository = $dissertation->repository ?? null;
+    $repository = $dissertation->repository ?? null;
 
-/*
-|--------------------------------------------------------------------------
-| Bersihkan judul dari HTML
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Bersihkan judul dari HTML
+    |--------------------------------------------------------------------------
+    */
 
-$judulRaw = $dissertation->judul_karya ?? '-';
+    $judulRaw = $dissertation->judul_karya ?? '-';
 
-$judul = html_entity_decode(
-$judulRaw,
-ENT_QUOTES | ENT_HTML5,
-'UTF-8'
-);
+    $judul = html_entity_decode(
+        $judulRaw,
+        ENT_QUOTES | ENT_HTML5,
+        'UTF-8'
+    );
 
-$judul = strip_tags($judul);
+    $judul = strip_tags($judul);
 
-$judul = trim(
-preg_replace(
-'/\s+/',
-' ',
-$judul
-)
-);
+    $judul = trim(
+        preg_replace(
+            '/\s+/',
+            ' ',
+            $judul
+        )
+    );
 
 
-$nama = $dissertation->nama ?? '-';
+    $nama = $dissertation->nama ?? '-';
 
-$nim = $dissertation->nim ?? '-';
+    $nim = $dissertation->nim ?? '-';
 
-$tanggalSidang =
-$dissertation->tgl_sidang ?? null;
+    $tanggalSidang =
+        $dissertation->tgl_sidang ?? null;
 
-$repositoryUrl =
-$repository?->repository_url ?? null;
+    $repositoryUrl =
+        $repository?->repository_url ?? null;
 @endphp
 
 
@@ -47,7 +47,9 @@ $repository?->repository_url ?? null;
            hover:shadow-lg">
 
 
+    {{-- ============================================================ --}}
     {{-- HEADER --}}
+    {{-- ============================================================ --}}
 
     <div
         class="relative overflow-hidden
@@ -55,6 +57,9 @@ $repository?->repository_url ?? null;
                from-slate-800
                to-slate-950
                px-6 py-6">
+
+
+        {{-- Decorative circle --}}
 
         <div
             class="absolute -right-10 -top-10
@@ -66,6 +71,9 @@ $repository?->repository_url ?? null;
         <div
             class="relative flex items-start
                    justify-between gap-4">
+
+
+            {{-- Icon --}}
 
             <div
                 class="flex h-11 w-11 shrink-0
@@ -85,6 +93,8 @@ $repository?->repository_url ?? null;
             </div>
 
 
+            {{-- Badge --}}
+
             <span
                 class="rounded-full
                        bg-white/10
@@ -102,13 +112,17 @@ $repository?->repository_url ?? null;
     </div>
 
 
+    {{-- ============================================================ --}}
     {{-- CONTENT --}}
+    {{-- ============================================================ --}}
 
     <div
         class="flex flex-1 flex-col p-6">
 
 
+        {{-- ======================================================== --}}
         {{-- JUDUL --}}
+        {{-- ======================================================== --}}
 
         <h3
             class="line-clamp-3
@@ -121,12 +135,16 @@ $repository?->repository_url ?? null;
         </h3>
 
 
+        {{-- ======================================================== --}}
         {{-- DETAIL --}}
+        {{-- ======================================================== --}}
 
         <div class="mt-6 space-y-4">
 
 
+            {{-- ==================================================== --}}
             {{-- MAHASISWA --}}
+            {{-- ==================================================== --}}
 
             <div
                 class="flex items-start gap-3">
@@ -173,7 +191,9 @@ $repository?->repository_url ?? null;
             </div>
 
 
+            {{-- ==================================================== --}}
             {{-- NIM --}}
+            {{-- ==================================================== --}}
 
             <div
                 class="flex items-start gap-3">
@@ -220,7 +240,9 @@ $repository?->repository_url ?? null;
             </div>
 
 
+            {{-- ==================================================== --}}
             {{-- TANGGAL SIDANG --}}
+            {{-- ==================================================== --}}
 
             <div
                 class="flex items-start gap-3">
@@ -260,13 +282,13 @@ $repository?->repository_url ?? null;
 
                         @if($tanggalSidang)
 
-                        {{ \Carbon\Carbon::parse(
+                            {{ \Carbon\Carbon::parse(
                                 $tanggalSidang
                             )->locale('id')->translatedFormat('d F Y') }}
 
                         @else
 
-                        -
+                            -
 
                         @endif
 
@@ -279,19 +301,27 @@ $repository?->repository_url ?? null;
         </div>
 
 
+        {{-- ======================================================== --}}
         {{-- REPOSITORY --}}
+        {{-- ======================================================== --}}
 
         <div class="mt-auto pt-6">
 
             @if($repositoryUrl)
 
-            <a
-                href="{{ $repositoryUrl }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex w-full
+                <a
+                    href="{{ route('pdf.viewer', [
+                        'path' => $repositoryUrl,
+                        'title' => $judul,
+                        'nama' => $nama,
+                        'nim' => $nim,
+                        'skripsi' => $judul,
+                        'bab' => 'Repository Disertasi',
+                    ]) }}"
+                    class="flex w-full
                            items-center justify-center
-                           gap-2 rounded-xl
+                           gap-2
+                           rounded-xl
                            bg-slate-900
                            px-4 py-3
                            text-sm font-semibold
@@ -300,40 +330,43 @@ $repository?->repository_url ?? null;
                            hover:bg-slate-700
                            group-hover:shadow-md">
 
-                <span
-                    class="material-symbols-outlined
+
+                    <span
+                        class="material-symbols-outlined
                                text-[19px]">
 
-                    open_in_new
+                        visibility
 
-                </span>
+                    </span>
 
-                Lihat Repository
 
-            </a>
+                    Lihat Repository
+
+                </a>
 
             @else
 
-            <div
-                class="flex w-full
+                <div
+                    class="flex w-full
                            items-center justify-center
-                           gap-2 rounded-xl
+                           gap-2
+                           rounded-xl
                            bg-slate-100
                            px-4 py-3
                            text-sm font-semibold
                            text-slate-400">
 
-                <span
-                    class="material-symbols-outlined
+                    <span
+                        class="material-symbols-outlined
                                text-[19px]">
 
-                    link_off
+                        link_off
 
-                </span>
+                    </span>
 
-                Repository Tidak Tersedia
+                    Repository Tidak Tersedia
 
-            </div>
+                </div>
 
             @endif
 

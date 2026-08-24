@@ -20,7 +20,11 @@ class RepositoryController extends Controller
      *
      * Jika URL kosong:
      * - tidak membuat record
-     * - tetap dianggap Belum Ada Repository
+     * - data tetap dianggap Belum Ada Repository
+     *
+     * Jika URL tersedia:
+     * - repository dibuat / diperbarui
+     * - status awal = needs_action
      */
     public function store(Request $request)
     {
@@ -30,12 +34,6 @@ class RepositoryController extends Controller
                 'string',
                 'max:255',
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | Jenis Karya Ditentukan Admin
-            |--------------------------------------------------------------------------
-            */
 
             'jenis_karya' => [
                 'required',
@@ -62,10 +60,10 @@ class RepositoryController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Jika URL kosong
+        | URL kosong
         |--------------------------------------------------------------------------
         |
-        | Jangan membuat record repository.
+        | Tidak membuat record repository.
         |
         */
 
@@ -88,7 +86,7 @@ class RepositoryController extends Controller
         | +
         | jenis_karya
         |
-        | menjadi identitas repository.
+        | digunakan sebagai identitas repository.
         |
         */
 
@@ -105,7 +103,7 @@ class RepositoryController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | Repository baru selalu perlu ditangani.
+                | Repository baru selalu perlu diverifikasi.
                 |--------------------------------------------------------------------------
                 */
 
@@ -126,28 +124,26 @@ class RepositoryController extends Controller
      * UPDATE
      * ================================================================
      *
-     * Mengubah repository.
+     * Mengubah repository yang sudah ada.
      *
-     * Admin juga dapat mengubah:
+     * Admin dapat mengubah:
      * - jenis karya
-     * - URL
+     * - URL repository
      * - tipe repository
+     *
+     * Setiap perubahan URL akan membuat status kembali:
+     *
+     * active
+     *    ↓
+     * needs_action
+     *
+     * sehingga repository perlu diverifikasi kembali.
      */
     public function update(
         Request $request,
         Repository $repository
     ) {
         $validated = $request->validate([
-            /*
-            |--------------------------------------------------------------------------
-            | Jenis Karya
-            |--------------------------------------------------------------------------
-            |
-            | Admin boleh mengubah:
-            | Tesis ↔ Disertasi
-            |
-            */
-
             'jenis_karya' => [
                 'required',
                 'in:thesis,dissertation',
@@ -177,11 +173,11 @@ class RepositoryController extends Controller
         |--------------------------------------------------------------------------
         |
         | Jika admin menghapus URL kemudian menyimpan,
-        | repository dihapus sepenuhnya.
+        | repository dihapus.
         |
-        | Hasil:
+        | Data karya kemudian kembali dianggap:
         |
-        | 🟡 Belum Ada Repository
+        | Belum Ada Repository
         |
         */
 
@@ -198,7 +194,7 @@ class RepositoryController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | UPDATE
+        | UPDATE REPOSITORY
         |--------------------------------------------------------------------------
         */
 
@@ -214,7 +210,7 @@ class RepositoryController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Setiap perubahan dianggap perlu diverifikasi ulang.
+            | Perubahan repository harus diverifikasi ulang.
             |--------------------------------------------------------------------------
             */
 
@@ -240,6 +236,8 @@ class RepositoryController extends Controller
      * needs_action
      *       ↓
      * active
+     *
+     * Repository hanya dapat diaktifkan jika URL tersedia.
      */
     public function activate(
         Repository $repository
@@ -250,10 +248,13 @@ class RepositoryController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if (
-            !$repository->repository_url ||
-            trim($repository->repository_url) === ''
-        ) {
+        $url = trim(
+            $repository->repository_url ?? ''
+        );
+
+
+        if ($url === '') {
+
             return back()->with(
                 'error',
                 'Repository tidak dapat diaktifkan karena URL masih kosong.'
@@ -263,7 +264,7 @@ class RepositoryController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Aktifkan
+        | Aktifkan Repository
         |--------------------------------------------------------------------------
         */
 

@@ -122,6 +122,26 @@ return [
             ]) : [],
         ],
 
+        'simpi' => [
+            'driver' => 'mysql',
+            'url' => env('SIMPI_URL'),
+            'host' => env('SIMPI_HOST', '127.0.0.1'),
+            'port' => env('SIMPI_PORT', '3306'),
+            'database' => env('SIMPI_DATABASE', 'db_simpi_new'),
+            'username' => env('SIMPI_USERNAME', 'root'),
+            'password' => env('SIMPI_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

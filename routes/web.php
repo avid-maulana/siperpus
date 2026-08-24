@@ -13,6 +13,8 @@ use App\Http\Controllers\DisertasiController;
 use App\Http\Controllers\ThesisController;
 use App\Http\Controllers\RepositoryManagementController;
 use App\Http\Controllers\RepositoryController;
+use App\Http\Controllers\PraktikIndustriController;
+use App\Http\Controllers\PraktikIndustriAdminController;
 
 
 /*
@@ -27,7 +29,6 @@ Route::middleware('guest')->group(function () {
         '/login',
         [LoginController::class, 'showLoginForm']
     )->name('login');
-
 
     Route::post(
         '/login',
@@ -98,10 +99,6 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | Pascasarjana - Tesis
     |--------------------------------------------------------------------------
-    |
-    | Halaman publik untuk melihat repository tesis
-    | yang sudah diaktifkan oleh admin.
-    |
     */
 
     Route::get(
@@ -114,16 +111,24 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | Pascasarjana - Disertasi
     |--------------------------------------------------------------------------
-    |
-    | Halaman publik untuk melihat repository disertasi
-    | yang sudah diaktifkan oleh admin.
-    |
     */
 
     Route::get(
         '/disertasi',
         [DisertasiController::class, 'index']
     )->name('disertasi.index');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Laporan Praktik Industri
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/praktik-industri',
+        [PraktikIndustriController::class, 'index']
+    )->name('praktik-industri.index');
 
 
     /*
@@ -147,13 +152,28 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | PDF Proxy
     |--------------------------------------------------------------------------
+    |
+    | Sumber:
+    |
+    | - PDF langsung
+    | - Google Drive
+    | - Google Docs
+    |
     */
 
     Route::get(
         '/pdf-proxy',
         function () {
 
-            $url = request('url');
+            /*
+            |--------------------------------------------------------------------------
+            | Ambil URL
+            |--------------------------------------------------------------------------
+            */
+
+            $url = trim(
+                request('url', '')
+            );
 
 
             /*
@@ -163,7 +183,7 @@ Route::middleware('auth')->group(function () {
             */
 
             if (
-                !$url ||
+                $url === '' ||
                 !filter_var(
                     $url,
                     FILTER_VALIDATE_URL
@@ -172,28 +192,186 @@ Route::middleware('auth')->group(function () {
 
                 abort(
                     400,
-                    'URL PDF tidak valid.'
+                    'URL dokumen tidak valid.'
                 );
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Batasi Domain
+            | Parse URL
             |--------------------------------------------------------------------------
             */
 
-            $host = parse_url(
-                $url,
-                PHP_URL_HOST
+            $host = strtolower(
+                parse_url(
+                    $url,
+                    PHP_URL_HOST
+                ) ?? ''
             );
 
+            $path = parse_url(
+                $url,
+                PHP_URL_PATH
+            ) ?? '';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Deteksi Sumber
+            |--------------------------------------------------------------------------
+            */
+
+            $isGoogleDrive =
+                in_array(
+                    $host,
+                    [
+                        'drive.google.com',
+                        'www.drive.google.com',
+                    ],
+                    true
+                );
+
+            $isGoogleDocs =
+                in_array(
+                    $host,
+                    [
+                        'docs.google.com',
+                        'www.docs.google.com',
+                    ],
+                    true
+                );
+
+
+            $requestUrl = $url;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Google Drive
+            |--------------------------------------------------------------------------
+            */
+
+            if ($isGoogleDrive) {
+
+                $fileId = null;
+
+
+                if (
+                    preg_match(
+                        '#/file/d/([^/]+)#',
+                        $path,
+                        $matches
+                    )
+                ) {
+
+                    $fileId = $matches[1];
+                }
+
+
+                if (!$fileId) {
+
+                    parse_str(
+                        parse_url(
+                            $url,
+                            PHP_URL_QUERY
+                        ) ?? '',
+                        $query
+                    );
+
+
+                    if (
+                        isset($query['id']) &&
+                        $query['id'] !== ''
+                    ) {
+
+                        $fileId =
+                            $query['id'];
+                    }
+                }
+
+
+                if (!$fileId) {
+
+                    abort(
+                        400,
+                        'ID file Google Drive tidak ditemukan.'
+                    );
+                }
+
+
+                $requestUrl =
+                    'https://drive.usercontent.google.com/download'
+                    . '?id='
+                    . urlencode($fileId)
+                    . '&export=download';
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Google Docs
+            |--------------------------------------------------------------------------
+            */
+
+            if ($isGoogleDocs) {
+
+                $documentId = null;
+
+
+                if (
+                    preg_match(
+                        '#/document/d/([^/]+)#',
+                        $path,
+                        $matches
+                    )
+                ) {
+
+                    $documentId = $matches[1];
+                }
+
+
+                if (!$documentId) {
+
+                    abort(
+                        400,
+                        'ID Google Docs tidak ditemukan.'
+                    );
+                }
+
+
+                $requestUrl =
+                    'https://docs.google.com/document/d/'
+                    . urlencode($documentId)
+                    . '/export?format=pdf';
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Domain Allowlist
+            |--------------------------------------------------------------------------
+            */
 
             $allowedHosts = [
+
                 'tei.um.ac.id',
                 'elektro.um.ac.id',
+
+                'drive.google.com',
+                'www.drive.google.com',
+                'drive.usercontent.google.com',
+
+                'docs.google.com',
+                'www.docs.google.com',
             ];
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cek Domain
+            |--------------------------------------------------------------------------
+            */
 
             if (
                 !in_array(
@@ -205,14 +383,14 @@ Route::middleware('auth')->group(function () {
 
                 abort(
                     403,
-                    'Domain PDF tidak diizinkan.'
+                    'Domain dokumen tidak diizinkan.'
                 );
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Ambil PDF
+            | Request ke Sumber Dokumen
             |--------------------------------------------------------------------------
             */
 
@@ -225,38 +403,48 @@ Route::middleware('auth')->group(function () {
                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0 Safari/537.36',
 
                         'Accept' =>
-                        'application/pdf,application/octet-stream,*/*',
+                        'application/pdf,application/octet-stream,text/html,*/*',
                     ])
                     ->withOptions([
                         'allow_redirects' => [
-                            'max' => 5,
+                            'max' => 10,
                             'strict' => true,
                         ],
                     ])
-                    ->get($url);
+                    ->get($requestUrl);
             } catch (\Throwable $e) {
 
                 logger()->error(
                     'PDF Proxy Exception',
                     [
-                        'url' => $url,
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
+                        'original_url' =>
+                        $url,
+
+                        'request_url' =>
+                        $requestUrl,
+
+                        'message' =>
+                        $e->getMessage(),
+
+                        'file' =>
+                        $e->getFile(),
+
+                        'line' =>
+                        $e->getLine(),
                     ]
                 );
 
 
                 abort(
                     502,
-                    'PDF tidak dapat diambil dari server.'
+                    'Dokumen tidak dapat diambil dari server.'
                 );
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Cek HTTP Status
+            | HTTP Status
             |--------------------------------------------------------------------------
             */
 
@@ -265,25 +453,35 @@ Route::middleware('auth')->group(function () {
                 logger()->error(
                     'PDF Proxy HTTP Error',
                     [
-                        'url' => $url,
-                        'status' => $response->status(),
+                        'original_url' =>
+                        $url,
+
+                        'request_url' =>
+                        $requestUrl,
+
+                        'status' =>
+                        $response->status(),
+
                         'content_type' =>
-                        $response->header('Content-Type'),
+                        $response->header(
+                            'Content-Type'
+                        ),
                     ]
                 );
 
 
                 abort(
                     502,
-                    'Server PDF mengembalikan status ' .
-                        $response->status()
+                    'Server dokumen mengembalikan status '
+                        . $response->status()
+                        . '.'
                 );
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Cek Content-Type
+            | Content-Type
             |--------------------------------------------------------------------------
             */
 
@@ -295,41 +493,14 @@ Route::middleware('auth')->group(function () {
             );
 
 
-            if (
-                $contentType &&
-                !str_contains(
-                    $contentType,
-                    'application/pdf'
-                ) &&
-                !str_contains(
-                    $contentType,
-                    'application/octet-stream'
-                )
-            ) {
-
-                logger()->error(
-                    'PDF Proxy Invalid Content Type',
-                    [
-                        'url' => $url,
-                        'content_type' => $contentType,
-                    ]
-                );
-
-
-                abort(
-                    502,
-                    'Server tidak mengembalikan file PDF.'
-                );
-            }
-
-
             /*
             |--------------------------------------------------------------------------
-            | Ambil Isi PDF
+            | Body
             |--------------------------------------------------------------------------
             */
 
-            $body = $response->body();
+            $body =
+                $response->body();
 
 
             if (empty($body)) {
@@ -337,15 +508,66 @@ Route::middleware('auth')->group(function () {
                 logger()->error(
                     'PDF Proxy Empty Response',
                     [
-                        'url' => $url,
-                        'status' => $response->status(),
+                        'original_url' =>
+                        $url,
+
+                        'request_url' =>
+                        $requestUrl,
+
+                        'content_type' =>
+                        $contentType,
                     ]
                 );
 
 
                 abort(
                     502,
-                    'File PDF kosong.'
+                    'Dokumen yang diterima kosong.'
+                );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Validasi PDF
+            |--------------------------------------------------------------------------
+            */
+
+            $isPdf =
+                str_starts_with(
+                    $body,
+                    '%PDF-'
+                );
+
+
+            if (!$isPdf) {
+
+                logger()->error(
+                    'PDF Proxy Invalid PDF',
+                    [
+                        'original_url' =>
+                        $url,
+
+                        'request_url' =>
+                        $requestUrl,
+
+                        'content_type' =>
+                        $contentType,
+
+                        'body_start' =>
+                        substr(
+                            $body,
+                            0,
+                            100
+                        ),
+                    ]
+                );
+
+
+                abort(
+                    502,
+                    'Dokumen tidak dapat ditampilkan sebagai PDF. '
+                        . 'Pastikan repository dapat diakses secara publik.'
                 );
             }
 
@@ -403,6 +625,16 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | Admin / Library Management
 |--------------------------------------------------------------------------
+|
+| Semua route di bawah ini:
+|
+| /library/...
+|
+| hanya dapat diakses oleh user:
+|
+| - authenticated
+| - memiliki role admin/library sesuai middleware role
+|
 */
 
 Route::middleware(['auth', 'role'])
@@ -434,23 +666,11 @@ Route::middleware(['auth', 'role'])
         )->name('indexLiterature');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Literatur - Tambah
-        |--------------------------------------------------------------------------
-        */
-
         Route::post(
             '/literatures',
             [LiteratureController::class, 'store']
         )->name('storeLiterature');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Literatur - Update
-        |--------------------------------------------------------------------------
-        */
 
         Route::put(
             '/literatures/{literature}',
@@ -458,33 +678,16 @@ Route::middleware(['auth', 'role'])
         )->name('updateLiterature');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Literatur - Hapus
-        |--------------------------------------------------------------------------
-        */
-
         Route::delete(
             '/literatures/{literature}',
             [LiteratureController::class, 'destroy']
         )->name('destroyLiterature');
+
+
         /*
         |--------------------------------------------------------------------------
         | Kelola Repository Tesis & Disertasi
         |--------------------------------------------------------------------------
-        |
-        | Semua data pascasarjana dikelola dari satu halaman.
-        |
-        | Admin dapat:
-        |
-        | - menentukan jenis karya
-        | - Tesis
-        | - Disertasi
-        | - menentukan status
-        | - Perlu Penanganan
-        | - Belum Ada Repository
-        | - Aktif
-        |
         */
 
         Route::get(
@@ -493,23 +696,11 @@ Route::middleware(['auth', 'role'])
         )->name('repositories');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Repository - Tambah
-        |--------------------------------------------------------------------------
-        */
-
         Route::post(
             '/repository',
             [RepositoryController::class, 'store']
         )->name('repository.store');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Repository - Edit
-        |--------------------------------------------------------------------------
-        */
 
         Route::put(
             '/repository/{repository}',
@@ -517,23 +708,11 @@ Route::middleware(['auth', 'role'])
         )->name('repository.update');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Repository - Hapus
-        |--------------------------------------------------------------------------
-        */
-
         Route::delete(
             '/repository/{repository}',
             [RepositoryController::class, 'destroy']
         )->name('repository.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Repository - Aktifkan
-        |--------------------------------------------------------------------------
-        */
 
         Route::patch(
             '/repository/{repository}/activate',
@@ -543,26 +722,33 @@ Route::middleware(['auth', 'role'])
 
         /*
         |--------------------------------------------------------------------------
-        | Type
+        | HALAMAN KELOLA PRAKTIK INDUSTRI
         |--------------------------------------------------------------------------
         */
 
-        Route::post(
-            '/store-type',
-            [LibraryController::class, 'storeType']
-        )->name('storeType');
+        Route::get(
+            '/praktik-industri',
+            [PraktikIndustriAdminController::class, 'index']
+        )->name('praktik-industri');
 
 
-        Route::put(
-            '/update-type/{id}',
-            [LibraryController::class, 'updateType']
-        )->name('updateType');
+        /*
+        |--------------------------------------------------------------------------
+        | RIWAYAT LAPORAN BERDASARKAN KELOMPOK
+        |--------------------------------------------------------------------------
+        |
+        | {tim} adalah tim.id / nomor kelompok.
+        |
+        | Contoh URL hasil:
+        |
+        | /library/praktik-industri/group/472/history
+        |
+        */
 
-
-        Route::delete(
-            '/destroy-type/{id}',
-            [LibraryController::class, 'destroyType']
-        )->name('destroyType');
+        Route::get(
+            '/praktik-industri/group/{tim}/history',
+            [PraktikIndustriAdminController::class, 'history']
+        )->name('praktik-industri.history');
 
 
         /*
