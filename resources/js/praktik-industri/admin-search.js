@@ -2,7 +2,7 @@
 |--------------------------------------------------------------------------
 | ADMIN PRAKTIK INDUSTRI
 |--------------------------------------------------------------------------
-| Search + AJAX Result + Pagination
+| Search + AJAX Result + Pagination + Sort Kolom
 |--------------------------------------------------------------------------
 */
 
@@ -83,6 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     | BUILD URL
     |--------------------------------------------------------------------------
+    |
+    | search = true  -> override param 'search' pakai isi input pencarian
+    |                   saat ini (dipakai untuk submit search & pagination).
+    |
+    | Param 'sort' & 'direction' TIDAK disentuh di sini secara sengaja:
+    | link header kolom sudah membawa nilai sort/direction yang benar
+    | dari server (lihat _table.blade.php), jadi tinggal diteruskan apa
+    | adanya lewat 'url' yang dipakai fetchResult().
+    |
     */
 
     const buildUrl = (url, search = null) => {
@@ -241,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 typeof data.pagination !==
                     "undefined"
             ) {
-                paginationContainer.outerHTML =
+                paginationContainer.innerHTML =
                     data.pagination;
             }
 
@@ -459,6 +468,11 @@ document.addEventListener("DOMContentLoaded", () => {
         },
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
 
     document.addEventListener(
         "click",
@@ -494,6 +508,51 @@ document.addEventListener("DOMContentLoaded", () => {
                 {
                     pushState: true,
                     scroll: true,
+                },
+            );
+        },
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SORT KOLOM (klik header tabel)
+    |--------------------------------------------------------------------------
+    |
+    | Link header sudah membawa query 'sort', 'direction', dan 'page=1'
+    | dari server (lihat _table.blade.php), search tetap ikut karena
+    | link dibangun dari fullUrlWithQuery() yang mempertahankan query
+    | yang sedang aktif.
+    |
+    */
+
+    document.addEventListener(
+        "click",
+        (event) => {
+            const link =
+                event.target.closest(
+                    "#praktikIndustriAdminResult [data-sort-link]",
+                );
+
+            if (!link) {
+                return;
+            }
+
+            if (
+                event.ctrlKey ||
+                event.metaKey ||
+                event.shiftKey ||
+                event.altKey
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+
+            fetchResult(
+                link.href,
+                {
+                    pushState: true,
+                    scroll: false,
                 },
             );
         },

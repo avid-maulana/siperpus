@@ -165,10 +165,9 @@
 
         {{-- PAGINATION --}}
 
-        @include(
-            'library.praktik-industri._pagination'
-        )
-
+<div id="praktikIndustriAdminPagination">
+    @include('library.praktik-industri._pagination')
+</div>
     </main>
 
 </div>

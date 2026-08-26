@@ -29,6 +29,14 @@
             >
                 Laporan terbaru setiap kelompok ditampilkan
                 sebagai data utama.
+
+            </p>
+            <p
+                class="mt-1 text-sm
+                       text-slate-500"
+            >
+                Klik tombol header kolom untuk memfilter mengurutkan data berdasarkan nama mahasiswa, industri, atau judul laporan.
+                
             </p>
 
         </div>

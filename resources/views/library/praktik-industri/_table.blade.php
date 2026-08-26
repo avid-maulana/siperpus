@@ -4,6 +4,50 @@
     1 KELOMPOK = 1 LAPORAN TERBARU
 ========================================================= --}}
 
+@php
+
+    /*
+    |--------------------------------------------------------------------------
+    | SORT STATE
+    |--------------------------------------------------------------------------
+    */
+
+    $currentSort =
+        $sort ?? request('sort', 'diperbarui');
+
+    $currentDirection =
+        $direction ?? request('direction', 'desc');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | URL SORT
+    |--------------------------------------------------------------------------
+    |
+    | Klik kolom yang sama akan membalik arah (asc <-> desc).
+    | Klik kolom lain akan mulai dari 'asc'.
+    |
+    | Selalu kembali ke halaman 1 karena urutan berubah total.
+    |
+    */
+
+    $sortUrl = function ($column) use ($currentSort, $currentDirection) {
+
+        $nextDirection =
+            ($currentSort === $column && $currentDirection === 'asc')
+                ? 'desc'
+                : 'asc';
+
+        return request()->fullUrlWithQuery([
+            'sort'      => $column,
+            'direction' => $nextDirection,
+            'page'      => 1,
+        ]);
+
+    };
+
+@endphp
+
 <div
     class="overflow-hidden
            rounded-2xl
@@ -27,60 +71,132 @@
                py-3.5"
     >
 
-        <div
-            class="text-[10px]
+        {{-- KELOMPOK --}}
+
+        <a
+            href="{{ $sortUrl('kelompok') }}"
+            data-sort-link
+            class="inline-flex items-center gap-1
+                   text-[10px]
                    font-bold
                    uppercase
                    tracking-[0.12em]
-                   text-slate-400"
+                   text-slate-400
+                   transition-colors
+                   duration-200
+                   hover:text-[#212A37]"
         >
             Kelompok
-        </div>
+
+            @if ($currentSort === 'kelompok')
+                <span class="material-symbols-outlined text-[13px]">
+                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+            @endif
+        </a>
 
 
-        <div
-            class="text-[10px]
+        {{-- LAPORAN TERBARU (JUDUL) --}}
+
+        <a
+            href="{{ $sortUrl('judul') }}"
+            data-sort-link
+            class="inline-flex items-center gap-1
+                   text-[10px]
                    font-bold
                    uppercase
                    tracking-[0.12em]
-                   text-slate-400"
+                   text-slate-400
+                   transition-colors
+                   duration-200
+                   hover:text-[#212A37]"
         >
             Laporan Terbaru
-        </div>
+
+            @if ($currentSort === 'judul')
+                <span class="material-symbols-outlined text-[13px]">
+                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+            @endif
+        </a>
 
 
-        <div
-            class="text-[10px]
+        {{-- KETUA --}}
+
+        <a
+            href="{{ $sortUrl('ketua') }}"
+            data-sort-link
+            class="inline-flex items-center gap-1
+                   text-[10px]
                    font-bold
                    uppercase
                    tracking-[0.12em]
-                   text-slate-400"
+                   text-slate-400
+                   transition-colors
+                   duration-200
+                   hover:text-[#212A37]"
         >
             Ketua
-        </div>
+
+            @if ($currentSort === 'ketua')
+                <span class="material-symbols-outlined text-[13px]">
+                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+            @endif
+        </a>
 
 
-        <div
-            class="text-[10px]
+        {{-- INDUSTRI --}}
+
+        <a
+            href="{{ $sortUrl('industri') }}"
+            data-sort-link
+            class="inline-flex items-center gap-1
+                   text-[10px]
                    font-bold
                    uppercase
                    tracking-[0.12em]
-                   text-slate-400"
+                   text-slate-400
+                   transition-colors
+                   duration-200
+                   hover:text-[#212A37]"
         >
             Industri
-        </div>
+
+            @if ($currentSort === 'industri')
+                <span class="material-symbols-outlined text-[13px]">
+                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+            @endif
+        </a>
 
 
-        <div
-            class="text-[10px]
+        {{-- DIPERBARUI --}}
+
+        <a
+            href="{{ $sortUrl('diperbarui') }}"
+            data-sort-link
+            class="inline-flex items-center gap-1
+                   text-[10px]
                    font-bold
                    uppercase
                    tracking-[0.12em]
-                   text-slate-400"
+                   text-slate-400
+                   transition-colors
+                   duration-200
+                   hover:text-[#212A37]"
         >
             Diperbarui
-        </div>
 
+            @if ($currentSort === 'diperbarui')
+                <span class="material-symbols-outlined text-[13px]">
+                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+            @endif
+        </a>
+
+
+        {{-- AKSI (tidak bisa di-sort) --}}
 
         <div
             class="text-right

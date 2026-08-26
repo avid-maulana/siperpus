@@ -33,13 +33,49 @@ class PraktikIndustriAdminController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | SEARCH
+        | SEARCH & SORT
         |--------------------------------------------------------------------------
         */
 
         $search = trim(
             $request->input('search', '')
         );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SORT
+        |--------------------------------------------------------------------------
+        |
+        | Kolom yang boleh diurutkan:
+        |
+        | - kelompok
+        | - judul
+        | - ketua
+        | - industri
+        | - diperbarui
+        |
+        */
+
+        $allowedSorts = [
+            'kelompok',
+            'judul',
+            'ketua',
+            'industri',
+            'diperbarui',
+        ];
+
+        $sort = $request->input('sort', 'diperbarui');
+
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'diperbarui';
+        }
+
+        $direction = $request->input('direction', 'desc');
+
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'desc';
+        }
 
 
         /*
@@ -481,60 +517,100 @@ class PraktikIndustriAdminController extends Controller
                     ];
 
                 }
-            )
+            );
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | URUTKAN KELOMPOK
-            |--------------------------------------------------------------------------
-            |
-            | Kelompok dengan laporan terbaru
-            | muncul paling atas.
-            |
-            */
+        /*
+        |--------------------------------------------------------------------------
+        | URUTKAN HASIL
+        |--------------------------------------------------------------------------
+        |
+        | Setiap kolom punya cara sendiri mengambil
+        | nilai yang dijadikan acuan urutan.
+        |
+        */
 
-            ->sort(
-                function (
-                    $a,
-                    $b
-                ) {
+        $sortKey = match ($sort) {
 
-                    $tanggalA =
-                        $a['utama']
-                            ->created_at
-                            ?->timestamp
-                        ?? 0;
+            'kelompok' => function ($item) {
+
+                return
+                    $item['kelompok_id'];
+
+            },
+
+            'judul' => function ($item) {
+
+                return
+                    mb_strtolower(
+                        $item['utama']->judul ?? ''
+                    );
+
+            },
+
+            'ketua' => function ($item) {
+
+                return
+                    mb_strtolower(
+                        $item['utama']
+                            ->detailTim
+                            ?->tim
+                            ?->ketua
+                            ?->nama_lengkap
+                        ?? ''
+                    );
+
+            },
+
+            'industri' => function ($item) {
+
+                return
+                    mb_strtolower(
+                        $item['utama']
+                            ->detailTim
+                            ?->tim
+                            ?->industri
+                            ?->nama
+                        ?? ''
+                    );
+
+            },
+
+            'diperbarui' => function ($item) {
+
+                $utama = $item['utama'];
+
+                $tanggal =
+                    $utama?->fileTerbaru?->updated_at
+                    ?? $utama?->updated_at
+                    ?? $utama?->created_at;
+
+                return
+                    $tanggal?->timestamp
+                    ?? 0;
+
+            },
+
+            default => function ($item) {
+
+                return
+                    $item['utama']
+                        ->created_at
+                        ?->timestamp
+                    ?? 0;
+
+            },
+
+        };
 
 
-                    $tanggalB =
-                        $b['utama']
-                            ->created_at
-                            ?->timestamp
-                        ?? 0;
+        $hasil =
+            $direction === 'asc'
+                ? $hasil->sortBy($sortKey)
+                : $hasil->sortByDesc($sortKey);
 
 
-                    if (
-                        $tanggalA !==
-                        $tanggalB
-                    ) {
-
-                        return
-                            $tanggalB
-                            <=>
-                            $tanggalA;
-
-                    }
-
-
-                    return
-                        $b['utama']->id
-                        <=>
-                        $a['utama']->id;
-
-                }
-            )
-            ->values();
+        $hasil = $hasil->values();
 
 
         /*
@@ -603,43 +679,48 @@ class PraktikIndustriAdminController extends Controller
 
 
         /*
-|--------------------------------------------------------------------------
-| VIEW
-|--------------------------------------------------------------------------
-*/
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
 
-// Request dari JS (fetch/AJAX) -> balas JSON berisi partial HTML.
-if ($request->ajax() || $request->wantsJson()) {
+        // Request dari JS (fetch/AJAX) -> balas JSON berisi partial HTML.
+        if ($request->ajax() || $request->wantsJson()) {
 
-    return response()->json([
+            return response()->json([
 
-        'result' => view(
-            'library.praktik-industri._result',
+                'result' => view(
+                    'library.praktik-industri._result',
+                    [
+                        'laporan'   => $paginator,
+                        'sort'      => $sort,
+                        'direction' => $direction,
+                    ]
+                )->render(),
+
+                'pagination' => view(
+                    'library.praktik-industri._pagination',
+                    [
+                        'laporan' => $paginator,
+                    ]
+                )->render(),
+
+            ]);
+
+        }
+
+        // Load halaman biasa -> tetap render full page seperti sekarang.
+        return view(
+            'library.praktik-industri.index',
             [
-                'laporan' => $paginator,
+                'laporan'   => $paginator,
+                'search'    => $search,
+                'sort'      => $sort,
+                'direction' => $direction,
             ]
-        )->render(),
-
-        'pagination' => view(
-            'library.praktik-industri._pagination',
-            [
-                'laporan' => $paginator,
-            ]
-        )->render(),
-
-    ]);
-
-}
-
-// Load halaman biasa -> tetap render full page seperti sekarang.
-return view(
-    'library.praktik-industri.index',
-    [
-        'laporan' => $paginator,
-        'search'  => $search,
-    ]
-);
+        );
     }
+
     /**
      * Menampilkan seluruh riwayat laporan berdasarkan nomor kelompok.
      *
