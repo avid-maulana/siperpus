@@ -478,9 +478,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Catatan: listener auto-submit pada perubahan filter sudah
-    // dihapus, disamakan dengan perilaku disertasi — pencarian
-    // baru berjalan saat Enter / klik tombol "Cari".
+    filterSelect?.addEventListener('change', () => {
+        if (searchInput.value.trim() !== '') {
+            setLoading();
+            form.submit();
+        }
+    });
 
     clearButton?.addEventListener('click', () => {
         searchInput.value = '';

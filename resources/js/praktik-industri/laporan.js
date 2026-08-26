@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    let searchTimer = null;
     let controller = null;
 
     /*
@@ -206,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | Search Submit
+    | Search Submit (hanya jalan saat Enter / klik tombol Cari)
     |--------------------------------------------------------------------------
     */
 
@@ -220,40 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = `${searchForm.action}?${params.toString()}`;
 
         fetchResults(url);
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Live Search
-    |--------------------------------------------------------------------------
-    */
-
-    searchInput.addEventListener("input", () => {
-        clearTimeout(searchTimer);
-
-        searchTimer = setTimeout(() => {
-            const value = searchInput.value.trim();
-
-            /*
-                | Jangan melakukan request untuk 1 karakter.
-                */
-
-            if (value.length > 0 && value.length < 2) {
-                return;
-            }
-
-            const params = new URLSearchParams();
-
-            if (value !== "") {
-                params.set("search", value);
-            }
-
-            const url = params.toString()
-                ? `${searchForm.action}?${params.toString()}`
-                : searchForm.action;
-
-            fetchResults(url);
-        }, 400);
     });
 
     /*
