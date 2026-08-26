@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | ESCAPE HTML
@@ -69,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/'/g, "&#039;");
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | OPEN MODAL
@@ -88,22 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("overflow-hidden");
 
         requestAnimationFrame(() => {
+            panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
 
-            panel.classList.remove(
-                "opacity-0",
-                "translate-y-4",
-                "scale-95"
-            );
-
-            panel.classList.add(
-                "opacity-100",
-                "translate-y-0",
-                "scale-100"
-            );
-
+            panel.classList.add("opacity-100", "translate-y-0", "scale-100");
         });
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -112,25 +99,15 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const closeModal = () => {
-
         if (modal.classList.contains("hidden")) {
             return;
         }
 
-        panel.classList.remove(
-            "opacity-100",
-            "translate-y-0",
-            "scale-100"
-        );
+        panel.classList.remove("opacity-100", "translate-y-0", "scale-100");
 
-        panel.classList.add(
-            "opacity-0",
-            "translate-y-4",
-            "scale-95"
-        );
+        panel.classList.add("opacity-0", "translate-y-4", "scale-95");
 
         setTimeout(() => {
-
             modal.classList.add("hidden");
 
             modal.setAttribute("aria-hidden", "true");
@@ -138,10 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
             content.innerHTML = "";
 
             document.body.classList.remove("overflow-hidden");
-
         }, 200);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -149,11 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    closeButton?.addEventListener(
-        "click",
-        closeModal
-    );
-
+    closeButton?.addEventListener("click", closeModal);
 
     /*
     |--------------------------------------------------------------------------
@@ -161,11 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    backdrop?.addEventListener(
-        "click",
-        closeModal
-    );
-
+    backdrop?.addEventListener("click", closeModal);
 
     /*
     |--------------------------------------------------------------------------
@@ -173,20 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    document.addEventListener(
-        "keydown",
-        (event) => {
-
-            if (
-                event.key === "Escape" &&
-                !modal.classList.contains("hidden")
-            ) {
-                closeModal();
-            }
-
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+            closeModal();
         }
-    );
-
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -195,21 +153,17 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const openDetail = (button) => {
-
         /*
         |--------------------------------------------------------------------------
         | CARI ROW
         |--------------------------------------------------------------------------
         */
 
-        const row = button.closest(
-            "[data-praktik-row]"
-        );
+        const row = button.closest("[data-praktik-row]");
 
         if (!row) {
             return;
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -217,30 +171,132 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const kelompok =
-            row.dataset.group || "-";
+        const kelompok = row.dataset.group || "-";
 
-        const judul =
-            row.dataset.title || "-";
+        const judul = row.dataset.title || "-";
 
-        const ketua =
-            row.dataset.ketua || "-";
+        const ketua = row.dataset.ketua || "-";
 
-        const industri =
-            row.dataset.industri || "-";
+        let anggota = [];
 
-        const tanggal =
-            row.dataset.date || "-";
+        try {
+            anggota = JSON.parse(row.dataset.anggota || "[]");
+        } catch (error) {
+            console.error("Gagal membaca data anggota:", error);
 
-        const waktu =
-            row.dataset.time || "-";
+            anggota = [];
+        }
 
-        const pdf =
-            row.dataset.pdf || "";
+        const industri = row.dataset.industri || "-";
 
-        const jumlahRevisi =
-            Number(row.dataset.revisions || 0);
+        const tanggal = row.dataset.date || "-";
 
+        const waktu = row.dataset.time || "-";
+
+        const pdf = row.dataset.pdf || "";
+
+        const jumlahRevisi = Number(row.dataset.revisions || 0);
+
+        const anggotaHtml = anggota.length
+            ? `
+            <div
+                class="rounded-2xl
+                    border
+                    border-slate-200
+                    bg-white
+                    p-4"
+            >
+
+                <div
+                    class="flex
+                        items-center
+                        gap-2"
+                >
+
+                    <span
+                        class="material-symbols-outlined
+                            text-[18px]
+                            text-slate-400"
+                    >
+                        group
+                    </span>
+
+                    <span
+                        class="text-[10px]
+                            font-bold
+                            uppercase
+                            tracking-wider
+                            text-slate-400"
+                    >
+                        Anggota Kelompok
+                    </span>
+
+                    <span
+                        class="rounded-full
+                            bg-slate-100
+                            px-2 py-0.5
+                            text-[10px]
+                            font-semibold
+                            text-slate-500"
+                    >
+                        ${anggota.length}
+                    </span>
+
+                </div>
+
+
+                <div class="mt-3 space-y-2">
+
+                    ${anggota
+                        .map(
+                            (member, index) => `
+                                <div
+                                    class="flex
+                                        items-center
+                                        gap-3
+                                        rounded-xl
+                                        bg-slate-50
+                                        px-3 py-2.5"
+                                >
+
+                                    <div
+                                        class="flex
+                                            h-7
+                                            w-7
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-lg
+                                            bg-white
+                                            text-xs
+                                            font-bold
+                                            text-slate-500
+                                            ring-1
+                                            ring-slate-200"
+                                    >
+                                        ${index + 1}
+                                    </div>
+
+                                    <div
+                                        class="min-w-0
+                                            truncate
+                                            text-sm
+                                            font-semibold
+                                            text-[#212A37]"
+                                    >
+                                        ${escapeHtml(member.nama || "-")}
+                                    </div>
+
+                                </div>
+                            `,
+                        )
+                        .join("")}
+
+                </div>
+
+            </div>
+        `
+            : "";
 
         /*
         |--------------------------------------------------------------------------
@@ -250,7 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const revisionBadge =
             jumlahRevisi > 0
-
                 ? `
                     <span
                         class="inline-flex
@@ -278,7 +333,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </span>
                 `
-
                 : `
                     <span
                         class="inline-flex
@@ -298,17 +352,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     </span>
                 `;
 
-
         /*
         |--------------------------------------------------------------------------
         | PDF BUTTON
         |--------------------------------------------------------------------------
         */
 
-        const pdfButton =
-            pdf
-
-                ? `
+        const pdfButton = pdf
+            ? `
                     <a
                         href="${escapeHtml(pdf)}"
                         target="_blank"
@@ -342,8 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </a>
                 `
-
-                : `
+            : `
                     <span
                         class="inline-flex
                                items-center
@@ -369,7 +419,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </span>
                 `;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -744,9 +793,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         </div>
 
-                    </div>
+                                        </div>
 
                 </div>
+
+
+                <!-- ANGGOTA KELOMPOK -->
+
+                ${anggotaHtml}
 
 
                 <!-- ACTION -->
@@ -799,19 +853,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         `;
 
-
         /*
         |--------------------------------------------------------------------------
         | OPEN
         |--------------------------------------------------------------------------
         */
 
-        openModal(
-            "Detail Laporan Praktik Industri",
-            modalContent
-        );
+        openModal("Detail Laporan Praktik Industri", modalContent);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -820,7 +869,6 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const bindDetail = () => {
-
         const resultContainer =
             window.praktikIndustriAdmin?.getResultContainer?.();
 
@@ -828,36 +876,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        resultContainer.querySelectorAll("[data-detail]").forEach((button) => {
+            if (button.dataset.detailBound === "true") {
+                return;
+            }
 
-        resultContainer
-            .querySelectorAll("[data-detail]")
-            .forEach((button) => {
+            button.dataset.detailBound = "true";
 
-                if (
-                    button.dataset.detailBound === "true"
-                ) {
-                    return;
-                }
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
 
-
-                button.dataset.detailBound = "true";
-
-
-                button.addEventListener(
-                    "click",
-                    (event) => {
-
-                        event.preventDefault();
-
-                        openDetail(button);
-
-                    }
-                );
-
+                openDetail(button);
             });
-
+        });
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -865,13 +897,9 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    document.addEventListener(
-        "praktikIndustriAdminResultUpdated",
-        () => {
-            bindDetail();
-        }
-    );
-
+    document.addEventListener("praktikIndustriAdminResultUpdated", () => {
+        bindDetail();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -883,7 +911,6 @@ document.addEventListener("DOMContentLoaded", () => {
         bindDetail();
     });
 
-
     /*
     |--------------------------------------------------------------------------
     | EXPORT MODAL
@@ -891,11 +918,8 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     window.praktikIndustriAdminModal = {
-
         open: openModal,
 
         close: closeModal,
-
     };
-
 });

@@ -161,26 +161,59 @@ class PraktikIndustri extends Model
             return null;
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | Ambil base URL dari .env
+        | BASE URL DARI ENV
         |--------------------------------------------------------------------------
         */
 
-        $baseUrl = env('SIMPI_STORAGE_URL');
+        $baseUrl = env(
+            'SIMPI_STORAGE_URL',
+            ''
+        );
 
         if (empty($baseUrl)) {
             return null;
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | Bersihkan slash
+        | BERSIHKAN PATH
         |--------------------------------------------------------------------------
         */
 
-        $baseUrl = rtrim($baseUrl, '/');
-        $path = ltrim($path, '/');
+        $baseUrl = rtrim(
+            $baseUrl,
+            '/'
+        );
+
+        $path = ltrim(
+            $path,
+            '/'
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JIKA SUDAH URL LENGKAP
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            str_starts_with(
+                $path,
+                'http://'
+            )
+            ||
+            str_starts_with(
+                $path,
+                'https://'
+            )
+        ) {
+            return $path;
+        }
 
 
         /*
@@ -190,15 +223,20 @@ class PraktikIndustri extends Model
         |
         | Database:
         |
-        | /revisi/revisi_1786197107.pdf
+        | revisi/revisi_xxx.pdf
         |
         | Menjadi:
         |
-        | {SIMPI_STORAGE_URL}/revisi/revisi_1786197107.pdf
+        | {SIMPI_STORAGE_URL}/revisi/revisi_xxx.pdf
         |
         */
 
-        if (str_starts_with($path, 'revisi/')) {
+        if (
+            str_starts_with(
+                $path,
+                'revisi/'
+            )
+        ) {
             return $baseUrl . '/' . $path;
         }
 
@@ -210,12 +248,28 @@ class PraktikIndustri extends Model
         |
         | Database:
         |
-        | laporan_270_1727923781.pdf
+        | laporan_xxx.pdf
         |
         | Menjadi:
         |
-        | {SIMPI_STORAGE_URL}/laporan-pi/laporan_270_1727923781.pdf
+        | {SIMPI_STORAGE_URL}/laporan-pi/laporan_xxx.pdf
         |
+        */
+
+        if (
+            str_starts_with(
+                $path,
+                'laporan-pi/'
+            )
+        ) {
+            return $baseUrl . '/' . $path;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEFAULT = LAPORAN PI
+        |--------------------------------------------------------------------------
         */
 
         return $baseUrl . '/laporan-pi/' . $path;
