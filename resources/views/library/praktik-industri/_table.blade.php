@@ -21,32 +21,113 @@
 
     /*
     |--------------------------------------------------------------------------
+    | DEFAULT SORT
+    |--------------------------------------------------------------------------
+    |
+    | Dipakai untuk menandai opsi mana yang merupakan
+    | urutan bawaan (default) sistem.
+    |
+    */
+
+    $defaultSort      = 'diperbarui';
+    $defaultDirection = 'desc';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LABEL PILIHAN SORT PER KOLOM
+    |--------------------------------------------------------------------------
+    |
+    | Setiap kolom mempunyai 2 pilihan arah, dengan label
+    | yang sesuai dengan jenis datanya (angka, teks, tanggal).
+    |
+    */
+
+    $sortOptions = [
+
+        'kelompok' => [
+            'label' => 'Kelompok',
+            'asc'   => 'Terkecil ke Terbesar',
+            'desc'  => 'Terbesar ke Terkecil',
+        ],
+
+        'judul' => [
+            'label' => 'Laporan Terbaru',
+            'asc'   => 'A ke Z',
+            'desc'  => 'Z ke A',
+        ],
+
+        'ketua' => [
+            'label' => 'Ketua',
+            'asc'   => 'A ke Z',
+            'desc'  => 'Z ke A',
+        ],
+
+        'industri' => [
+            'label' => 'Industri',
+            'asc'   => 'A ke Z',
+            'desc'  => 'Z ke A',
+        ],
+
+        'diperbarui' => [
+            'label' => 'Diperbarui',
+            'asc'   => 'Terlama Dulu',
+            'desc'  => 'Terbaru Dulu',
+        ],
+
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
     | URL SORT
     |--------------------------------------------------------------------------
     |
-    | Klik kolom yang sama akan membalik arah (asc <-> desc).
-    | Klik kolom lain akan mulai dari 'asc'.
+    | Berbeda dengan sebelumnya, sekarang arah TIDAK di-toggle
+    | otomatis. Admin memilih arah secara eksplisit lewat dropdown.
     |
     | Selalu kembali ke halaman 1 karena urutan berubah total.
     |
     */
 
-    $sortUrl = function ($column) use ($currentSort, $currentDirection) {
-
-        $nextDirection =
-            ($currentSort === $column && $currentDirection === 'asc')
-                ? 'desc'
-                : 'asc';
+    $sortUrl = function ($column, $dir) {
 
         return request()->fullUrlWithQuery([
             'sort'      => $column,
-            'direction' => $nextDirection,
+            'direction' => $dir,
             'page'      => 1,
         ]);
 
     };
 
 @endphp
+
+
+{{-- =========================================================
+    HINT: TABEL BISA DIURUTKAN
+========================================================= --}}
+
+<div
+    class="mb-3 flex items-center gap-2
+           text-xs text-slate-400"
+>
+
+    <span class="material-symbols-outlined text-[16px]">
+        info
+    </span>
+
+    <span>
+        Klik nama kolom pada tabel untuk mengurutkan data.
+        Urutan bawaan:
+        <span class="font-semibold text-slate-500">
+            {{ $sortOptions[$defaultSort]['label'] }}
+            &middot;
+            {{ $sortOptions[$defaultSort][$defaultDirection] }}
+        </span>
+    </span>
+
+</div>
+
 
 <div
     class="overflow-hidden
@@ -71,129 +152,119 @@
                py-3.5"
     >
 
-        {{-- KELOMPOK --}}
+        @foreach ($sortOptions as $column => $option)
 
-        <a
-            href="{{ $sortUrl('kelompok') }}"
-            data-sort-link
-            class="inline-flex items-center gap-1
-                   text-[10px]
-                   font-bold
-                   uppercase
-                   tracking-[0.12em]
-                   text-slate-400
-                   transition-colors
-                   duration-200
-                   hover:text-[#212A37]"
-        >
-            Kelompok
+            @php
+                $isActive = $currentSort === $column;
+            @endphp
 
-            @if ($currentSort === 'kelompok')
-                <span class="material-symbols-outlined text-[13px]">
-                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                </span>
-            @endif
-        </a>
+            {{-- =============================================
+                KOLOM SORTABLE
+            ============================================== --}}
 
+            <div class="relative">
 
-        {{-- LAPORAN TERBARU (JUDUL) --}}
+                <button
+                    type="button"
+                    data-sort-toggle
+                    data-column="{{ $column }}"
+                    title="Klik untuk memilih urutan {{ $option['label'] }}"
+                    class="inline-flex items-center gap-1
+                           text-[10px]
+                           font-bold
+                           uppercase
+                           tracking-[0.12em]
+                           transition-colors
+                           duration-200
+                           {{ $isActive ? 'text-[#212A37]' : 'text-slate-400 hover:text-[#212A37]' }}"
+                >
+                    {{ $option['label'] }}
 
-        <a
-            href="{{ $sortUrl('judul') }}"
-            data-sort-link
-            class="inline-flex items-center gap-1
-                   text-[10px]
-                   font-bold
-                   uppercase
-                   tracking-[0.12em]
-                   text-slate-400
-                   transition-colors
-                   duration-200
-                   hover:text-[#212A37]"
-        >
-            Laporan Terbaru
-
-            @if ($currentSort === 'judul')
-                <span class="material-symbols-outlined text-[13px]">
-                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                </span>
-            @endif
-        </a>
+                    <span
+                        class="material-symbols-outlined text-[14px]
+                               {{ $isActive ? 'text-[#212A37]' : 'text-slate-300' }}"
+                    >
+                        @if ($isActive)
+                            {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        @else
+                            unfold_more
+                        @endif
+                    </span>
+                </button>
 
 
-        {{-- KETUA --}}
+                {{-- =========================================
+                    DROPDOWN PILIHAN ARAH
+                ========================================== --}}
 
-        <a
-            href="{{ $sortUrl('ketua') }}"
-            data-sort-link
-            class="inline-flex items-center gap-1
-                   text-[10px]
-                   font-bold
-                   uppercase
-                   tracking-[0.12em]
-                   text-slate-400
-                   transition-colors
-                   duration-200
-                   hover:text-[#212A37]"
-        >
-            Ketua
+                <div
+                    data-sort-menu="{{ $column }}"
+                    class="hidden absolute left-0 top-full z-20 mt-2
+                           w-48
+                           overflow-hidden
+                           rounded-xl
+                           border border-slate-200
+                           bg-white
+                           py-1.5
+                           text-left
+                           normal-case
+                           tracking-normal
+                           shadow-lg"
+                >
 
-            @if ($currentSort === 'ketua')
-                <span class="material-symbols-outlined text-[13px]">
-                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                </span>
-            @endif
-        </a>
+                    @foreach (['asc', 'desc'] as $dir)
 
+                        @php
+                            $isSelected =
+                                $isActive && $currentDirection === $dir;
 
-        {{-- INDUSTRI --}}
+                            $isDefault =
+                                $column === $defaultSort && $dir === $defaultDirection;
+                        @endphp
 
-        <a
-            href="{{ $sortUrl('industri') }}"
-            data-sort-link
-            class="inline-flex items-center gap-1
-                   text-[10px]
-                   font-bold
-                   uppercase
-                   tracking-[0.12em]
-                   text-slate-400
-                   transition-colors
-                   duration-200
-                   hover:text-[#212A37]"
-        >
-            Industri
+                        <a
+                            href="{{ $sortUrl($column, $dir) }}"
+                            data-sort-link
+                            class="flex items-center justify-between gap-2
+                                   px-3.5 py-2.5
+                                   text-xs
+                                   transition-colors
+                                   duration-150
+                                   {{ $isSelected
+                                        ? 'bg-slate-50 font-semibold text-[#212A37]'
+                                        : 'text-slate-600 hover:bg-slate-50' }}"
+                        >
+                            <span class="flex items-center gap-1.5">
+                                {{ $option[$dir] }}
 
-            @if ($currentSort === 'industri')
-                <span class="material-symbols-outlined text-[13px]">
-                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                </span>
-            @endif
-        </a>
+                                @if ($isDefault)
+                                    <span
+                                        class="rounded-full
+                                               bg-slate-100
+                                               px-1.5 py-0.5
+                                               text-[9px]
+                                               font-semibold
+                                               text-slate-400"
+                                    >
+                                        Default
+                                    </span>
+                                @endif
+                            </span>
 
+                            @if ($isSelected)
+                                <span class="material-symbols-outlined text-[15px] text-[#212A37]">
+                                    check
+                                </span>
+                            @endif
+                        </a>
 
-        {{-- DIPERBARUI --}}
+                    @endforeach
 
-        <a
-            href="{{ $sortUrl('diperbarui') }}"
-            data-sort-link
-            class="inline-flex items-center gap-1
-                   text-[10px]
-                   font-bold
-                   uppercase
-                   tracking-[0.12em]
-                   text-slate-400
-                   transition-colors
-                   duration-200
-                   hover:text-[#212A37]"
-        >
-            Diperbarui
+                </div>
 
-            @if ($currentSort === 'diperbarui')
-                <span class="material-symbols-outlined text-[13px]">
-                    {{ $currentDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                </span>
-            @endif
-        </a>
+            </div>
+
+        @endforeach
 
 
         {{-- AKSI (tidak bisa di-sort) --}}

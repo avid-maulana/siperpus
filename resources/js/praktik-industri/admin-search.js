@@ -515,13 +515,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | SORT KOLOM (klik header tabel)
+    | SORT DROPDOWN (buka / tutup menu pilihan arah)
     |--------------------------------------------------------------------------
     |
-    | Link header sudah membawa query 'sort', 'direction', dan 'page=1'
-    | dari server (lihat _table.blade.php), search tetap ikut karena
-    | link dibangun dari fullUrlWithQuery() yang mempertahankan query
-    | yang sedang aktif.
+    | Klik tombol header (data-sort-toggle) -> buka/tutup menu
+    | (data-sort-menu) miliknya, dan tutup semua menu lain yang
+    | sedang terbuka.
+    |
+    | Klik di luar area manapun -> tutup semua menu.
+    |
+    */
+
+    document.addEventListener(
+        "click",
+        (event) => {
+            const toggle =
+                event.target.closest(
+                    "#praktikIndustriAdminResult [data-sort-toggle]",
+                );
+
+            /*
+            |--------------------------------------------------------------------------
+            | TUTUP MENU LAIN
+            |--------------------------------------------------------------------------
+            */
+
+            document
+                .querySelectorAll(
+                    "#praktikIndustriAdminResult [data-sort-menu]",
+                )
+                .forEach((menu) => {
+
+                    const isOwnMenu =
+                        toggle &&
+                        menu.dataset.sortMenu ===
+                            toggle.dataset.column;
+
+                    if (!isOwnMenu) {
+                        menu.classList.add("hidden");
+                    }
+
+                });
+
+            if (!toggle) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const menu =
+                document.querySelector(
+                    `#praktikIndustriAdminResult [data-sort-menu="${toggle.dataset.column}"]`,
+                );
+
+            menu?.classList.toggle("hidden");
+        },
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SORT KOLOM (klik salah satu pilihan di dropdown)
+    |--------------------------------------------------------------------------
+    |
+    | Link opsi (data-sort-link) sudah membawa query 'sort', 'direction',
+    | dan 'page=1' dari server (lihat _table.blade.php), search tetap ikut
+    | karena link dibangun dari fullUrlWithQuery() yang mempertahankan
+    | query yang sedang aktif.
     |
     */
 
