@@ -310,6 +310,17 @@
                 $ketua =
                     $tim?->ketua;
 
+                    $anggota = $tim?->detailTims
+                        ?->filter(fn ($detail) => $detail->user)
+                        ->map(fn ($detail) => $detail->user)
+                        ->filter(
+                            fn ($member) =>
+                                !$ketua ||
+                                $member->user_id !== $ketua->user_id
+                        )
+                        ->unique('user_id')
+                        ->values();
+
                 $industri =
                     $tim?->industri;
 
@@ -319,20 +330,15 @@
 
                 /*
                 |--------------------------------------------------------------------------
-                | FILE AKTIF
+                | URL FILE AKTIF
                 |--------------------------------------------------------------------------
+                |
+                | URL dibuat oleh Model PraktikIndustri
+                | berdasarkan konfigurasi path dari .env.
+                |
                 */
 
-                $fileAktif =
-                    $revisiTerbaru?->file
-                    ?: $utama?->file_laporan;
-
-                $pdfUrl =
-                    $fileAktif
-                        ? asset(
-                            'storage/' . $fileAktif
-                        )
-                        : null;
+                $pdfUrl = $utama?->file_aktif_url;
 
 
                 /*
@@ -384,6 +390,12 @@
                 data-group="{{ $kelompokId }}"
                 data-title="{{ $utama?->judul }}"
                 data-ketua="{{ $ketua?->nama_lengkap }}"
+                data-anggota='@json(
+                    $anggota->map(fn ($member) => [
+                        "user_id" => $member->user_id,
+                        "nama" => $member->nama_lengkap,
+                    ])->values()
+                )'
                 data-industri="{{ $industri?->nama }}"
                 data-date="{{ $tanggalAktif?->translatedFormat('d F Y') }}"
                 data-time="{{ $tanggalAktif?->format('H:i') }}"

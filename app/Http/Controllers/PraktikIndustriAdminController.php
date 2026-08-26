@@ -762,6 +762,7 @@ class PraktikIndustriAdminController extends Controller
             ->orderByDesc('id')
             ->get();
 
+
         /*
         |--------------------------------------------------------------------------
         | DATA TIDAK DITEMUKAN
@@ -778,82 +779,109 @@ class PraktikIndustriAdminController extends Controller
             );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | BENTUK DATA UNTUK JAVASCRIPT
         |--------------------------------------------------------------------------
-        |
-        | Setiap record laporan membawa file miliknya sendiri.
-        | Jadi riwayat tidak mengambil file milik versi lain.
-        |
         */
 
         $data = $laporan
             ->map(function ($item, $index) use ($laporan, $tim) {
-                $timData = $item->detailTim?->tim;
-                $ketua = $timData?->ketua;
-                $industri = $timData?->industri;
 
                 /*
-                |------------------------------------------------------------------
-                | FILE VERSI INI
-                |------------------------------------------------------------------
+                |--------------------------------------------------------------------------
+                | DATA RELASI
+                |--------------------------------------------------------------------------
+                */
+
+                $timData = $item->detailTim?->tim;
+
+                $ketua = $timData?->ketua;
+
+                $industri = $timData?->industri;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | FILE AKTIF VERSI INI
+                |--------------------------------------------------------------------------
                 |
-                | Prioritas utama adalah ujians.file_laporan karena setiap
-                | laporan/versi memiliki file utamanya sendiri.
+                | Prioritas:
                 |
-                | Jika kosong, baru cari file revisi yang terkait dengan
-                | ujians tersebut.
+                | 1. file_laporan milik record ujians
+                | 2. file revisi terbaru jika file_laporan kosong
                 |
                 */
 
-                $fileAktif = $item->file_laporan;
+                $fileUrl = null;
 
-                if (!$fileAktif) {
-                    $fileAktif = $item->fileLaporan
+
+                /*
+                |--------------------------------------------------------------------------
+                | FILE LAPORAN UTAMA
+                |--------------------------------------------------------------------------
+                */
+
+                if (!empty($item->file_laporan)) {
+
+                    $fileUrl = $item->file_laporan_url;
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | FALLBACK FILE REVISI
+                |--------------------------------------------------------------------------
+                |
+                | Jika file_laporan kosong, gunakan file revisi
+                | terbaru yang memiliki file.
+                |
+                */
+
+                if (
+                    empty($fileUrl)
+                    &&
+                    $item->fileLaporan->isNotEmpty()
+                ) {
+
+                    $fileRevisi = $item->fileLaporan
                         ->filter(function ($file) {
                             return !empty($file->file);
                         })
                         ->sortByDesc(function ($file) {
                             return $file->updated_at?->timestamp ?? 0;
                         })
-                        ->first()?->file;
-                }
+                        ->first();
 
-                /*
-                |------------------------------------------------------------------
-                | URL FILE
-                |------------------------------------------------------------------
-                */
-
-                $fileUrl = null;
-
-                if ($fileAktif) {
-                    if (filter_var($fileAktif, FILTER_VALIDATE_URL)) {
-                        $fileUrl = $fileAktif;
-                    } else {
-                        $fileUrl = asset(
-                            'storage/' . ltrim($fileAktif, '/')
-                        );
+                    if ($fileRevisi) {
+                        $fileUrl = $fileRevisi->file_revisi_url;
                     }
                 }
 
+
                 /*
-                |------------------------------------------------------------------
+                |--------------------------------------------------------------------------
                 | TANGGAL
-                |------------------------------------------------------------------
+                |--------------------------------------------------------------------------
                 |
-                | Untuk versi laporan, created_at adalah waktu versi tersebut
-                | dibuat. updated_at digunakan sebagai fallback.
+                | created_at = waktu versi dibuat.
+                |
+                | updated_at = fallback waktu perubahan terakhir.
                 |
                 */
 
                 $createdAt = $item->created_at;
-                $updatedAt = $item->updated_at ?? $createdAt;
+
+                $updatedAt = $item->updated_at
+                    ?? $createdAt;
+
 
                 /*
-                | Jika file revisi memiliki waktu update yang lebih relevan,
-                | gunakan waktu file tersebut.
+                |--------------------------------------------------------------------------
+                | TANGGAL FILE REVISI TERAKHIR
+                |--------------------------------------------------------------------------
                 */
 
                 $fileTerakhir = $item->fileLaporan
@@ -865,31 +893,48 @@ class PraktikIndustriAdminController extends Controller
                     })
                     ->first();
 
+
                 if ($fileTerakhir?->updated_at) {
                     $updatedAt = $fileTerakhir->updated_at;
                 }
 
+
                 /*
-                |------------------------------------------------------------------
-                | STATUS DAN NOMOR REVISI
-                |------------------------------------------------------------------
+                |--------------------------------------------------------------------------
+                | STATUS
+                |--------------------------------------------------------------------------
                 */
 
                 $status = $index === 0
                     ? 'utama'
                     : 'riwayat';
 
+
+                /*
+                |--------------------------------------------------------------------------
+                | NOMOR REVISI
+                |--------------------------------------------------------------------------
+                */
+
                 $nomorRevisi = $index === 0
                     ? null
                     : $laporan->count() - $index;
 
+
                 /*
-                |------------------------------------------------------------------
-                | RETURN
-                |------------------------------------------------------------------
+                |--------------------------------------------------------------------------
+                | RETURN DATA
+                |--------------------------------------------------------------------------
                 */
 
                 return [
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | IDENTITAS
+                    |--------------------------------------------------------------------------
+                    */
+
                     'id' => $item->id,
 
                     'detail_tim_id' => $item->detail_tim_id,
@@ -903,18 +948,48 @@ class PraktikIndustriAdminController extends Controller
 
                     'industri' => $industri?->nama ?? '-',
 
-                    /* File */
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FILE
+                    |--------------------------------------------------------------------------
+                    |
+                    | Semua URL di sini berasal dari Model.
+                    |
+                    | TIDAK menggunakan:
+                    |
+                    | asset('storage/...')
+                    |
+                    */
+
                     'file' => $fileUrl,
+
                     'pdf' => $fileUrl,
+
                     'file_url' => $fileUrl,
+
                     'pdf_url' => $fileUrl,
 
-                    /* Raw timestamp untuk JS */
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TIMESTAMP
+                    |--------------------------------------------------------------------------
+                    */
+
                     'created_at' => $createdAt?->toISOString(),
+
                     'updated_at' => $updatedAt?->toISOString(),
+
                     'date' => $updatedAt?->toISOString(),
 
-                    /* Tanggal upload */
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TANGGAL UPLOAD
+                    |--------------------------------------------------------------------------
+                    */
+
                     'tanggal_upload' => $createdAt
                         ? $createdAt->translatedFormat('d F Y')
                         : null,
@@ -923,7 +998,13 @@ class PraktikIndustriAdminController extends Controller
                         ? $createdAt->format('H:i')
                         : null,
 
-                    /* Tanggal update */
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TANGGAL UPDATE
+                    |--------------------------------------------------------------------------
+                    */
+
                     'tanggal_update' => $updatedAt
                         ? $updatedAt->translatedFormat('d F Y')
                         : null,
@@ -932,17 +1013,37 @@ class PraktikIndustriAdminController extends Controller
                         ? $updatedAt->format('H:i')
                         : null,
 
-                    /* Revisi */
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | REVISI
+                    |--------------------------------------------------------------------------
+                    */
+
                     'status' => $status,
+
                     'revision' => $nomorRevisi,
+
                     'revisi' => $nomorRevisi,
+
                     'nomor_revisi' => $nomorRevisi,
 
-                    /* Jumlah file revisi */
-                    'jumlah_revisi' => $item->fileLaporan->count(),
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | JUMLAH FILE REVISI
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'jumlah_revisi' => $item->fileLaporan
+                        ->filter(function ($file) {
+                            return !empty($file->file);
+                        })
+                        ->count(),
                 ];
             })
             ->values();
+
 
         /*
         |--------------------------------------------------------------------------
@@ -952,8 +1053,11 @@ class PraktikIndustriAdminController extends Controller
 
         return response()->json([
             'success' => true,
+
             'kelompok' => $tim,
+
             'total' => $data->count(),
+
             'data' => $data,
         ]);
     }
