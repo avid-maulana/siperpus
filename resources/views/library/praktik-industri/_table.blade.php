@@ -118,7 +118,7 @@
 
     <span>
         Klik nama kolom pada tabel untuk mengurutkan data.
-        Urutan bawaan:
+        Urutan Default:
         <span class="font-semibold text-slate-500">
             {{ $sortOptions[$defaultSort]['label'] }}
             &middot;
@@ -225,6 +225,7 @@
                         <a
                             href="{{ $sortUrl($column, $dir) }}"
                             data-sort-link
+
                             class="flex items-center justify-between gap-2
                                    px-3.5 py-2.5
                                    text-xs
