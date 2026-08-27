@@ -1,84 +1,146 @@
 {{-- =========================================================
     PDF VIEWER MODAL - SKRIPSI
+    FULLSCREEN
+    READ ONLY
+    PDF.JS
+    DETAIL PANEL
 ========================================================= --}}
 
 <div
     id="skripsiPdfModal"
-    class="fixed inset-0 z-[99999] hidden"
+    class="fixed inset-0 z-[99999] hidden opacity-0 transition-opacity duration-300 ease-out"
     aria-hidden="true"
 >
 
-    {{-- BACKDROP --}}
+    {{-- =====================================================
+        BACKDROP
+    ====================================================== --}}
+
     <div
         id="skripsiPdfBackdrop"
-        class="absolute inset-0 bg-slate-950/70 backdrop-blur-md"
+        class="absolute inset-0 bg-slate-950/90"
     ></div>
 
 
-    {{-- CENTER CONTAINER --}}
+    {{-- =====================================================
+        MODAL CONTENT
+    ====================================================== --}}
+
     <div
+        id="skripsiPdfModalContent"
         class="absolute inset-0
-               flex items-center justify-center
-               p-4 sm:p-6"
+               flex flex-col
+               bg-white
+               translate-y-2
+               scale-[0.99]
+               transition-all
+               duration-300
+               ease-out"
     >
 
-        {{-- MODAL --}}
-        <div
+        {{-- =================================================
+            HEADER
+        ================================================== --}}
+
+        <header
             class="relative
+                   z-30
                    flex
-                   h-[90vh]
-                   w-full
-                   max-w-6xl
-                   flex-col
-                   overflow-hidden
-                   rounded-2xl
-                   border
+                   h-16
+                   shrink-0
+                   items-center
+                   justify-between
+                   border-b
                    border-slate-200
                    bg-white
-                   shadow-2xl"
+                   px-4
+                   sm:px-6"
         >
 
-            {{-- =================================================
-                HEADER
-            ================================================== --}}
+            {{-- =============================================
+                TITLE
+            ============================================== --}}
+
+            <div
+                class="min-w-0
+                       flex-1
+                       pr-4"
+            >
+
+                <p
+                    class="text-[10px]
+                           font-semibold
+                           uppercase
+                           tracking-[0.16em]
+                           text-slate-400"
+                >
+                    Repository Skripsi
+                </p>
+
+                <h2
+                    id="skripsiPdfTitle"
+                    class="mt-0.5
+                           truncate
+                           text-sm
+                           font-semibold
+                           text-slate-800
+                           sm:text-base"
+                >
+                    PDF Viewer
+                </h2>
+
+            </div>
+
+
+            {{-- =============================================
+                HEADER ACTIONS
+            ============================================== --}}
 
             <div
                 class="flex
-                       h-[64px]
                        shrink-0
                        items-center
-                       justify-between
-                       border-b
-                       border-slate-200
-                       bg-white
-                       px-5"
+                       gap-2"
             >
 
-                <div class="min-w-0">
+                {{-- DETAIL --}}
 
-                    <p
-                        class="text-[10px]
-                               font-semibold
-                               uppercase
-                               tracking-[0.15em]
-                               text-slate-400"
+                <button
+                    id="skripsiPdfDetailToggle"
+                    type="button"
+                    aria-label="Lihat detail skripsi"
+                    aria-expanded="false"
+                    class="flex
+                           h-10
+                           items-center
+                           gap-2
+                           rounded-xl
+                           border
+                           border-slate-200
+                           bg-white
+                           px-3
+                           text-sm
+                           font-medium
+                           text-slate-600
+                           transition-all
+                           duration-200
+                           hover:border-slate-300
+                           hover:bg-slate-50
+                           hover:text-slate-800
+                           active:scale-95"
+                >
+
+                    <span
+                        class="material-symbols-outlined text-[21px]"
                     >
-                        Repository Skripsi
-                    </p>
+                        info
+                    </span>
 
-                    <h2
-                        id="skripsiPdfTitle"
-                        class="mt-0.5
-                               truncate
-                               text-sm
-                               font-semibold
-                               text-slate-800
-                               sm:text-base"
-                    >
-                        PDF Viewer
-                    </h2>
+                    <span class="hidden sm:inline">
+                        Detail
+                    </span>
 
-                </div>
+                </button>
 
 
                 {{-- CLOSE --}}
@@ -87,23 +149,23 @@
                     id="skripsiPdfClose"
                     type="button"
                     aria-label="Tutup PDF"
-                    class="ml-4
-                           flex
-                           h-9
-                           w-9
+                    class="flex
+                           h-10
+                           w-10
                            shrink-0
                            items-center
                            justify-center
                            rounded-xl
                            text-slate-400
-                           transition
+                           transition-all
+                           duration-200
                            hover:bg-slate-100
                            hover:text-slate-700
                            active:scale-95"
                 >
 
                     <span
-                        class="material-symbols-outlined text-[22px]"
+                        class="material-symbols-outlined text-[25px]"
                     >
                         close
                     </span>
@@ -112,133 +174,457 @@
 
             </div>
 
+        </header>
 
-            {{-- =================================================
-                PDF CONTENT
-            ================================================== --}}
+
+        {{-- =================================================
+            PDF CONTENT AREA
+        ================================================== --}}
+
+        <main
+            id="skripsiPdfViewer"
+            class="relative
+                   min-h-0
+                   flex-1
+                   overflow-auto
+                   bg-slate-200"
+        >
+
+            {{-- =============================================
+                LOADING
+            ============================================== --}}
 
             <div
-                class="relative
-                       min-h-0
-                       flex-1
-                       overflow-hidden
+                id="skripsiPdfLoading"
+                class="absolute
+                       inset-0
+                       z-20
+                       flex
+                       items-center
+                       justify-center
                        bg-slate-100"
             >
 
-                {{-- LOADING --}}
+                <div class="text-center">
+
+                    <div
+                        class="mx-auto
+                               h-10
+                               w-10
+                               animate-spin
+                               rounded-full
+                               border-4
+                               border-slate-300
+                               border-t-slate-800"
+                    ></div>
+
+                    <p
+                        class="mt-4
+                               text-sm
+                               font-medium
+                               text-slate-600"
+                    >
+                        Memuat dokumen...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- =============================================
+                ERROR
+            ============================================== --}}
+
+            <div
+                id="skripsiPdfError"
+                class="absolute
+                       inset-0
+                       z-20
+                       hidden
+                       items-center
+                       justify-center
+                       bg-slate-100"
+            >
 
                 <div
-                    id="skripsiPdfLoading"
-                    class="absolute
-                           inset-0
-                           z-20
-                           flex
-                           items-center
-                           justify-center
-                           bg-slate-100"
+                    class="max-w-md
+                           px-6
+                           text-center"
                 >
 
-                    <div class="text-center">
+                    <div
+                        class="mx-auto
+                               flex
+                               h-12
+                               w-12
+                               items-center
+                               justify-center
+                               rounded-2xl
+                               bg-red-50
+                               text-red-500"
+                    >
 
-                        <div
-                            class="mx-auto
-                                   h-10
-                                   w-10
-                                   animate-spin
-                                   rounded-full
-                                   border-4
-                                   border-slate-300
-                                   border-t-slate-800"
-                        ></div>
-
-                        <p
-                            class="mt-4
-                                   text-sm
-                                   font-medium
-                                   text-slate-600"
+                        <span
+                            class="material-symbols-outlined"
                         >
-                            Memuat dokumen...
-                        </p>
+                            error_outline
+                        </span>
 
                     </div>
+
+
+                    <h3
+                        class="mt-4
+                               text-sm
+                               font-semibold
+                               text-slate-700"
+                    >
+                        Dokumen tidak dapat dimuat
+                    </h3>
+
+
+                    <p
+                        id="skripsiPdfErrorMessage"
+                        class="mt-2
+                               text-sm
+                               leading-6
+                               text-slate-500"
+                    >
+                        File PDF tidak dapat ditampilkan.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- =============================================
+                PDF PAGES CONTAINER
+            ============================================== --}}
+
+            <div
+                id="skripsiPdfPages"
+                class="flex
+                       min-h-full
+                       flex-col
+                       items-center
+                       gap-5
+                       px-3
+                       py-5
+                       sm:px-6"
+            ></div>
+
+
+            {{-- =================================================
+                DETAIL BACKDROP
+            ================================================== --}}
+
+            <div
+                id="skripsiPdfDetailBackdrop"
+                class="absolute
+                       inset-0
+                       z-30
+                       hidden
+                       bg-slate-950/30
+                       backdrop-blur-[1px]"
+            ></div>
+
+
+            {{-- =================================================
+                DETAIL PANEL
+            ================================================== --}}
+
+            <aside
+                id="skripsiPdfDetailPanel"
+                class="absolute
+                       right-0
+                       top-0
+                       z-40
+                       h-full
+                       w-full
+                       max-w-md
+                       translate-x-full
+                       overflow-y-auto
+                       border-l
+                       border-slate-200
+                       bg-white
+                       shadow-2xl
+                       transition-transform
+                       duration-300
+                       ease-out"
+            >
+
+                {{-- =========================================
+                    DETAIL HEADER
+                ========================================== --}}
+
+                <div
+                    class="sticky
+                           top-0
+                           z-10
+                           flex
+                           h-24
+                           items-center
+                           justify-between
+                           border-b
+                           border-slate-200
+                           bg-white
+                           px-6"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-[11px]
+                                   font-semibold
+                                   uppercase
+                                   tracking-[0.16em]
+                                   text-slate-400"
+                        >
+                            Informasi Dokumen
+                        </p>
+
+                        <h3
+                            class="mt-1
+                                   text-lg
+                                   font-semibold
+                                   text-slate-800"
+                        >
+                            Detail Skripsi
+                        </h3>
+
+                    </div>
+
+
+                    {{-- CLOSE DETAIL --}}
+
+                    <button
+                        id="skripsiPdfDetailClose"
+                        type="button"
+                        aria-label="Tutup detail"
+                        class="flex
+                               h-10
+                               w-10
+                               items-center
+                               justify-center
+                               rounded-xl
+                               text-slate-400
+                               transition-all
+                               duration-200
+                               hover:bg-slate-100
+                               hover:text-slate-700
+                               active:scale-95"
+                    >
+
+                        <span
+                            class="material-symbols-outlined text-[26px]"
+                        >
+                            close
+                        </span>
+
+                    </button>
 
                 </div>
 
 
-                {{-- ERROR --}}
+                {{-- =========================================
+                    DETAIL BODY
+                ========================================== --}}
 
                 <div
-                    id="skripsiPdfError"
-                    class="absolute
-                           inset-0
-                           z-20
-                           hidden
-                           items-center
-                           justify-center
-                           bg-slate-100"
+                    class="px-6
+                           py-7"
                 >
 
+                    {{-- PEMILIK --}}
+
+                    <section>
+
+                        <p
+                            class="text-[11px]
+                                   font-semibold
+                                   uppercase
+                                   tracking-[0.16em]
+                                   text-slate-400"
+                        >
+                            Pemilik Skripsi
+                        </p>
+
+                        <p
+                            id="skripsiPdfDetailAuthor"
+                            class="mt-3
+                                   break-words
+                                   text-base
+                                   font-semibold
+                                   leading-7
+                                   text-slate-800"
+                        >
+                            -
+                        </p>
+
+                    </section>
+
+
                     <div
-                        class="max-w-md
-                               px-6
-                               text-center"
-                    >
+                        class="my-7
+                               border-t
+                               border-slate-100"
+                    ></div>
+
+
+                    {{-- NIM --}}
+
+                    <section>
+
+                        <p
+                            class="text-[11px]
+                                   font-semibold
+                                   uppercase
+                                   tracking-[0.16em]
+                                   text-slate-400"
+                        >
+                            NIM
+                        </p>
+
+                        <p
+                            id="skripsiPdfDetailNim"
+                            class="mt-3
+                                   break-words
+                                   text-base
+                                   font-medium
+                                   text-slate-700"
+                        >
+                            -
+                        </p>
+
+                    </section>
+
+
+                    <div
+                        class="my-7
+                               border-t
+                               border-slate-100"
+                    ></div>
+
+
+                    {{-- BAB --}}
+
+                    <section>
+
+                        <p
+                            class="text-[11px]
+                                   font-semibold
+                                   uppercase
+                                   tracking-[0.16em]
+                                   text-slate-400"
+                        >
+                            Bab
+                        </p>
 
                         <div
-                            class="mx-auto
-                                   flex
-                                   h-12
-                                   w-12
+                            class="mt-3
+                                   inline-flex
                                    items-center
-                                   justify-center
-                                   rounded-2xl
-                                   bg-red-50
-                                   text-red-500"
+                                   rounded-xl
+                                   bg-slate-100
+                                   px-4
+                                   py-2.5"
                         >
 
-                            <span class="material-symbols-outlined">
-                                error_outline
+                            <span
+                                id="skripsiPdfDetailChapter"
+                                class="text-sm
+                                       font-semibold
+                                       text-slate-700"
+                            >
+                                -
                             </span>
 
                         </div>
 
-                        <h3
-                            class="mt-4
-                                   text-sm
-                                   font-semibold
-                                   text-slate-700"
-                        >
-                            Dokumen tidak dapat dimuat
-                        </h3>
+                    </section>
+
+
+                    <div
+                        class="my-7
+                               border-t
+                               border-slate-100"
+                    ></div>
+
+
+                    {{-- JUDUL --}}
+
+                    <section>
 
                         <p
-                            class="mt-2
-                                   text-sm
-                                   leading-6
-                                   text-slate-500"
+                            class="text-[11px]
+                                   font-semibold
+                                   uppercase
+                                   tracking-[0.16em]
+                                   text-slate-400"
                         >
-                            File PDF tidak dapat ditampilkan.
-                            Silakan coba lagi.
+                            Judul Skripsi
                         </p>
+
+                        <p
+                            id="skripsiPdfDetailTitle"
+                            class="mt-3
+                                   break-words
+                                   text-base
+                                   font-medium
+                                   leading-7
+                                   text-slate-700"
+                        >
+                            -
+                        </p>
+
+                    </section>
+
+
+                    {{-- INFO --}}
+
+                    <div
+                        class="mt-8
+                               rounded-2xl
+                               bg-slate-50
+                               px-5
+                               py-5"
+                    >
+
+                        <div
+                            class="flex
+                                   items-start
+                                   gap-4"
+                        >
+
+                            <span
+                                class="material-symbols-outlined
+                                       shrink-0
+                                       text-[24px]
+                                       text-slate-400"
+                            >
+                                info
+                            </span>
+
+                            <p
+                                class="text-sm
+                                       leading-6
+                                       text-slate-500"
+                            >
+                                Informasi ini mengikuti data skripsi
+                                yang tersedia pada repository.
+                            </p>
+
+                        </div>
 
                     </div>
 
                 </div>
 
+            </aside>
 
-                {{-- PDF --}}
-
-                <iframe
-                    id="skripsiPdfFrame"
-                    title="PDF Skripsi"
-                    class="block h-full w-full border-0"
-                    src=""
-                    loading="lazy"
-                ></iframe>
-
-            </div>
-
-        </div>
+        </main>
 
     </div>
 

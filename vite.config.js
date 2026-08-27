@@ -6,32 +6,20 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                /*
-                |--------------------------------------------------------------------------
-                | Global
-                |--------------------------------------------------------------------------
-                */
-
                 "resources/css/app.css",
                 "resources/js/app.js",
 
-                /*
-                |--------------------------------------------------------------------------
-                | Homepage
-                |--------------------------------------------------------------------------
-                */
-
+                // Homepage
                 "resources/js/home/admin.js",
                 "resources/js/home/user.js",
 
-                /*
-                |--------------------------------------------------------------------------
-                | Authentication
-                |--------------------------------------------------------------------------
-                */
-
+                // Authentication
                 "resources/js/auth/login.js",
                 "resources/js/auth/captcha.js",
+
+                // Skripsi
+                "resources/js/skripsi/skripsi.js",
+                "resources/js/skripsi/pdf-viewer.js",
             ],
 
             refresh: true,

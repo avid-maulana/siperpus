@@ -437,79 +437,116 @@
 
 
                     @if ($available)
-                        <button type="button" data-skripsi-pdf-viewer="true" data-pdf-path="{{ $filePath }}"
-                            data-pdf-title="{{ $label }}" data-pdf-skripsi="{{ $judul }}"
-                            data-pdf-nama="{{ $namaMahasiswa }}" data-pdf-nim="{{ $nimMahasiswa }}"
-                            class="group/link
-                                flex
-                                w-full
+
+                    <button
+                        type="button"
+
+                        data-skripsi-pdf-viewer="true"
+
+                        {{-- =================================================
+                            PDF
+                        ================================================== --}}
+                        data-pdf-path="{{ $filePath }}"
+
+                        {{-- =================================================
+                            HEADER MODAL
+                        ================================================== --}}
+                        data-pdf-title="{{ $label }}"
+
+                        {{-- =================================================
+                            DETAIL MODAL
+                        ================================================== --}}
+                        data-skripsi-author="{{ $namaMahasiswa }}"
+                        data-skripsi-nim="{{ $nimMahasiswa }}"
+                        data-skripsi-chapter="{{ $label }}"
+                        data-skripsi-title="{{ $judul }}"
+
+                        class="group/link
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            rounded-2xl
+                            border
+                            border-slate-200
+                            bg-white
+                            px-4
+                            py-3
+                            text-left
+                            text-sm
+                            font-medium
+                            text-slate-700
+                            shadow-sm
+                            transition-all
+                            duration-200
+                            hover:border-slate-300
+                            hover:bg-slate-50
+                            hover:shadow-md
+                            active:scale-[0.99]
+                            {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}"
+                    >
+
+                        {{-- =================================================
+                            BUTTON CONTENT
+                        ================================================== --}}
+
+                        <span
+                            class="flex
+                                min-w-0
                                 items-center
-                                justify-between
-                                rounded-2xl
-                                border
-                                border-slate-200
-                                bg-white
-                                px-4
-                                py-3
-                                text-left
-                                text-sm
-                                font-medium
-                                text-slate-700
-                                shadow-sm
-                                transition-all
-                                duration-200
-                                hover:border-slate-300
-                                hover:bg-slate-50
-                                hover:shadow-md
-                                active:scale-[0.99]
-                                {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}">
+                                gap-3
+                                {{ $isDaftarPustaka ? 'sm:w-full sm:justify-center' : '' }}"
+                        >
+
+                            {{-- =================================================
+                                ICON
+                            ================================================== --}}
 
                             <span
                                 class="flex
-                                    min-w-0
+                                    h-9
+                                    w-9
+                                    shrink-0
                                     items-center
-                                    gap-3
-                                    {{ $isDaftarPustaka ? 'sm:w-full sm:justify-center' : '' }}">
-
-                                {{-- Icon --}}
-
-                                <span
-                                    class="flex
-                                        h-9
-                                        w-9
-                                        shrink-0
-                                        items-center
-                                        justify-center
-                                        rounded-xl
-                                        bg-slate-100
-                                        text-slate-500
-                                        transition-all
-                                        duration-200
-                                        group-hover/link:bg-slate-200
-                                        group-hover/link:text-slate-700">
-
-                                    <span class="material-symbols-outlined text-[19px]">
-                                        {{ $icon }}
-                                    </span>
-
-                                </span>
-
-
-                                {{-- Label --}}
+                                    justify-center
+                                    rounded-xl
+                                    bg-slate-100
+                                    text-slate-500
+                                    transition-all
+                                    duration-200
+                                    group-hover/link:bg-slate-200
+                                    group-hover/link:text-slate-700"
+                            >
 
                                 <span
-                                    class="truncate
-                                        {{ $isDaftarPustaka ? 'sm:text-center' : '' }}">
-                                    {{ $label }}
+                                    class="material-symbols-outlined text-[19px]"
+                                >
+                                    {{ $icon }}
                                 </span>
 
                             </span>
 
 
-                            {{-- Arrow --}}
+                            {{-- =================================================
+                                LABEL BAB
+                            ================================================== --}}
 
                             <span
-                                class="material-symbols-outlined
+                                class="truncate
+                                    {{ $isDaftarPustaka ? 'sm:text-center' : '' }}"
+                            >
+                                {{ $label }}
+                            </span>
+
+                        </span>
+
+
+                        {{-- =================================================
+                            ARROW
+                        ================================================== --}}
+
+                        <span
+                            class="material-symbols-outlined
                                 shrink-0
                                 text-[18px]
                                 text-slate-300
@@ -517,12 +554,14 @@
                                 duration-200
                                 group-hover/link:translate-x-0.5
                                 group-hover/link:text-slate-600
-                                {{ $isDaftarPustaka ? 'sm:hidden' : '' }}">
-                                 arrow_forward
-                            </span>
+                                {{ $isDaftarPustaka ? 'sm:hidden' : '' }}"
+                        >
+                            arrow_forward
+                        </span>
 
-                        </button>
-                    @else
+                    </button>
+
+                @else
                         {{-- File tidak tersedia --}}
 
                         <div
