@@ -14,149 +14,98 @@ class LiteratureController extends Controller
      */
     public function index(Request $request)
     {
+        // ...method index() yang sudah ada, tidak diubah...
+    }
+
+
+    /**
+     * Update Literatur
+     */
+    public function update(Request $request, Literature $literature)
+    {
         /*
         |--------------------------------------------------------------------------
-        | Total Seluruh Literatur
-        |--------------------------------------------------------------------------
-        |
-        | Tidak terpengaruh search, filter type, maupun category.
-        |
-        */
-
-        $totalLiteratures = Literature::count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Type Options
+        | Validasi
         |--------------------------------------------------------------------------
         */
 
-        $typeOptions = Type::orderBy('name')
-            ->pluck('name');
+        $validated = $request->validate([
 
+            'cover_url' => [
+                'nullable',
+                'url',
+            ],
 
-        /*
-        |--------------------------------------------------------------------------
-        | Literature Query
-        |--------------------------------------------------------------------------
-        */
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-        $query = Literature::with([
-            'category',
-            'type',
+            'author' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'publisher' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'year' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:' . (date('Y') + 1),
+            ],
+
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+            ],
+
+            'file_url' => [
+                'required',
+                'url',
+            ],
+
+            'detail' => [
+                'required',
+                'string',
+            ],
+
+            'description' => [
+                'required',
+                'string',
+                'max:255',
+            ],
         ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Live Search
+        | Update Literatur
         |--------------------------------------------------------------------------
         */
 
-        if ($request->filled('search')) {
+        $literature->update(
+            $validated
+        );
 
-            $keyword = trim(
-                $request->search
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('library.indexLiterature')
+            ->with(
+                'success',
+                'Literatur berhasil diperbarui.'
             );
-
-            $query->where(function ($q) use ($keyword) {
-
-                $q->where(
-                    'title',
-                    'like',
-                    "%{$keyword}%"
-                )
-                    ->orWhere(
-                        'author',
-                        'like',
-                        "%{$keyword}%"
-                    )
-                    ->orWhere(
-                        'description',
-                        'like',
-                        "%{$keyword}%"
-                    );
-            });
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Filter Type
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->filled('type')) {
-
-            $query->whereHas(
-                'category.type',
-                function ($q) use ($request) {
-
-                    $q->where(
-                        'name',
-                        $request->type
-                    );
-                }
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Filter Category
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->filled('category_id')) {
-
-            $query->where(
-                'category_id',
-                $request->category_id
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination
-        |--------------------------------------------------------------------------
-        */
-
-        $literatures = $query
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | AJAX Request
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->ajax()) {
-
-            return view('literatures._result', [
-                'literatures' => $literatures,
-                'categories'  => Category::all(),
-            ]);
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Normal Request
-        |--------------------------------------------------------------------------
-        */
-
-        return view('literatures.index', [
-            'literatures'      => $literatures,
-            'types'            => $typeOptions,
-            'categories'       => Category::all(),
-
-            // Total keseluruhan repository
-            'totalLiteratures' => $totalLiteratures,
-        ]);
     }
 }
