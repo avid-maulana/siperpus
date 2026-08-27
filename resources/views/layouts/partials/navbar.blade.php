@@ -282,6 +282,7 @@
                         ================================================== --}}
                         @php
                             $activeUserView =
+                                request()->routeIs('literatures.index') ||
                                 request()->routeIs('praktik-industri.index') ||
                                 request()->routeIs('skripsi.index') ||
                                 request()->routeIs('tesis.index') ||
@@ -352,6 +353,22 @@
                                            p-1.5
                                            shadow-xl
                                            shadow-slate-950/10">
+
+                                    {{-- LITERATUR --}}
+                                    <a href="{{ route('literatures.index') }}"
+                                        class="flex items-center gap-3
+                                               rounded-xl
+                                               px-3 py-2.5
+                                               text-sm
+                                               transition-colors
+                                               duration-200
+                                               {{ request()->routeIs('literatures.index')
+                                                   ? 'bg-slate-100 font-semibold text-slate-900'
+                                                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }}">
+
+                                        <span class="material-symbols-outlined text-[20px]">library_books</span>
+                                        <span>Literatur</span>
+                                    </a>
 
                                     {{-- PRAKTIK INDUSTRI --}}
                                     <a href="{{ route('praktik-industri.index') }}"
@@ -424,6 +441,38 @@
                         {{-- =================================================
                             TAMPILAN MENU REGULAR USER (TIDAK ADA DROPDOWN)
                         ================================================== --}}
+
+                        {{-- LITERATUR --}}
+                        @php
+                            $activeLiteratur = request()->routeIs('literatures.index');
+                        @endphp
+                        <a href="{{ route('literatures.index') }}"
+                            class="group relative flex h-[72px]
+                                   items-center
+                                   text-[16px]
+                                   font-medium
+                                   transition-colors
+                                   duration-300
+                                   {{ $activeLiteratur ? 'text-white' : 'text-slate-300 hover:text-white' }}">
+
+                            Literatur
+
+                            <span
+                                class="absolute bottom-0 left-1/2
+                                       h-[3px] w-0
+                                       -translate-x-1/2
+                                       rounded-full
+                                       bg-white
+                                       transition-all
+                                       duration-300
+                                       ease-out
+                                       {{ $activeLiteratur
+                                           ? '!left-0 !w-full !translate-x-0'
+                                           : 'group-hover:left-0
+                                              group-hover:w-full
+                                              group-hover:translate-x-0' }}">
+                            </span>
+                        </a>
 
                         {{-- PRAKTIK INDUSTRI --}}
                         @php
