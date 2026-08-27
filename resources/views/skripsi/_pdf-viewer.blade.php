@@ -321,14 +321,16 @@
             ================================================== --}}
 
             <div
-                id="skripsiPdfDetailBackdrop"
-                class="absolute
-                       inset-0
-                       z-30
-                       hidden
-                       bg-slate-950/30
-                       backdrop-blur-[1px]"
-            ></div>
+    id="skripsiPdfDetailBackdrop"
+    class="fixed
+           inset-x-0
+           top-16
+           bottom-0
+           z-30
+           hidden
+           bg-slate-950/30
+           backdrop-blur-[1px]"
+></div>
 
 
             {{-- =================================================
@@ -336,24 +338,24 @@
             ================================================== --}}
 
             <aside
-                id="skripsiPdfDetailPanel"
-                class="absolute
-                       right-0
-                       top-0
-                       z-40
-                       h-full
-                       w-full
-                       max-w-md
-                       translate-x-full
-                       overflow-y-auto
-                       border-l
-                       border-slate-200
-                       bg-white
-                       shadow-2xl
-                       transition-transform
-                       duration-300
-                       ease-out"
-            >
+    id="skripsiPdfDetailPanel"
+    class="fixed
+           right-0
+           top-16
+           bottom-0
+           z-40
+           w-full
+           max-w-md
+           translate-x-full
+           overflow-y-auto
+           border-l
+           border-slate-200
+           bg-white
+           shadow-2xl
+           transition-transform
+           duration-300
+           ease-out"
+>
 
                 {{-- =========================================
                     DETAIL HEADER
@@ -623,6 +625,76 @@
                 </div>
 
             </aside>
+
+            {{-- =============================================
+    ZOOM CONTROLS
+============================================== --}}
+
+<div
+    id="skripsiPdfZoomControls"
+    class="pointer-events-none
+           fixed
+           inset-x-0
+           bottom-5
+           z-20
+           flex
+           justify-center"
+>
+
+    <div
+        class="pointer-events-auto
+               flex
+               items-center
+               gap-1
+               rounded-2xl
+               border
+               border-slate-200
+               bg-white/95
+               px-2
+               py-1.5
+               shadow-lg
+               backdrop-blur"
+    >
+
+        <button
+            id="skripsiPdfZoomOut"
+            type="button"
+            aria-label="Perkecil"
+            class="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800 active:scale-95 disabled:pointer-events-none"
+        >
+            <span class="material-symbols-outlined text-[20px]">remove</span>
+        </button>
+
+        <span
+            id="skripsiPdfZoomLabel"
+            class="min-w-[3.25rem] text-center text-xs font-semibold text-slate-600"
+        >
+            100%
+        </span>
+
+        <button
+            id="skripsiPdfZoomIn"
+            type="button"
+            aria-label="Perbesar"
+            class="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800 active:scale-95 disabled:pointer-events-none"
+        >
+            <span class="material-symbols-outlined text-[20px]">add</span>
+        </button>
+
+        <div class="mx-1 h-5 w-px bg-slate-200"></div>
+
+        <button
+            id="skripsiPdfZoomReset"
+            type="button"
+            aria-label="Reset zoom"
+            class="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800 active:scale-95"
+        >
+            <span class="material-symbols-outlined text-[20px]">restart_alt</span>
+        </button>
+
+    </div>
+
+</div>
 
         </main>
 

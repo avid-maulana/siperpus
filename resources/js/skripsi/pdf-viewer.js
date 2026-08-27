@@ -7,6 +7,7 @@
 | Read Only
 | No Browser PDF Toolbar
 | Detail Panel
+| Zoom Controls
 |--------------------------------------------------------------------------
 */
 
@@ -145,6 +146,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | ZOOM CONTROLS
+    |--------------------------------------------------------------------------
+    */
+
+    const zoomOutButton =
+        document.getElementById(
+            "skripsiPdfZoomOut"
+        );
+
+    const zoomInButton =
+        document.getElementById(
+            "skripsiPdfZoomIn"
+        );
+
+    const zoomResetButton =
+        document.getElementById(
+            "skripsiPdfZoomReset"
+        );
+
+    const zoomLabel =
+        document.getElementById(
+            "skripsiPdfZoomLabel"
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
     | VALIDASI
     |--------------------------------------------------------------------------
     */
@@ -207,6 +235,25 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentLoadingTask = null;
 
     let isClosing = false;
+
+    let isZooming = false;
+
+    let currentZoom = 0.5;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ZOOM CONFIG
+    |--------------------------------------------------------------------------
+    */
+
+    const ZOOM_MIN = 0.5;
+
+    const ZOOM_MAX = 2.5;
+
+    const ZOOM_STEP = 0.15;
+
+    const ZOOM_DEFAULT = 0.5;
 
 
     /*
@@ -910,6 +957,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | UPDATE ZOOM UI
+    |--------------------------------------------------------------------------
+    */
+
+    const updateZoomUI = () => {
+
+        if (zoomLabel) {
+
+            zoomLabel.textContent =
+                `${Math.round(currentZoom * 100)}%`;
+
+        }
+
+
+        if (zoomOutButton) {
+
+            zoomOutButton.disabled =
+                currentZoom <= ZOOM_MIN;
+
+            zoomOutButton.classList.toggle(
+                "opacity-40",
+                currentZoom <= ZOOM_MIN
+            );
+
+        }
+
+
+        if (zoomInButton) {
+
+            zoomInButton.disabled =
+                currentZoom >= ZOOM_MAX;
+
+            zoomInButton.classList.toggle(
+                "opacity-40",
+                currentZoom >= ZOOM_MAX
+            );
+
+        }
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
     | RENDER SINGLE PAGE
     |--------------------------------------------------------------------------
     */
@@ -964,13 +1055,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /*
         |--------------------------------------------------------------------------
-        | SCALE
+        | SCALE (FIT-TO-WIDTH x ZOOM USER)
         |--------------------------------------------------------------------------
         */
 
-        const scale =
+        const fitScale =
             availableWidth /
             viewport.width;
+
+
+        const scale =
+            fitScale *
+            currentZoom;
 
 
         const finalViewport =
@@ -1131,6 +1227,123 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | RENDER ALL PAGES (DIPAKAI SAAT LOAD & SAAT ZOOM BERUBAH)
+    |--------------------------------------------------------------------------
+    */
+
+    const renderAllPages = async (
+        pdf
+    ) => {
+
+        clearPages();
+
+
+        for (
+            let pageNumber = 1;
+            pageNumber <= pdf.numPages;
+            pageNumber++
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOP IF CLOSING
+            |--------------------------------------------------------------------------
+            */
+
+            if (isClosing) {
+
+                return;
+
+            }
+
+
+            await renderPage(
+                pdf,
+                pageNumber
+            );
+
+        }
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY ZOOM (RE-RENDER TANPA FETCH ULANG PDF)
+    |--------------------------------------------------------------------------
+    */
+
+    const applyZoom = async (
+        nextZoom
+    ) => {
+
+        if (
+            !currentPdf ||
+            isZooming
+        ) {
+
+            return;
+
+        }
+
+
+        const clamped =
+            Math.min(
+                ZOOM_MAX,
+                Math.max(
+                    ZOOM_MIN,
+                    nextZoom
+                )
+            );
+
+
+        if (clamped === currentZoom) {
+
+            return;
+
+        }
+
+
+        isZooming = true;
+
+        currentZoom = clamped;
+
+        updateZoomUI();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN RASIO SCROLL SUPAYA POSISI BACA TIDAK LONCAT
+        |--------------------------------------------------------------------------
+        */
+
+        const scrollRatio =
+            viewer && viewer.scrollHeight > 0
+                ? viewer.scrollTop / viewer.scrollHeight
+                : 0;
+
+
+        await renderAllPages(
+            currentPdf
+        );
+
+
+        if (viewer) {
+
+            viewer.scrollTop =
+                scrollRatio *
+                viewer.scrollHeight;
+
+        }
+
+
+        isZooming = false;
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
     | RENDER PDF
     |--------------------------------------------------------------------------
     */
@@ -1212,31 +1425,9 @@ document.addEventListener("DOMContentLoaded", () => {
             |--------------------------------------------------------------------------
             */
 
-            for (
-                let pageNumber = 1;
-                pageNumber <= currentPdf.numPages;
-                pageNumber++
-            ) {
-
-                /*
-                |--------------------------------------------------------------------------
-                | STOP IF CLOSING
-                |--------------------------------------------------------------------------
-                */
-
-                if (isClosing) {
-
-                    return;
-
-                }
-
-
-                await renderPage(
-                    currentPdf,
-                    pageNumber
-                );
-
-            }
+            await renderAllPages(
+                currentPdf
+            );
 
 
             /*
@@ -1288,6 +1479,17 @@ document.addEventListener("DOMContentLoaded", () => {
     ) => {
 
         isClosing = false;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESET ZOOM SETIAP BUKA BAB BARU
+        |--------------------------------------------------------------------------
+        */
+
+        currentZoom = ZOOM_DEFAULT;
+
+        updateZoomUI();
 
 
         /*
@@ -1667,6 +1869,72 @@ document.addEventListener("DOMContentLoaded", () => {
             event.stopPropagation();
 
             closeDetail();
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ZOOM IN
+    |--------------------------------------------------------------------------
+    */
+
+    zoomInButton?.addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            applyZoom(
+                currentZoom +
+                ZOOM_STEP
+            );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ZOOM OUT
+    |--------------------------------------------------------------------------
+    */
+
+    zoomOutButton?.addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            applyZoom(
+                currentZoom -
+                ZOOM_STEP
+            );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ZOOM RESET
+    |--------------------------------------------------------------------------
+    */
+
+    zoomResetButton?.addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            applyZoom(ZOOM_DEFAULT);
 
         }
     );
