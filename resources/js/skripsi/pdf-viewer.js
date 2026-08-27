@@ -285,6 +285,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | BUILD FETCH URL (VIA PROXY UNTUK DOMAIN EKSTERNAL)
+    |--------------------------------------------------------------------------
+    |
+    | Browser tidak bisa fetch() PDF langsung dari domain lain
+    | (mis. tei.um.ac.id) kalau server itu tidak mengirim header
+    | CORS (Access-Control-Allow-Origin). Ini bukan bug di server
+    | dokumen, tapi memang aturan browser.
+    |
+    | Solusinya: request dilempar ke backend Laravel sendiri lewat
+    | route('pdf.proxy'), backend yang fetch ke domain eksternal
+    | (server-ke-server tidak kena CORS), lalu backend meneruskan
+    | isi PDF-nya ke browser.
+    |
+    | Kalau URL-nya memang sudah 1 origin dengan halaman ini
+    | (misalnya suatu saat file disimpan lokal di /storage),
+    | proxy dilewati saja karena tidak perlu.
+    |
+    */
+
+    const buildFetchUrl = (
+        targetUrl
+    ) => {
+
+        try {
+
+            const target =
+                new URL(
+                    targetUrl,
+                    window.location.origin
+                );
+
+
+            if (
+                target.origin ===
+                window.location.origin
+            ) {
+
+                return targetUrl;
+
+            }
+
+        } catch (e) {
+
+            console.warn(
+                "PDF Viewer Skripsi: gagal parse URL, fallback ke proxy.",
+                e
+            );
+
+        }
+
+
+        return (
+            "/pdf-proxy?url=" +
+            encodeURIComponent(
+                targetUrl
+            )
+        );
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
     | SHOW LOADING
     |--------------------------------------------------------------------------
     */
@@ -1325,6 +1388,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /*
         |--------------------------------------------------------------------------
+        | URL YANG DI-FETCH
+        |--------------------------------------------------------------------------
+        |
+        | pdfUrl        -> URL asli dokumen (dipakai untuk log & debug).
+        | fetchUrl      -> URL yang benar-benar di-fetch PDF.js.
+        |                  Dialihkan lewat /pdf-proxy kalau pdfUrl beda
+        |                  origin, supaya tidak kena CORS di browser.
+        |
+        */
+
+        const fetchUrl =
+            buildFetchUrl(
+                pdfUrl
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
         | DEBUG
         |--------------------------------------------------------------------------
         */
@@ -1335,8 +1416,13 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         console.log(
-            "PDF URL:",
+            "PDF URL (asli):",
             pdfUrl
+        );
+
+        console.log(
+            "PDF URL (di-fetch):",
+            fetchUrl
         );
 
 
@@ -1379,7 +1465,7 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         renderPdf(
-            pdfUrl
+            fetchUrl
         );
 
     };
