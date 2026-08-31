@@ -255,7 +255,22 @@
                                                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }}">
 
                                         <span class="material-symbols-outlined text-[20px]">school</span>
-                                        <span>Kelola Pascasarjana</span>
+                                        <span class="flex-1">Kelola Pascasarjana</span>
+
+                                        @if (($pascasarjanaBadgeCount ?? 0) > 0)
+                                            <span
+                                                class="inline-flex h-5 min-w-[20px]
+                                                       shrink-0
+                                                       items-center justify-center
+                                                       rounded-full
+                                                       bg-red-500
+                                                       px-1.5
+                                                       text-[10px]
+                                                       font-bold
+                                                       text-white">
+                                                {{ $pascasarjanaBadgeCount > 99 ? '99+' : $pascasarjanaBadgeCount }}
+                                            </span>
+                                        @endif
                                     </a>
 
                                     {{-- KELOLA PRAKTIK INDUSTRI --}}

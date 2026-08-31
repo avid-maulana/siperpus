@@ -233,17 +233,35 @@ $active->count() === 0
         </div>
 
 
-        {{-- CHEVRON --}}
+        {{-- CHEVRON + BADGE --}}
 
-        <span
-            class="material-symbols-outlined
-                   text-[24px]
-                   text-slate-500"
-            data-repository-icon>
+        <div class="flex items-center gap-3">
 
-            expand_less
+            <span
+                class="inline-flex h-6 min-w-[24px]
+                       items-center justify-center
+                       rounded-full
+                       bg-slate-600
+                       px-2
+                       text-xs
+                       font-bold
+                       text-white">
 
-        </span>
+                {{ $withoutRepository->count() }}
+
+            </span>
+
+            <span
+                class="material-symbols-outlined
+                       text-[24px]
+                       text-slate-500"
+                data-repository-icon>
+
+                expand_less
+
+            </span>
+
+        </div>
 
     </button>
 
@@ -711,17 +729,35 @@ $active->count() === 0
         </div>
 
 
-        {{-- CHEVRON --}}
+        {{-- CHEVRON + BADGE --}}
 
-        <span
-            class="material-symbols-outlined
-                   text-[24px]
-                   text-orange-500"
-            data-repository-icon>
+        <div class="flex items-center gap-3">
 
-            expand_less
+            <span
+                class="inline-flex h-6 min-w-[24px]
+                       items-center justify-center
+                       rounded-full
+                       bg-orange-500
+                       px-2
+                       text-xs
+                       font-bold
+                       text-white">
 
-        </span>
+                {{ $needsAction->count() }}
+
+            </span>
+
+            <span
+                class="material-symbols-outlined
+                       text-[24px]
+                       text-orange-500"
+                data-repository-icon>
+
+                expand_less
+
+            </span>
+
+        </div>
 
     </button>
 
@@ -1281,17 +1317,35 @@ $active->count() === 0
         </div>
 
 
-        {{-- CHEVRON --}}
+        {{-- CHEVRON + BADGE --}}
 
-        <span
-            class="material-symbols-outlined
-                   text-[24px]
-                   text-emerald-500"
-            data-repository-icon>
+        <div class="flex items-center gap-3">
 
-            expand_more
+            <span
+                class="inline-flex h-6 min-w-[24px]
+                       items-center justify-center
+                       rounded-full
+                       bg-emerald-500
+                       px-2
+                       text-xs
+                       font-bold
+                       text-white">
 
-        </span>
+                {{ $active->count() }}
+
+            </span>
+
+            <span
+                class="material-symbols-outlined
+                       text-[24px]
+                       text-emerald-500"
+                data-repository-icon>
+
+                expand_more
+
+            </span>
+
+        </div>
 
     </button>
 

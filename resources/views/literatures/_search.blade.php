@@ -194,7 +194,7 @@
                     @foreach($categories as $category)
                     <option
                         value="{{ $category->id }}"
-                        data-type="{{ $category->type }}"
+                        data-type="{{ $category->type->name ?? '' }}"
                         @selected(request('category_id')==$category->id)>
                         {{ $category->name }}
                     </option>
