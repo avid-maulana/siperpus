@@ -13,12 +13,10 @@
 
 import * as pdfjsLib from "pdfjs-dist";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-    new URL(
-        "pdfjs-dist/build/pdf.worker.min.mjs",
-        import.meta.url
-    ).toString();
-
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+    "pdfjs-dist/build/pdf.worker.min.mjs",
+    import.meta.url,
+).toString();
 
 /*
 |--------------------------------------------------------------------------
@@ -27,31 +25,19 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 */
 
 document.addEventListener("DOMContentLoaded", () => {
-
     /*
     |--------------------------------------------------------------------------
     | MODAL
     |--------------------------------------------------------------------------
     */
 
-    const modal =
-        document.getElementById("skripsiPdfModal");
+    const modal = document.getElementById("skripsiPdfModal");
 
-    const modalContent =
-        document.getElementById(
-            "skripsiPdfModalContent"
-        );
+    const modalContent = document.getElementById("skripsiPdfModalContent");
 
-    const backdrop =
-        document.getElementById(
-            "skripsiPdfBackdrop"
-        );
+    const backdrop = document.getElementById("skripsiPdfBackdrop");
 
-    const closeButton =
-        document.getElementById(
-            "skripsiPdfClose"
-        );
-
+    const closeButton = document.getElementById("skripsiPdfClose");
 
     /*
     |--------------------------------------------------------------------------
@@ -59,31 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const viewer =
-        document.getElementById(
-            "skripsiPdfViewer"
-        );
+    const viewer = document.getElementById("skripsiPdfViewer");
 
-    const pagesContainer =
-        document.getElementById(
-            "skripsiPdfPages"
-        );
+    const pagesContainer = document.getElementById("skripsiPdfPages");
 
-    const loading =
-        document.getElementById(
-            "skripsiPdfLoading"
-        );
+    const loading = document.getElementById("skripsiPdfLoading");
 
-    const error =
-        document.getElementById(
-            "skripsiPdfError"
-        );
+    const error = document.getElementById("skripsiPdfError");
 
-    const errorMessage =
-        document.getElementById(
-            "skripsiPdfErrorMessage"
-        );
-
+    const errorMessage = document.getElementById("skripsiPdfErrorMessage");
 
     /*
     |--------------------------------------------------------------------------
@@ -91,11 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const title =
-        document.getElementById(
-            "skripsiPdfTitle"
-        );
-
+    const title = document.getElementById("skripsiPdfTitle");
 
     /*
     |--------------------------------------------------------------------------
@@ -103,46 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const detailToggle =
-        document.getElementById(
-            "skripsiPdfDetailToggle"
-        );
+    const detailToggle = document.getElementById("skripsiPdfDetailToggle");
 
-    const detailPanel =
-        document.getElementById(
-            "skripsiPdfDetailPanel"
-        );
+    const detailPanel = document.getElementById("skripsiPdfDetailPanel");
 
-    const detailClose =
-        document.getElementById(
-            "skripsiPdfDetailClose"
-        );
+    const detailClose = document.getElementById("skripsiPdfDetailClose");
 
-    const detailBackdrop =
-        document.getElementById(
-            "skripsiPdfDetailBackdrop"
-        );
+    const detailBackdrop = document.getElementById("skripsiPdfDetailBackdrop");
 
-    const detailAuthor =
-        document.getElementById(
-            "skripsiPdfDetailAuthor"
-        );
+    const detailAuthor = document.getElementById("skripsiPdfDetailAuthor");
 
-    const detailNim =
-        document.getElementById(
-            "skripsiPdfDetailNim"
-        );
+    const detailNim = document.getElementById("skripsiPdfDetailNim");
 
-    const detailChapter =
-        document.getElementById(
-            "skripsiPdfDetailChapter"
-        );
+    const detailChapter = document.getElementById("skripsiPdfDetailChapter");
 
-    const detailTitle =
-        document.getElementById(
-            "skripsiPdfDetailTitle"
-        );
-
+    const detailTitle = document.getElementById("skripsiPdfDetailTitle");
 
     /*
     |--------------------------------------------------------------------------
@@ -150,26 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const zoomOutButton =
-        document.getElementById(
-            "skripsiPdfZoomOut"
-        );
+    const zoomOutButton = document.getElementById("skripsiPdfZoomOut");
 
-    const zoomInButton =
-        document.getElementById(
-            "skripsiPdfZoomIn"
-        );
+    const zoomInButton = document.getElementById("skripsiPdfZoomIn");
 
-    const zoomResetButton =
-        document.getElementById(
-            "skripsiPdfZoomReset"
-        );
+    const zoomResetButton = document.getElementById("skripsiPdfZoomReset");
 
-    const zoomLabel =
-        document.getElementById(
-            "skripsiPdfZoomLabel"
-        );
-
+    const zoomLabel = document.getElementById("skripsiPdfZoomLabel");
 
     /*
     |--------------------------------------------------------------------------
@@ -177,20 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    if (
-        !modal ||
-        !modalContent ||
-        !pagesContainer
-    ) {
-
-        console.warn(
-            "PDF Viewer Skripsi: element utama tidak ditemukan."
-        );
+    if (!modal || !modalContent || !pagesContainer) {
+        console.warn("PDF Viewer Skripsi: element utama tidak ditemukan.");
 
         return;
-
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -198,17 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    if (
-        modal.parentElement !==
-        document.body
-    ) {
-
-        document.body.appendChild(
-            modal
-        );
-
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -216,13 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const sisintaFileUrl = (
-        window.SISINTA_FILE_URL || ""
-    ).replace(
-        /\/+$/,
-        ""
-    );
-
+    const sisintaFileUrl = (window.SISINTA_FILE_URL || "").replace(/\/+$/, "");
 
     /*
     |--------------------------------------------------------------------------
@@ -240,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentZoom = 0.5;
 
-
     /*
     |--------------------------------------------------------------------------
     | ZOOM CONFIG
@@ -255,31 +159,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ZOOM_DEFAULT = 0.5;
 
-
     /*
     |--------------------------------------------------------------------------
     | BUILD PDF URL
     |--------------------------------------------------------------------------
     */
 
-    const buildPdfUrl = (
-        filePath
-    ) => {
-
-        const cleanPath =
-            String(
-                filePath || ""
-            ).trim();
-
+    const buildPdfUrl = (filePath) => {
+        const cleanPath = String(filePath || "").trim();
 
         if (!cleanPath) {
-
-            throw new Error(
-                "Path PDF tidak ditemukan."
-            );
-
+            throw new Error("Path PDF tidak ditemukan.");
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -287,16 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        if (
-            /^https?:\/\//i.test(
-                cleanPath
-            )
-        ) {
-
+        if (/^https?:\/\//i.test(cleanPath)) {
             return cleanPath;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -305,13 +189,8 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         if (!sisintaFileUrl) {
-
-            throw new Error(
-                "SISINTA_FILE_URL belum tersedia."
-            );
-
+            throw new Error("SISINTA_FILE_URL belum tersedia.");
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -319,16 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        return (
-            `${sisintaFileUrl}/` +
-            cleanPath.replace(
-                /^\/+/,
-                ""
-            )
-        );
-
+        return `${sisintaFileUrl}/` + cleanPath.replace(/^\/+/, "");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -351,47 +222,22 @@ document.addEventListener("DOMContentLoaded", () => {
     |
     */
 
-    const buildFetchUrl = (
-        targetUrl
-    ) => {
-
+    const buildFetchUrl = (targetUrl) => {
         try {
+            const target = new URL(targetUrl, window.location.origin);
 
-            const target =
-                new URL(
-                    targetUrl,
-                    window.location.origin
-                );
-
-
-            if (
-                target.origin ===
-                window.location.origin
-            ) {
-
+            if (target.origin === window.location.origin) {
                 return targetUrl;
-
             }
-
         } catch (e) {
-
             console.warn(
                 "PDF Viewer Skripsi: gagal parse URL, fallback ke proxy.",
-                e
+                e,
             );
-
         }
 
-
-        return (
-            "/pdf-proxy?url=" +
-            encodeURIComponent(
-                targetUrl
-            )
-        );
-
+        return "/pdf-proxy?url=" + encodeURIComponent(targetUrl);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -400,17 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const showLoading = () => {
+        loading?.classList.remove("hidden");
 
-        loading?.classList.remove(
-            "hidden"
-        );
-
-        loading?.classList.add(
-            "flex"
-        );
-
+        loading?.classList.add("flex");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -419,17 +258,10 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const hideLoading = () => {
+        loading?.classList.add("hidden");
 
-        loading?.classList.add(
-            "hidden"
-        );
-
-        loading?.classList.remove(
-            "flex"
-        );
-
+        loading?.classList.remove("flex");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -437,32 +269,18 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const showError = (
-        message
-    ) => {
-
+    const showError = (message) => {
         hideLoading();
 
-
         if (errorMessage) {
-
             errorMessage.textContent =
-                message ||
-                "File PDF tidak dapat ditampilkan.";
-
+                message || "File PDF tidak dapat ditampilkan.";
         }
 
+        error?.classList.remove("hidden");
 
-        error?.classList.remove(
-            "hidden"
-        );
-
-        error?.classList.add(
-            "flex"
-        );
-
+        error?.classList.add("flex");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -471,17 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const hideError = () => {
+        error?.classList.add("hidden");
 
-        error?.classList.add(
-            "hidden"
-        );
-
-        error?.classList.remove(
-            "flex"
-        );
-
+        error?.classList.remove("flex");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -490,11 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const clearPages = () => {
-
         pagesContainer.innerHTML = "";
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -503,34 +311,21 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const clearPdf = async () => {
-
         /*
         |--------------------------------------------------------------------------
         | CANCEL LOADING TASK
         |--------------------------------------------------------------------------
         */
 
-        if (
-            currentLoadingTask
-        ) {
-
+        if (currentLoadingTask) {
             try {
-
                 await currentLoadingTask.destroy();
-
             } catch (e) {
-
-                console.warn(
-                    "PDF loading task:",
-                    e
-                );
-
+                console.warn("PDF loading task:", e);
             }
 
             currentLoadingTask = null;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -538,27 +333,15 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        if (
-            currentPdf
-        ) {
-
+        if (currentPdf) {
             try {
-
                 await currentPdf.destroy();
-
             } catch (e) {
-
-                console.warn(
-                    "PDF document:",
-                    e
-                );
-
+                console.warn("PDF document:", e);
             }
 
             currentPdf = null;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -567,9 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         clearPages();
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -578,15 +359,12 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const resetViewer = () => {
-
         clearPages();
 
         showLoading();
 
         hideError();
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -594,10 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const setDetailData = (
-        button
-    ) => {
-
+    const setDetailData = (button) => {
         /*
         |--------------------------------------------------------------------------
         | DATA
@@ -605,28 +380,15 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         const nama =
-            button.dataset.pdfNama ||
-            button.dataset.skripsiAuthor ||
-            "-";
+            button.dataset.pdfNama || button.dataset.skripsiAuthor || "-";
 
-
-        const nim =
-            button.dataset.pdfNim ||
-            button.dataset.skripsiNim ||
-            "-";
-
+        const nim = button.dataset.pdfNim || button.dataset.skripsiNim || "-";
 
         const bab =
-            button.dataset.pdfTitle ||
-            button.dataset.skripsiChapter ||
-            "-";
-
+            button.dataset.pdfTitle || button.dataset.skripsiChapter || "-";
 
         const judul =
-            button.dataset.pdfSkripsi ||
-            button.dataset.skripsiTitle ||
-            "-";
-
+            button.dataset.pdfSkripsi || button.dataset.skripsiTitle || "-";
 
         /*
         |--------------------------------------------------------------------------
@@ -635,12 +397,8 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         if (title) {
-
-            title.textContent =
-                bab;
-
+            title.textContent = bab;
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -649,36 +407,20 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         if (detailAuthor) {
-
-            detailAuthor.textContent =
-                nama;
-
+            detailAuthor.textContent = nama;
         }
-
 
         if (detailNim) {
-
-            detailNim.textContent =
-                nim;
-
+            detailNim.textContent = nim;
         }
-
 
         if (detailChapter) {
-
-            detailChapter.textContent =
-                bab;
-
+            detailChapter.textContent = bab;
         }
-
 
         if (detailTitle) {
-
-            detailTitle.textContent =
-                judul;
-
+            detailTitle.textContent = judul;
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -686,18 +428,13 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        console.log(
-            "DETAIL SKRIPSI:",
-            {
-                nama,
-                nim,
-                bab,
-                judul
-            }
-        );
-
+        console.log("DETAIL SKRIPSI:", {
+            nama,
+            nim,
+            bab,
+            judul,
+        });
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -706,28 +443,14 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const resetDetail = () => {
+        detailPanel?.classList.remove("translate-x-0");
 
-        detailPanel?.classList.remove(
-            "translate-x-0"
-        );
+        detailPanel?.classList.add("translate-x-full");
 
-        detailPanel?.classList.add(
-            "translate-x-full"
-        );
+        detailBackdrop?.classList.add("hidden");
 
-
-        detailBackdrop?.classList.add(
-            "hidden"
-        );
-
-
-        detailToggle?.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
+        detailToggle?.setAttribute("aria-expanded", "false");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -736,35 +459,18 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const openDetail = () => {
-
         if (!detailPanel) {
-
             return;
-
         }
 
+        detailPanel.classList.remove("translate-x-full");
 
-        detailPanel.classList.remove(
-            "translate-x-full"
-        );
+        detailPanel.classList.add("translate-x-0");
 
-        detailPanel.classList.add(
-            "translate-x-0"
-        );
+        detailBackdrop?.classList.remove("hidden");
 
-
-        detailBackdrop?.classList.remove(
-            "hidden"
-        );
-
-
-        detailToggle?.setAttribute(
-            "aria-expanded",
-            "true"
-        );
-
+        detailToggle?.setAttribute("aria-expanded", "true");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -773,35 +479,18 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const closeDetail = () => {
-
         if (!detailPanel) {
-
             return;
-
         }
 
+        detailPanel.classList.remove("translate-x-0");
 
-        detailPanel.classList.remove(
-            "translate-x-0"
-        );
+        detailPanel.classList.add("translate-x-full");
 
-        detailPanel.classList.add(
-            "translate-x-full"
-        );
+        detailBackdrop?.classList.add("hidden");
 
-
-        detailBackdrop?.classList.add(
-            "hidden"
-        );
-
-
-        detailToggle?.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
+        detailToggle?.setAttribute("aria-expanded", "false");
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -810,32 +499,18 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const toggleDetail = () => {
-
         if (!detailPanel) {
-
             return;
-
         }
 
-
-        const opened =
-            detailPanel.classList.contains(
-                "translate-x-0"
-            );
-
+        const opened = detailPanel.classList.contains("translate-x-0");
 
         if (opened) {
-
             closeDetail();
-
         } else {
-
             openDetail();
-
         }
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -844,11 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const animateOpen = () => {
-
-        modal.classList.remove(
-            "hidden"
-        );
-
+        modal.classList.remove("hidden");
 
         /*
         |--------------------------------------------------------------------------
@@ -856,25 +527,13 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        modal.classList.remove(
-            "opacity-100"
-        );
+        modal.classList.remove("opacity-100");
 
-        modal.classList.add(
-            "opacity-0"
-        );
+        modal.classList.add("opacity-0");
 
+        modalContent.classList.remove("translate-y-0", "scale-100");
 
-        modalContent.classList.remove(
-            "translate-y-0",
-            "scale-100"
-        );
-
-        modalContent.classList.add(
-            "translate-y-2",
-            "scale-[0.99]"
-        );
-
+        modalContent.classList.add("translate-y-2", "scale-[0.99]");
 
         /*
         |--------------------------------------------------------------------------
@@ -884,7 +543,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         void modal.offsetWidth;
 
-
         /*
         |--------------------------------------------------------------------------
         | ANIMATE
@@ -892,30 +550,15 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         requestAnimationFrame(() => {
+            modal.classList.remove("opacity-0");
 
-            modal.classList.remove(
-                "opacity-0"
-            );
+            modal.classList.add("opacity-100");
 
-            modal.classList.add(
-                "opacity-100"
-            );
+            modalContent.classList.remove("translate-y-2", "scale-[0.99]");
 
-
-            modalContent.classList.remove(
-                "translate-y-2",
-                "scale-[0.99]"
-            );
-
-            modalContent.classList.add(
-                "translate-y-0",
-                "scale-100"
-            );
-
+            modalContent.classList.add("translate-y-0", "scale-100");
         });
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -923,37 +566,17 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const animateClose = (
-        callback
-    ) => {
+    const animateClose = (callback) => {
+        modalContent.classList.remove("translate-y-0", "scale-100");
 
-        modalContent.classList.remove(
-            "translate-y-0",
-            "scale-100"
-        );
+        modalContent.classList.add("translate-y-2", "scale-[0.99]");
 
-        modalContent.classList.add(
-            "translate-y-2",
-            "scale-[0.99]"
-        );
+        modal.classList.remove("opacity-100");
 
+        modal.classList.add("opacity-0");
 
-        modal.classList.remove(
-            "opacity-100"
-        );
-
-        modal.classList.add(
-            "opacity-0"
-        );
-
-
-        window.setTimeout(
-            callback,
-            300
-        );
-
+        window.setTimeout(callback, 300);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -962,42 +585,28 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const updateZoomUI = () => {
-
         if (zoomLabel) {
-
-            zoomLabel.textContent =
-                `${Math.round(currentZoom * 100)}%`;
-
+            zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
         }
 
-
         if (zoomOutButton) {
-
-            zoomOutButton.disabled =
-                currentZoom <= ZOOM_MIN;
+            zoomOutButton.disabled = currentZoom <= ZOOM_MIN;
 
             zoomOutButton.classList.toggle(
                 "opacity-40",
-                currentZoom <= ZOOM_MIN
+                currentZoom <= ZOOM_MIN,
             );
-
         }
 
-
         if (zoomInButton) {
-
-            zoomInButton.disabled =
-                currentZoom >= ZOOM_MAX;
+            zoomInButton.disabled = currentZoom >= ZOOM_MAX;
 
             zoomInButton.classList.toggle(
                 "opacity-40",
-                currentZoom >= ZOOM_MAX
+                currentZoom >= ZOOM_MAX,
             );
-
         }
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1005,16 +614,8 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const renderPage = async (
-        pdf,
-        pageNumber
-    ) => {
-
-        const page =
-            await pdf.getPage(
-                pageNumber
-            );
-
+    const renderPage = async (pdf, pageNumber) => {
+        const page = await pdf.getPage(pageNumber);
 
         /*
         |--------------------------------------------------------------------------
@@ -1022,11 +623,9 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const viewport =
-            page.getViewport({
-                scale: 1
-            });
-
+        const viewport = page.getViewport({
+            scale: 1,
+        });
 
         /*
         |--------------------------------------------------------------------------
@@ -1034,24 +633,11 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const viewerWidth =
-            viewer?.clientWidth ||
-            window.innerWidth;
+        const viewerWidth = viewer?.clientWidth || window.innerWidth;
 
+        const horizontalPadding = window.innerWidth < 640 ? 24 : 48;
 
-        const horizontalPadding =
-            window.innerWidth < 640
-                ? 24
-                : 48;
-
-
-        const availableWidth =
-            Math.max(
-                viewerWidth -
-                horizontalPadding,
-                300
-            );
-
+        const availableWidth = Math.max(viewerWidth - horizontalPadding, 300);
 
         /*
         |--------------------------------------------------------------------------
@@ -1059,21 +645,13 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const fitScale =
-            availableWidth /
-            viewport.width;
+        const fitScale = availableWidth / viewport.width;
 
+        const scale = fitScale * currentZoom;
 
-        const scale =
-            fitScale *
-            currentZoom;
-
-
-        const finalViewport =
-            page.getViewport({
-                scale
-            });
-
+        const finalViewport = page.getViewport({
+            scale,
+        });
 
         /*
         |--------------------------------------------------------------------------
@@ -1081,29 +659,19 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const pageWrapper =
-            document.createElement(
-                "div"
-            );
+        const pageWrapper = document.createElement("div");
 
+        pageWrapper.className = [
+            "relative",
+            "overflow-hidden",
+            "bg-white",
+            "shadow-lg",
+            "mx-auto",
+        ].join(" ");
 
-        pageWrapper.className =
-            [
-                "relative",
-                "overflow-hidden",
-                "bg-white",
-                "shadow-lg",
-                "mx-auto"
-            ].join(" ");
+        pageWrapper.style.width = `${finalViewport.width}px`;
 
-
-        pageWrapper.style.width =
-            `${finalViewport.width}px`;
-
-
-        pageWrapper.style.height =
-            `${finalViewport.height}px`;
-
+        pageWrapper.style.height = `${finalViewport.height}px`;
 
         /*
         |--------------------------------------------------------------------------
@@ -1111,20 +679,11 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const canvas =
-            document.createElement(
-                "canvas"
-            );
+        const canvas = document.createElement("canvas");
 
-
-        const context =
-            canvas.getContext(
-                "2d",
-                {
-                    alpha: false
-                }
-            );
-
+        const context = canvas.getContext("2d", {
+            alpha: false,
+        });
 
         /*
         |--------------------------------------------------------------------------
@@ -1132,39 +691,17 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const outputScale =
-            Math.min(
-                window.devicePixelRatio ||
-                1,
-                2
-            );
+        const outputScale = Math.min(window.devicePixelRatio || 1, 2);
 
+        canvas.width = Math.floor(finalViewport.width * outputScale);
 
-        canvas.width =
-            Math.floor(
-                finalViewport.width *
-                outputScale
-            );
+        canvas.height = Math.floor(finalViewport.height * outputScale);
 
+        canvas.style.width = `${finalViewport.width}px`;
 
-        canvas.height =
-            Math.floor(
-                finalViewport.height *
-                outputScale
-            );
+        canvas.style.height = `${finalViewport.height}px`;
 
-
-        canvas.style.width =
-            `${finalViewport.width}px`;
-
-
-        canvas.style.height =
-            `${finalViewport.height}px`;
-
-
-        canvas.className =
-            "block";
-
+        canvas.className = "block";
 
         /*
         |--------------------------------------------------------------------------
@@ -1173,17 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         const transform =
-            outputScale !== 1
-                ? [
-                    outputScale,
-                    0,
-                    0,
-                    outputScale,
-                    0,
-                    0
-                ]
-                : null;
-
+            outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
 
         /*
         |--------------------------------------------------------------------------
@@ -1191,15 +718,9 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        pageWrapper.appendChild(
-            canvas
-        );
+        pageWrapper.appendChild(canvas);
 
-
-        pagesContainer.appendChild(
-            pageWrapper
-        );
-
+        pagesContainer.appendChild(pageWrapper);
 
         /*
         |--------------------------------------------------------------------------
@@ -1210,9 +731,8 @@ document.addEventListener("DOMContentLoaded", () => {
         await page.render({
             canvasContext: context,
             viewport: finalViewport,
-            transform
+            transform,
         }).promise;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1221,9 +741,7 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         page.cleanup();
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1231,19 +749,10 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const renderAllPages = async (
-        pdf
-    ) => {
-
+    const renderAllPages = async (pdf) => {
         clearPages();
 
-
-        for (
-            let pageNumber = 1;
-            pageNumber <= pdf.numPages;
-            pageNumber++
-        ) {
-
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
             /*
             |--------------------------------------------------------------------------
             | STOP IF CLOSING
@@ -1251,21 +760,12 @@ document.addEventListener("DOMContentLoaded", () => {
             */
 
             if (isClosing) {
-
                 return;
-
             }
 
-
-            await renderPage(
-                pdf,
-                pageNumber
-            );
-
+            await renderPage(pdf, pageNumber);
         }
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1273,43 +773,22 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const applyZoom = async (
-        nextZoom
-    ) => {
-
-        if (
-            !currentPdf ||
-            isZooming
-        ) {
-
+    const applyZoom = async (nextZoom) => {
+        if (!currentPdf || isZooming) {
             return;
-
         }
 
-
-        const clamped =
-            Math.min(
-                ZOOM_MAX,
-                Math.max(
-                    ZOOM_MIN,
-                    nextZoom
-                )
-            );
-
+        const clamped = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, nextZoom));
 
         if (clamped === currentZoom) {
-
             return;
-
         }
-
 
         isZooming = true;
 
         currentZoom = clamped;
 
         updateZoomUI();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1322,25 +801,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? viewer.scrollTop / viewer.scrollHeight
                 : 0;
 
-
-        await renderAllPages(
-            currentPdf
-        );
-
+        await renderAllPages(currentPdf);
 
         if (viewer) {
-
-            viewer.scrollTop =
-                scrollRatio *
-                viewer.scrollHeight;
-
+            viewer.scrollTop = scrollRatio * viewer.scrollHeight;
         }
 
-
         isZooming = false;
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1348,12 +816,8 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const renderPdf = async (
-        pdfUrl
-    ) => {
-
+    const renderPdf = async (pdfUrl) => {
         try {
-
             /*
             |--------------------------------------------------------------------------
             | CLEAR PREVIOUS
@@ -1362,37 +826,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
             await clearPdf();
 
-
             /*
             |--------------------------------------------------------------------------
             | PDF.JS LOAD
             |--------------------------------------------------------------------------
             */
 
-            currentLoadingTask =
-                pdfjsLib.getDocument({
-                    url: pdfUrl,
+            currentLoadingTask = pdfjsLib.getDocument({
+                url: pdfUrl,
 
-                    /*
+                /*
                     |--------------------------------------------------------------------------
                     | CREDENTIALS
                     |--------------------------------------------------------------------------
                     */
 
-                    withCredentials: false,
+                withCredentials: false,
 
-                    /*
+                /*
                     |--------------------------------------------------------------------------
                     | RANGE REQUEST
                     |--------------------------------------------------------------------------
                     */
 
-                    disableRange: false,
+                disableRange: false,
 
-                    disableStream: false
-
-                });
-
+                disableStream: false,
+            });
 
             /*
             |--------------------------------------------------------------------------
@@ -1400,12 +860,9 @@ document.addEventListener("DOMContentLoaded", () => {
             |--------------------------------------------------------------------------
             */
 
-            currentPdf =
-                await currentLoadingTask.promise;
-
+            currentPdf = await currentLoadingTask.promise;
 
             currentLoadingTask = null;
-
 
             /*
             |--------------------------------------------------------------------------
@@ -1413,11 +870,7 @@ document.addEventListener("DOMContentLoaded", () => {
             |--------------------------------------------------------------------------
             */
 
-            console.log(
-                "Jumlah halaman PDF:",
-                currentPdf.numPages
-            );
-
+            console.log("Jumlah halaman PDF:", currentPdf.numPages);
 
             /*
             |--------------------------------------------------------------------------
@@ -1425,10 +878,7 @@ document.addEventListener("DOMContentLoaded", () => {
             |--------------------------------------------------------------------------
             */
 
-            await renderAllPages(
-                currentPdf
-            );
-
+            await renderAllPages(currentPdf);
 
             /*
             |--------------------------------------------------------------------------
@@ -1438,7 +888,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             hideLoading();
 
-
             /*
             |--------------------------------------------------------------------------
             | SCROLL TOP
@@ -1446,27 +895,16 @@ document.addEventListener("DOMContentLoaded", () => {
             */
 
             if (viewer) {
-
                 viewer.scrollTop = 0;
-
             }
-
         } catch (err) {
-
-            console.error(
-                "PDF.js error:",
-                err
-            );
-
+            console.error("PDF.js error:", err);
 
             showError(
-                "PDF tidak dapat dimuat. Periksa koneksi atau path file."
+                "PDF tidak dapat dimuat. Periksa koneksi atau path file.",
             );
-
         }
-
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1474,12 +912,8 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    const openPdf = (
-        button
-    ) => {
-
+    const openPdf = (button) => {
         isClosing = false;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1491,27 +925,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateZoomUI();
 
-
         /*
         |--------------------------------------------------------------------------
         | PATH
         |--------------------------------------------------------------------------
         */
 
-        const filePath =
-            button.dataset.pdfPath;
-
+        const filePath = button.dataset.pdfPath;
 
         if (!filePath) {
-
-            console.error(
-                "PDF Viewer Skripsi: data-pdf-path tidak ditemukan."
-            );
+            console.error("PDF Viewer Skripsi: data-pdf-path tidak ditemukan.");
 
             return;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1519,10 +945,7 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        setDetailData(
-            button
-        );
-
+        setDetailData(button);
 
         /*
         |--------------------------------------------------------------------------
@@ -1532,7 +955,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         resetDetail();
 
-
         /*
         |--------------------------------------------------------------------------
         | RESET VIEWER
@@ -1540,7 +962,6 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         resetViewer();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1550,43 +971,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let pdfUrl;
 
-
         try {
-
-            pdfUrl =
-                buildPdfUrl(
-                    filePath
-                );
-
+            pdfUrl = buildPdfUrl(filePath);
         } catch (err) {
+            console.error(err);
 
-            console.error(
-                err
-            );
+            showError(err.message);
 
+            document.body.classList.add("overflow-hidden");
 
-            showError(
-                err.message
-            );
-
-
-            document.body.classList.add(
-                "overflow-hidden"
-            );
-
-
-            modal.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-
+            modal.setAttribute("aria-hidden", "false");
 
             animateOpen();
 
             return;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1600,11 +999,7 @@ document.addEventListener("DOMContentLoaded", () => {
         |
         */
 
-        const fetchUrl =
-            buildFetchUrl(
-                pdfUrl
-            );
-
+        const fetchUrl = buildFetchUrl(pdfUrl);
 
         /*
         |--------------------------------------------------------------------------
@@ -1612,21 +1007,11 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        console.log(
-            "PDF PATH:",
-            filePath
-        );
+        console.log("PDF PATH:", filePath);
 
-        console.log(
-            "PDF URL (asli):",
-            pdfUrl
-        );
+        console.log("PDF URL (asli):", pdfUrl);
 
-        console.log(
-            "PDF URL (di-fetch):",
-            fetchUrl
-        );
-
+        console.log("PDF URL (di-fetch):", fetchUrl);
 
         /*
         |--------------------------------------------------------------------------
@@ -1634,11 +1019,7 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
+        modal.setAttribute("aria-hidden", "false");
 
         /*
         |--------------------------------------------------------------------------
@@ -1646,10 +1027,7 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        document.body.classList.add(
-            "overflow-hidden"
-        );
-
+        document.body.classList.add("overflow-hidden");
 
         /*
         |--------------------------------------------------------------------------
@@ -1659,19 +1037,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         animateOpen();
 
-
         /*
         |--------------------------------------------------------------------------
         | LOAD PDF.JS
         |--------------------------------------------------------------------------
         */
 
-        renderPdf(
-            fetchUrl
-        );
-
+        renderPdf(fetchUrl);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1680,27 +1053,15 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const closePdf = () => {
-
-        if (
-            modal.classList.contains(
-                "hidden"
-            )
-        ) {
-
+        if (modal.classList.contains("hidden")) {
             return;
-
         }
-
 
         if (isClosing) {
-
             return;
-
         }
 
-
         isClosing = true;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -1710,69 +1071,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeDetail();
 
-
         /*
         |--------------------------------------------------------------------------
         | ANIMATION
         |--------------------------------------------------------------------------
         */
 
-        animateClose(
-            async () => {
-
-                /*
+        animateClose(async () => {
+            /*
                 |--------------------------------------------------------------------------
                 | HIDE
                 |--------------------------------------------------------------------------
                 */
 
-                modal.classList.add(
-                    "hidden"
-                );
+            modal.classList.add("hidden");
 
+            modal.setAttribute("aria-hidden", "true");
 
-                modal.setAttribute(
-                    "aria-hidden",
-                    "true"
-                );
-
-
-                /*
+            /*
                 |--------------------------------------------------------------------------
                 | UNLOCK BODY
                 |--------------------------------------------------------------------------
                 */
 
-                document.body.classList.remove(
-                    "overflow-hidden"
-                );
+            document.body.classList.remove("overflow-hidden");
 
-
-                /*
+            /*
                 |--------------------------------------------------------------------------
                 | CLEAR PDF
                 |--------------------------------------------------------------------------
                 */
 
-                await clearPdf();
+            await clearPdf();
 
-
-                /*
+            /*
                 |--------------------------------------------------------------------------
                 | RESET
                 |--------------------------------------------------------------------------
                 */
 
-                resetViewer();
+            resetViewer();
 
-
-                isClosing = false;
-
-            }
-        );
-
+            isClosing = false;
+        });
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1784,35 +1126,19 @@ document.addEventListener("DOMContentLoaded", () => {
     |
     */
 
-    document.addEventListener(
-        "click",
-        (event) => {
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-skripsi-pdf-viewer]");
 
-            const button =
-                event.target.closest(
-                    "[data-skripsi-pdf-viewer]"
-                );
-
-
-            if (!button) {
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            openPdf(
-                button
-            );
-
+        if (!button) {
+            return;
         }
-    );
 
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        openPdf(button);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1820,19 +1146,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    detailToggle?.addEventListener(
-        "click",
-        (event) => {
+    detailToggle?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            toggleDetail();
-
-        }
-    );
-
+        toggleDetail();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1840,19 +1160,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    detailClose?.addEventListener(
-        "click",
-        (event) => {
+    detailClose?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            closeDetail();
-
-        }
-    );
-
+        closeDetail();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1860,19 +1174,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    detailBackdrop?.addEventListener(
-        "click",
-        (event) => {
+    detailBackdrop?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            closeDetail();
-
-        }
-    );
-
+        closeDetail();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1880,22 +1188,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    zoomInButton?.addEventListener(
-        "click",
-        (event) => {
+    zoomInButton?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            applyZoom(
-                currentZoom +
-                ZOOM_STEP
-            );
-
-        }
-    );
-
+        applyZoom(currentZoom + ZOOM_STEP);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1903,22 +1202,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    zoomOutButton?.addEventListener(
-        "click",
-        (event) => {
+    zoomOutButton?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            applyZoom(
-                currentZoom -
-                ZOOM_STEP
-            );
-
-        }
-    );
-
+        applyZoom(currentZoom - ZOOM_STEP);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1926,19 +1216,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    zoomResetButton?.addEventListener(
-        "click",
-        (event) => {
+    zoomResetButton?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            applyZoom(ZOOM_DEFAULT);
-
-        }
-    );
-
+        applyZoom(ZOOM_DEFAULT);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1946,19 +1230,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    closeButton?.addEventListener(
-        "click",
-        (event) => {
+    closeButton?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            closePdf();
-
-        }
-    );
-
+        closePdf();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1966,19 +1244,13 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    backdrop?.addEventListener(
-        "click",
-        (event) => {
+    backdrop?.addEventListener("click", (event) => {
+        event.preventDefault();
 
-            event.preventDefault();
+        event.stopPropagation();
 
-            event.stopPropagation();
-
-            closePdf();
-
-        }
-    );
-
+        closePdf();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1986,58 +1258,33 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    document.addEventListener(
-        "keydown",
-        (event) => {
+    document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") {
+            return;
+        }
 
-            if (
-                event.key !== "Escape"
-            ) {
+        if (modal.classList.contains("hidden")) {
+            return;
+        }
 
-                return;
-
-            }
-
-
-            if (
-                modal.classList.contains(
-                    "hidden"
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            /*
+        /*
             |--------------------------------------------------------------------------
             | DETAIL TERBUKA
             |--------------------------------------------------------------------------
             */
 
-            if (
-                detailPanel?.classList.contains(
-                    "translate-x-0"
-                )
-            ) {
+        if (detailPanel?.classList.contains("translate-x-0")) {
+            closeDetail();
 
-                closeDetail();
+            return;
+        }
 
-                return;
-
-            }
-
-
-            /*
+        /*
             |--------------------------------------------------------------------------
             | CLOSE MODAL
             |--------------------------------------------------------------------------
             */
 
-            closePdf();
-
-        }
-    );
-
+        closePdf();
+    });
 });

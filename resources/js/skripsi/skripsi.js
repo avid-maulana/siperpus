@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const result = document.getElementById("skripsi-result");
     const resultInfo = document.getElementById("result-info");
 
-
     /*
     |--------------------------------------------------------------------------
     | VALIDASI
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | AJAX CONTROLLER
@@ -33,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let controller = null;
     let lastSearch = "";
 
-
     /*
     |--------------------------------------------------------------------------
     | LOADING BAR
@@ -41,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const showLoading = () => {
-
         loading.style.opacity = "1";
         loading.style.width = "30%";
 
@@ -54,19 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 250);
     };
 
-
     const hideLoading = () => {
-
         loading.style.width = "100%";
 
         setTimeout(() => {
-
             loading.style.opacity = "0";
             loading.style.width = "0";
-
         }, 200);
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -75,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const renderLoadingState = () => {
-
         result.innerHTML = `
             <div
                 class="rounded-3xl
@@ -120,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | LOAD DATA
@@ -128,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const loadData = async (url) => {
-
         /*
         |--------------------------------------------------------------------------
         | Batalkan request sebelumnya
@@ -141,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         controller = new AbortController();
 
-
         /*
         |--------------------------------------------------------------------------
         | Loading
@@ -151,19 +138,14 @@ document.addEventListener("DOMContentLoaded", () => {
         showLoading();
         renderLoadingState();
 
-
         try {
-
             const response = await fetch(url, {
-
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
 
                 signal: controller.signal,
-
             });
-
 
             /*
             |--------------------------------------------------------------------------
@@ -175,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("Gagal memuat data");
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | Ambil HTML
@@ -183,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
             */
 
             const html = await response.text();
-
 
             /*
             |--------------------------------------------------------------------------
@@ -193,23 +173,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             result.innerHTML = html;
 
-
             /*
             |--------------------------------------------------------------------------
             | Update Total
             |--------------------------------------------------------------------------
             */
 
-            const meta = result.querySelector(
-                "#result-meta"
-            );
+            const meta = result.querySelector("#result-meta");
 
             if (meta) {
-
                 resultInfo.innerHTML = `
-                    ${Number(
-                        meta.dataset.total
-                    ).toLocaleString("id-ID")}
+                    ${Number(meta.dataset.total).toLocaleString("id-ID")}
 
                     <span
                         class="text-base
@@ -221,38 +195,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | Update URL
             |--------------------------------------------------------------------------
             */
 
-            history.replaceState(
-                {},
-                "",
-                response.url
-            );
-
-
+            history.replaceState({}, "", response.url);
         } catch (error) {
-
             if (error.name !== "AbortError") {
-
-                console.error(
-                    "Gagal memuat repository Skripsi:",
-                    error
-                );
-
+                console.error("Gagal memuat repository Skripsi:", error);
             }
-
         } finally {
-
             hideLoading();
-
         }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -261,11 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const triggerSearch = () => {
-
-        const url = new URL(
-            window.location.href
-        );
-
+        const url = new URL(window.location.href);
 
         /*
         |--------------------------------------------------------------------------
@@ -273,24 +226,13 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const searchValue =
-            search.value.trim();
-
+        const searchValue = search.value.trim();
 
         if (searchValue !== "") {
-
-            url.searchParams.set(
-                "search",
-                searchValue
-            );
-
+            url.searchParams.set("search", searchValue);
         } else {
-
-            url.searchParams.delete(
-                "search"
-            );
+            url.searchParams.delete("search");
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -298,23 +240,11 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        if (
-            kbk &&
-            kbk.value !== ""
-        ) {
-
-            url.searchParams.set(
-                "kbk",
-                kbk.value
-            );
-
+        if (kbk && kbk.value !== "") {
+            url.searchParams.set("kbk", kbk.value);
         } else {
-
-            url.searchParams.delete(
-                "kbk"
-            );
+            url.searchParams.delete("kbk");
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -322,10 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        url.searchParams.delete(
-            "page"
-        );
-
+        url.searchParams.delete("page");
 
         /*
         |--------------------------------------------------------------------------
@@ -333,20 +260,13 @@ document.addEventListener("DOMContentLoaded", () => {
         |--------------------------------------------------------------------------
         */
 
-        const requestUrl =
-            url.toString();
+        const requestUrl = url.toString();
 
-
-        if (
-            requestUrl ===
-            lastSearch
-        ) {
+        if (requestUrl === lastSearch) {
             return;
         }
 
-
         lastSearch = requestUrl;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -357,31 +277,21 @@ document.addEventListener("DOMContentLoaded", () => {
         loadData(url);
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | ENTER
     |--------------------------------------------------------------------------
     */
 
-    search.addEventListener(
-        "keydown",
-        (event) => {
-
-            if (
-                event.key !== "Enter"
-            ) {
-                return;
-            }
-
-
-            event.preventDefault();
-
-            triggerSearch();
-
+    search.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") {
+            return;
         }
-    );
 
+        event.preventDefault();
+
+        triggerSearch();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -389,17 +299,11 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    searchButton?.addEventListener(
-        "click",
-        () => {
+    searchButton?.addEventListener("click", () => {
+        search.focus();
 
-            search.focus();
-
-            triggerSearch();
-
-        }
-    );
-
+        triggerSearch();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -407,15 +311,9 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    kbk?.addEventListener(
-        "change",
-        () => {
-
-            triggerSearch();
-
-        }
-    );
-
+    kbk?.addEventListener("change", () => {
+        triggerSearch();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -423,89 +321,49 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     */
 
-    document.addEventListener(
-        "click",
-        (event) => {
+    document.addEventListener("click", (event) => {
+        const link = event.target.closest(".pagination a");
 
-            const link =
-                event.target.closest(
-                    ".pagination a"
-                );
+        if (!link) {
+            return;
+        }
 
+        event.preventDefault();
 
-            if (!link) {
-                return;
-            }
+        const url = new URL(link.href);
 
-
-            event.preventDefault();
-
-
-            const url =
-                new URL(link.href);
-
-
-            /*
+        /*
             |--------------------------------------------------------------------------
             | Pertahankan Search
             |--------------------------------------------------------------------------
             */
 
-            if (
-                search.value.trim() !== ""
-            ) {
+        if (search.value.trim() !== "") {
+            url.searchParams.set("search", search.value.trim());
+        } else {
+            url.searchParams.delete("search");
+        }
 
-                url.searchParams.set(
-                    "search",
-                    search.value.trim()
-                );
-
-            } else {
-
-                url.searchParams.delete(
-                    "search"
-                );
-            }
-
-
-            /*
+        /*
             |--------------------------------------------------------------------------
             | Pertahankan KBK
             |--------------------------------------------------------------------------
             */
 
-            if (
-                kbk &&
-                kbk.value !== ""
-            ) {
+        if (kbk && kbk.value !== "") {
+            url.searchParams.set("kbk", kbk.value);
+        } else {
+            url.searchParams.delete("kbk");
+        }
 
-                url.searchParams.set(
-                    "kbk",
-                    kbk.value
-                );
-
-            } else {
-
-                url.searchParams.delete(
-                    "kbk"
-                );
-            }
-
-
-            /*
+        /*
             |--------------------------------------------------------------------------
             | Load Pagination
             |--------------------------------------------------------------------------
             */
 
-            lastSearch =
-                url.toString();
+        lastSearch = url.toString();
 
-
-            loadData(url);
-
-        }
-    );
-
+        loadData(url);
+    });
 });
-
