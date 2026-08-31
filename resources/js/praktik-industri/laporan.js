@@ -276,4 +276,4 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     bindPagination();
-});
+});                                                                                                                                                                                                                                                                                                                                                

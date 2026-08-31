@@ -637,7 +637,7 @@
 
                                 {{-- TESIS --}}
 
-                                <label class="cursor-pointer">
+                                <label class="relative cursor-pointer">
 
                                     <input
                                         type="radio"
@@ -681,7 +681,7 @@
 
                                 {{-- DISERTASI --}}
 
-                                <label class="cursor-pointer">
+                                <label class="relative cursor-pointer">
 
                                     <input
                                         type="radio"
@@ -760,7 +760,7 @@
 
                                 {{-- FILE --}}
 
-                                <label class="cursor-pointer">
+                                <label class="relative cursor-pointer">
 
                                     <input
                                         type="radio"
@@ -802,7 +802,7 @@
 
                                 {{-- FOLDER --}}
 
-                                <label class="cursor-pointer">
+                                <label class="relative cursor-pointer">
 
                                     <input
                                         type="radio"
