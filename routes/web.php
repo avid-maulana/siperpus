@@ -773,4 +773,21 @@ Route::middleware(['auth', 'role'])
             '/destroy-category/{id}',
             [LibraryController::class, 'destroyCategory']
         )->name('destroyCategory');
+
+        Route::post(
+    '/store-type',
+    [LibraryController::class, 'storeType']
+)->name('storeType');
+ 
+ 
+Route::put(
+    '/update-type/{id}',
+    [LibraryController::class, 'updateType']
+)->name('updateType');
+ 
+ 
+Route::delete(
+    '/destroy-type/{id}',
+    [LibraryController::class, 'destroyType']
+)->name('destroyType');
     });

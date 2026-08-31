@@ -22,7 +22,7 @@
     ================================================== --}}
 
     <form
-        action="{{ route('library.storeCategory') }}"
+        action="{{ route('library.storeType') }}"
         method="POST"
         class="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:flex-row sm:items-center"
     >
@@ -163,7 +163,7 @@
 
                                 <form
                                     id="type-form-{{ $type->id }}"
-                                    action="{{ route('library.updateCategory', $type->id) }}"
+                                    action="{{ route('library.updateType', $type->id) }}"
                                     method="POST"
                                     class="edit-content edit-hidden"
                                 >
@@ -222,7 +222,7 @@
                                         {{-- HAPUS --}}
 
                                         <form
-                                            action="{{ route('library.destroyCategory', $type->id) }}"
+                                            action="{{ route('library.destroyType', $type->id) }}"
                                             method="POST"
                                             class="delete-form"
                                             data-item-name="tipe literatur ini"
