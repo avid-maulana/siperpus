@@ -1751,19 +1751,16 @@ $active->count() === 0
 
 
                                 <button
-                                    type="button"
-                                    class="repository-edit-btn
-                                               inline-flex
-                                               items-center
-                                               gap-2
-                                               rounded-xl
-                                               bg-[#212A37]
-                                               px-3.5 py-2
-                                               text-xs
-                                               font-semibold
-                                               text-white
-                                               transition
-                                               hover:bg-slate-700"
+    type="button"
+    class="repository-add-btn
+           inline-flex items-center gap-2
+           rounded-xl bg-[#212A37] px-3.5 py-2
+           text-xs font-semibold text-white
+           transition-all duration-150
+           hover:bg-slate-700
+           active:scale-95"
+    ...
+>
 
                                     data-id="{{ $repositoryId }}"
 

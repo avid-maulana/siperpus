@@ -325,18 +325,19 @@
 
     {{-- BACKDROP --}}
 
-    <div
-        id="repositoryModalBackdrop"
-        class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm">
-    </div>
+    <<div
+    id="repositoryModalBackdrop"
+    class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm
+           transition-opacity duration-300 ease-out">
+</div>
 
 
     {{-- MODAL --}}
 
     <div
-        id="repositoryModalPanel"
-        class="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
-
+    id="repositoryModalPanel"
+    class="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl
+           transition-all duration-300 ease-out">
 
         {{-- ========================================================= --}}
         {{-- HEADER --}}
@@ -1034,10 +1035,15 @@
     id="repositoryDeleteModal"
     class="fixed inset-0 z-[10000] hidden items-center justify-center p-4">
 
-    <div
-        id="repositoryDeleteBackdrop"
-        class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm">
-    </div>
+   <div
+    id="repositoryDeleteBackdrop"
+    class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 ease-out">
+</div>
+
+<div
+    class="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl
+           transition-all duration-300 ease-out scale-95 opacity-0 translate-y-4"
+    id="repositoryDeleteModalPanel">
 
 
     <div
