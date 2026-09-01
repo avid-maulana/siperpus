@@ -7,6 +7,7 @@ use App\Models\Literature;
 use App\Models\Type;
 use App\Models\User;
 use App\Models\PenjejakanPasca;
+use App\Models\PraktikIndustri;
 use App\Models\Repository;
 use App\Models\Skripsi;
 use Illuminate\Support\Facades\DB;
@@ -221,6 +222,60 @@ class HomeController extends Controller
                         $repository->jenis_karya === 'dissertation'
                         &&
                         $repository->status === 'active';
+                }
+            )
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Repository Aktif (Kelola Pascasarjana)
+        |--------------------------------------------------------------------------
+        |
+        | Sama dengan $active->count() di
+        | RepositoryManagementController::manage() -- tesis aktif
+        | + disertasi aktif, karena jenis_karya repository memang
+        | selalu salah satu dari dua itu (lihat validasi
+        | RepositoryController::store()/update()).
+        |
+        */
+
+        $repositoryActiveCount =
+            $tesisCount + $disertasiCount;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Kelompok Praktik Industri
+        |--------------------------------------------------------------------------
+        |
+        | Mengikuti logic grouping di
+        | PraktikIndustriAdminController::index():
+        |
+        | - identitas kelompok adalah detailTim.tim.id
+        | - bukan detail_tim_id
+        |
+        | Tanpa filter search, karena ini statistik keseluruhan.
+        |
+        */
+
+        $totalKelompokPraktikIndustri = PraktikIndustri::query()
+            ->with('detailTim.tim')
+            ->get()
+            ->filter(
+                function ($item) {
+
+                    return
+                        $item->detailTim?->tim?->id !== null;
+                }
+            )
+            ->groupBy(
+                function ($item) {
+
+                    return
+                        $item->detailTim
+                            ->tim
+                            ->id;
                 }
             )
             ->count();
@@ -499,6 +554,10 @@ class HomeController extends Controller
                 'userCount' => $userCount,
 
                 'kbkCount' => $kbkCount,
+
+                'repositoryActiveCount' => $repositoryActiveCount,
+
+                'totalKelompokPraktikIndustri' => $totalKelompokPraktikIndustri,
 
 
                 /*

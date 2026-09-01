@@ -96,7 +96,7 @@
 
 <section>
 
-    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
 
         {{-- =====================================================
@@ -405,6 +405,164 @@
 
                     <p class="text-xs font-medium text-slate-400">
                         Pengguna SIPERPUS
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- =====================================================
+            REPOSITORY AKTIF (KELOLA PASCASARJANA)
+        ====================================================== --}}
+        <div class="stat-card group">
+
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-slate-300">
+                            Repository Aktif
+                        </p>
+
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
+                            @if ($repositoryActiveCount >= 1000000)
+
+                                {{ rtrim(rtrim(number_format($repositoryActiveCount / 1000000, 1, ',', ''), '0'), ',') }}M
+
+                            @elseif ($repositoryActiveCount >= 1000)
+
+                                {{ rtrim(rtrim(number_format($repositoryActiveCount / 1000, 1, ',', ''), '0'), ',') }}K
+
+                            @else
+
+                                {{ $repositoryActiveCount }}
+
+                            @endif
+
+                        </p>
+
+                    </div>
+
+
+                    {{-- Icon --}}
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
+                               transition-all duration-300
+                               group-hover:scale-110
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
+
+                        <span class="material-symbols-outlined">
+                            task_alt
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {{-- Footer --}}
+                <div class="mt-5 flex items-center gap-2">
+
+                    <span
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
+                               transition-transform duration-300
+                               group-hover:scale-150">
+                    </span>
+
+                    <p class="text-xs font-medium text-slate-400">
+                        Repository tesis &amp; disertasi aktif
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- =====================================================
+            TOTAL KELOMPOK PRAKTIK INDUSTRI
+        ====================================================== --}}
+        <div class="stat-card group">
+
+            <div class="relative z-10 rounded-[14px] bg-[#212A37] p-6">
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-slate-300">
+                            Total Kelompok
+                        </p>
+
+                        <p class="mt-3 text-3xl font-bold tracking-tight text-white">
+
+                            @if ($totalKelompokPraktikIndustri >= 1000000)
+
+                                {{ rtrim(rtrim(number_format($totalKelompokPraktikIndustri / 1000000, 1, ',', ''), '0'), ',') }}M
+
+                            @elseif ($totalKelompokPraktikIndustri >= 1000)
+
+                                {{ rtrim(rtrim(number_format($totalKelompokPraktikIndustri / 1000, 1, ',', ''), '0'), ',') }}K
+
+                            @else
+
+                                {{ $totalKelompokPraktikIndustri }}
+
+                            @endif
+
+                        </p>
+
+                    </div>
+
+
+                    {{-- Icon --}}
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center
+                               rounded-xl
+                               bg-white/10
+                               text-white
+                               ring-1 ring-inset ring-white/10
+                               transition-all duration-300
+                               group-hover:scale-110
+                               group-hover:bg-white
+                               group-hover:text-[#212A37]">
+
+                        <span class="material-symbols-outlined">
+                            groups
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {{-- Footer --}}
+                <div class="mt-5 flex items-center gap-2">
+
+                    <span
+                        class="h-1.5 w-1.5 rounded-full
+                               bg-white/70
+                               transition-transform duration-300
+                               group-hover:scale-150">
+                    </span>
+
+                    <p class="text-xs font-medium text-slate-400">
+                        Kelompok Praktik Industri
                     </p>
 
                 </div>
