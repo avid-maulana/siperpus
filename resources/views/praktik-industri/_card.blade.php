@@ -557,18 +557,31 @@
 
             @if ($fileLaporan)
 
-                <a
-                    href="{{ $laporan->file_aktif_url }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <button
+                    type="button"
+
+                    data-praktik-industri-pdf-viewer="true"
+
+                    data-pdf-path="{{ $laporan->file_aktif_url }}"
+
+                    data-judul="{{ $laporan->judul ?: 'Judul tidak tersedia' }}"
+
+                    data-industri="{{ $industri->nama ?? '-' }}"
+
+                    data-ketua="{{ $ketua->nama_lengkap ?? '-' }}"
+
+                    data-updated="{{ $tanggalTerakhirDiperbarui?->translatedFormat('d F Y') ?? '-' }}"
+
                     class="group/link
                            flex
+                           w-full
                            items-center
                            justify-between
                            rounded-2xl
                            border border-slate-200
                            bg-white
                            px-4 py-3
+                           text-left
                            text-sm
                            font-medium
                            text-slate-700
@@ -605,10 +618,10 @@
                                transition-colors
                                duration-300
                                group-hover/link:text-white">
-                        open_in_new
+                        visibility
                     </span>
 
-                </a>
+                </button>
 
             @else
 
