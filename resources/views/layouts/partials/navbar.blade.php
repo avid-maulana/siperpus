@@ -164,6 +164,23 @@
                                     Manage
                                 </span>
 
+                                {{-- BADGE --}}
+
+                                @if (($pascasarjanaBadgeCount ?? 0) > 0)
+                                    <span
+                                        class="inline-flex h-5 min-w-[20px]
+                                               shrink-0
+                                               items-center justify-center
+                                               rounded-full
+                                               bg-red-500
+                                               px-1.5
+                                               text-[10px]
+                                               font-bold
+                                               text-white">
+                                        {{ $pascasarjanaBadgeCount > 99 ? '99+' : $pascasarjanaBadgeCount }}
+                                    </span>
+                                @endif
+
                                 {{-- ACTIVE LINE --}}
                                 <span
                                     class="absolute bottom-0 left-1/2
