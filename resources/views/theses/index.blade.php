@@ -11,7 +11,7 @@
 
     {{-- Background --}}
     <img
-        src="{{ asset('gambar/rak 3.png') }}"
+        src="{{ asset('gambar/rak 2.png') }}"
         alt="Repository Tesis"
         class="absolute inset-0 h-full w-full object-cover">
 

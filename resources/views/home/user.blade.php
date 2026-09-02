@@ -371,6 +371,7 @@ Total Koleksi
                                     menu_book
                                 </span>
 
+                                
                                 <span id="searchCategoryLabel">
                                     Literatur
                                 </span>
@@ -429,6 +430,37 @@ Total Koleksi
 
                                     <span>
                                         Literatur
+                                    </span>
+
+                                </button>
+
+
+                                {{-- =================================================
+                                Praktik Industri
+                                ================================================== --}}
+                                <button type="button"
+                                    class="search-category-option
+                                       flex w-full items-center gap-3
+                                       rounded-xl
+                                       px-3 py-2.5
+                                       text-left text-sm
+                                       text-white
+                                       transition
+                                       hover:bg-white/10"
+                                    data-filter="praktik_industri" data-label="Praktik Industri" data-icon="engineering"
+                                    data-route="{{ route('praktik-industri.index') }}"
+                                    data-placeholder="Cari judul laporan praktik industri, penulis, atau kata kunci..." role="option">
+
+                                    <span
+                                        class="material-symbols-outlined
+                                           text-[25px]
+                                           text-white"
+                                        aria-hidden="true">
+                                        engineering
+                                    </span>
+
+                                    <span>
+                                        Praktik Industri
                                     </span>
 
                                 </button>
