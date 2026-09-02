@@ -45,6 +45,24 @@
     {{-- SEARCH + FILTER --}}
     {{-- ============================================================ --}}
 
+    <style>
+        /* Hilangkan tombol X bawaan input type="search" */
+        input[type="search"]::-webkit-search-decoration,
+        input[type="search"]::-webkit-search-cancel-button,
+        input[type="search"]::-webkit-search-results-button,
+        input[type="search"]::-webkit-search-results-decoration {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="search"]::-ms-clear,
+        input[type="search"]::-ms-reveal {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+    </style>
+
     <div class="mb-8">
 
         <form
@@ -52,98 +70,145 @@
             method="GET"
             action="{{ route('library.repositories') }}">
 
-            <div class="flex flex-col gap-3 lg:flex-row">
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
 
                 {{-- SEARCH --}}
+                <div class="flex-1">
 
-                <div class="relative flex-1">
+                    <label
+                        for="repositoryManageSearchInput"
+                        class="mb-1.5 block text-xs font-semibold
+                               uppercase tracking-wider text-slate-500">
+                        Pencarian
+                    </label>
 
-                    <span
-                        class="material-symbols-outlined
-                               absolute left-4 top-1/2
-                               -translate-y-1/2
-                               text-[20px] text-slate-400">
+                    <div class="group relative">
 
-                        search
+                        <div class="pointer-events-none absolute inset-y-0 left-0
+                                    flex items-center pl-4">
 
-                    </span>
+                            <span class="material-symbols-outlined
+                                         text-[21px] text-slate-400
+                                         transition-colors
+                                         group-focus-within:text-[#212A37]">
+                                search
+                            </span>
 
-                    <input
-                        id="repositoryManageSearchInput"
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Cari judul karya, NIM, atau nama mahasiswa..."
-                        autocomplete="off"
-                        class="w-full rounded-2xl border border-slate-200
-                               bg-white py-3.5 pl-12 pr-4
-                               text-sm text-slate-700
-                               shadow-sm outline-none transition
-                               focus:border-slate-400
-                               focus:ring-2 focus:ring-slate-200">
+                        </div>
 
+                        <input
+                            id="repositoryManageSearchInput"
+                            type="search"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Cari judul karya, NIM, atau nama mahasiswa..."
+                            autocomplete="off"
+                            spellcheck="false"
+                            class="h-[52px] w-full
+                                   rounded-xl
+                                   border border-slate-300
+                                   bg-white
+                                   pl-12 pr-28
+                                   text-sm text-slate-700
+                                   shadow-sm
+                                   outline-none
+                                   transition-all duration-200
+                                   placeholder:text-slate-400
+                                   focus:border-[#212A37]
+                                   focus:ring-4
+                                   focus:ring-slate-100">
+
+                        <button
+                            id="repositoryClearSearch"
+                            type="button"
+                            title="Hapus pencarian"
+                            class="absolute right-[102px] top-1/2
+                                   hidden -translate-y-1/2
+                                   rounded-full p-1
+                                   text-slate-400
+                                   transition
+                                   hover:bg-slate-100
+                                   hover:text-slate-700">
+
+                            <span class="material-symbols-outlined text-[18px]">
+                                close
+                            </span>
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="absolute right-1.5 top-1/2
+                                   h-10 -translate-y-1/2
+                                   rounded-lg
+                                   bg-[#212A37]
+                                   px-5
+                                   text-sm font-semibold text-white
+                                   transition-all duration-200
+                                   hover:bg-[#18202b]">
+                            Search
+                        </button>
+
+                    </div>
                 </div>
 
 
                 {{-- FILTER JENIS --}}
+                <div class="lg:w-52">
 
-                <div class="relative lg:w-52">
+                    <label
+                        for="repositoryJenisFilter"
+                        class="mb-1.5 block text-xs font-semibold
+                               uppercase tracking-wider text-slate-500">
+                        Jenis
+                    </label>
 
-                    <span
-                        class="material-symbols-outlined
-                               absolute left-4 top-1/2
-                               -translate-y-1/2
-                               text-[20px] text-slate-400">
+                    <div class="relative">
 
-                        filter_list
+                        <select
+                            id="repositoryJenisFilter"
+                            name="jenis"
+                            class="h-[52px] w-full
+                                   appearance-none
+                                   rounded-xl
+                                   border border-slate-300
+                                   bg-white
+                                   pl-4 pr-10
+                                   text-sm text-slate-700
+                                   shadow-sm
+                                   outline-none
+                                   transition-all duration-200
+                                   focus:border-[#212A37]
+                                   focus:ring-4
+                                   focus:ring-slate-100">
 
-                    </span>
+                            <option value="">
+                                Semua Jenis
+                            </option>
 
-                    <select
-                        id="repositoryJenisFilter"
-                        name="jenis"
-                        class="w-full appearance-none rounded-2xl
-                               border border-slate-200
-                               bg-white py-3.5 pl-12 pr-10
-                               text-sm text-slate-700
-                               shadow-sm outline-none transition
-                               focus:border-slate-400
-                               focus:ring-2 focus:ring-slate-200">
+                            <option
+                                value="thesis"
+                                @selected(request('jenis')==='thesis' )>
+                                Tesis
+                            </option>
 
-                        <option value="">
-                            Semua Jenis
-                        </option>
+                            <option
+                                value="dissertation"
+                                @selected(request('jenis')==='dissertation' )>
+                                Disertasi
+                            </option>
 
-                        <option
-                            value="thesis"
-                            @selected(request('jenis')==='thesis' )>
+                        </select>
 
-                            Tesis
+                        <span class="material-symbols-outlined
+                                     pointer-events-none
+                                     absolute right-3 top-1/2
+                                     -translate-y-1/2
+                                     text-[20px] text-slate-400">
+                            keyboard_arrow_down
+                        </span>
 
-                        </option>
-
-                        <option
-                            value="dissertation"
-                            @selected(request('jenis')==='dissertation' )>
-
-                            Disertasi
-
-                        </option>
-
-                    </select>
-
-
-                    <span
-                        class="material-symbols-outlined
-                               pointer-events-none
-                               absolute right-4 top-1/2
-                               -translate-y-1/2
-                               text-[20px] text-slate-400">
-
-                        expand_more
-
-                    </span>
-
+                    </div>
                 </div>
 
             </div>
@@ -325,19 +390,19 @@
 
     {{-- BACKDROP --}}
 
-    <<div
-    id="repositoryModalBackdrop"
-    class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm
-           transition-opacity duration-300 ease-out">
-</div>
+    <div
+        id="repositoryModalBackdrop"
+        class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm
+               transition-opacity duration-300 ease-out">
+    </div>
 
 
     {{-- MODAL --}}
 
     <div
-    id="repositoryModalPanel"
-    class="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl
-           transition-all duration-300 ease-out">
+        id="repositoryModalPanel"
+        class="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl
+               transition-all duration-300 ease-out">
 
         {{-- ========================================================= --}}
         {{-- HEADER --}}
@@ -1035,19 +1100,15 @@
     id="repositoryDeleteModal"
     class="fixed inset-0 z-[10000] hidden items-center justify-center p-4">
 
-   <div
-    id="repositoryDeleteBackdrop"
-    class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 ease-out">
-</div>
-
-<div
-    class="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl
-           transition-all duration-300 ease-out scale-95 opacity-0 translate-y-4"
-    id="repositoryDeleteModalPanel">
-
+    <div
+        id="repositoryDeleteBackdrop"
+        class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 ease-out">
+    </div>
 
     <div
-        class="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+        class="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl
+               transition-all duration-300 ease-out scale-95 opacity-0 translate-y-4"
+        id="repositoryDeleteModalPanel">
 
         <div class="flex items-start gap-4">
 
@@ -1109,5 +1170,42 @@
 
 </div>
 
+
+@push('scripts')
+<script>
+    (function () {
+        const searchInput  = document.getElementById('repositoryManageSearchInput');
+        const clearBtn     = document.getElementById('repositoryClearSearch');
+        const searchForm   = document.getElementById('repositoryManageSearchForm');
+
+        if (!searchInput || !clearBtn) return;
+
+        function toggleClearBtn() {
+            if (searchInput.value.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        // Tampilkan/sembunyikan tombol clear saat mengetik
+        searchInput.addEventListener('input', toggleClearBtn);
+
+        // Tampilkan tombol clear jika input sudah terisi saat halaman dimuat
+        toggleClearBtn();
+
+        // Klik tombol clear -> kosongkan input & submit form
+        clearBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            toggleClearBtn();
+            searchInput.focus();
+
+            if (searchForm) {
+                searchForm.submit();
+            }
+        });
+    })();
+</script>
+@endpush
 
 @endsection
