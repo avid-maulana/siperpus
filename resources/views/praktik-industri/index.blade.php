@@ -10,7 +10,7 @@
     <section class="relative -mt-20 overflow-hidden">
 
         {{-- Background --}}
-        <img src="{{ asset('gambar/rak 3.png') }}" alt="Repository Praktik Industri"
+        <img src="{{ asset('gambar/ruang.png') }}" alt="Repository Praktik Industri"
             class="absolute inset-0 h-full w-full object-cover">
 
         {{-- Overlay --}}
