@@ -77,6 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const zoomInButton = document.getElementById("praktikIndustriPdfZoomIn");
 
+    const zoomResetButton = document.getElementById(
+        "praktikIndustriPdfZoomReset",
+    );
+
     const zoomLabel = document.getElementById("praktikIndustriPdfZoomLabel");
 
     /*
@@ -153,6 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isClosing = false;
 
+    let isZooming = false;
+
     /*
     |--------------------------------------------------------------------------
     | ZOOM STATE
@@ -163,9 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ZOOM_MAX = 2.5;
 
-    const ZOOM_STEP = 0.1;
+    const ZOOM_STEP = 0.15;
 
-    let zoomFactor = 1;
+    const ZOOM_DEFAULT = 0.5;
+
+    let currentZoom = ZOOM_DEFAULT;
 
     /*
     |--------------------------------------------------------------------------
@@ -466,11 +474,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /*
         |--------------------------------------------------------------------------
-        | SCALE (fit-lebar otomatis x zoomFactor)
+        | SCALE (fit-lebar otomatis x currentZoom)
         |--------------------------------------------------------------------------
         */
 
-        const scale = (availableWidth / viewport.width) * zoomFactor;
+        const scale = (availableWidth / viewport.width) * currentZoom;
 
         const finalViewport = page.getViewport({
             scale,
@@ -548,90 +556,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | ZOOM: LABEL & TOMBOL
+    | UPDATE ZOOM UI
     |--------------------------------------------------------------------------
     */
 
-    const updateZoomLabel = () => {
+    const updateZoomUI = () => {
         if (zoomLabel) {
-            zoomLabel.textContent = `${Math.round(zoomFactor * 100)}%`;
+            zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
         }
-    };
 
-    const updateZoomButtonsState = () => {
         if (zoomOutButton) {
-            zoomOutButton.disabled = zoomFactor <= ZOOM_MIN + 0.001;
+            zoomOutButton.disabled = currentZoom <= ZOOM_MIN;
+
+            zoomOutButton.classList.toggle(
+                "opacity-40",
+                currentZoom <= ZOOM_MIN,
+            );
         }
 
         if (zoomInButton) {
-            zoomInButton.disabled = zoomFactor >= ZOOM_MAX - 0.001;
+            zoomInButton.disabled = currentZoom >= ZOOM_MAX;
+
+            zoomInButton.classList.toggle(
+                "opacity-40",
+                currentZoom >= ZOOM_MAX,
+            );
         }
     };
 
-    const resetZoom = () => {
-        zoomFactor = 1;
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY ZOOM (RE-RENDER TANPA FETCH ULANG PDF)
+    |--------------------------------------------------------------------------
+    |
+    | Posisi scroll (rasio) disimpan dulu sebelum re-render,
+    | lalu dipulihkan setelahnya, supaya halaman yang sedang
+    | dibaca tidak "loncat" saat zoom berubah.
+    |
+    */
 
-        updateZoomLabel();
-
-        updateZoomButtonsState();
-    };
-
-    const rerenderAtCurrentZoom = async () => {
-        if (!currentPdf) {
+    const applyZoom = async (nextZoom) => {
+        if (!currentPdf || isZooming) {
             return;
         }
 
-        showLoading();
+        const clamped = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, nextZoom));
 
-        hideError();
-
-        try {
-            await renderAllPages(currentPdf);
-
-            if (viewer) {
-                viewer.scrollTop = 0;
-            }
-        } catch (err) {
-            console.error("PDF.js zoom error:", err);
-
-            showError("Gagal memuat ulang tampilan PDF.");
-        } finally {
-            hideLoading();
-        }
-    };
-
-    const zoomIn = () => {
-        if (!currentPdf || zoomFactor >= ZOOM_MAX) {
+        if (clamped === currentZoom) {
             return;
         }
 
-        zoomFactor = Math.min(
-            ZOOM_MAX,
-            Math.round((zoomFactor + ZOOM_STEP) * 100) / 100,
-        );
+        isZooming = true;
 
-        updateZoomLabel();
+        currentZoom = clamped;
 
-        updateZoomButtonsState();
+        updateZoomUI();
 
-        rerenderAtCurrentZoom();
-    };
+        const scrollRatio =
+            viewer && viewer.scrollHeight > 0
+                ? viewer.scrollTop / viewer.scrollHeight
+                : 0;
 
-    const zoomOut = () => {
-        if (!currentPdf || zoomFactor <= ZOOM_MIN) {
-            return;
+        await renderAllPages(currentPdf);
+
+        if (viewer) {
+            viewer.scrollTop = scrollRatio * viewer.scrollHeight;
         }
 
-        zoomFactor = Math.max(
-            ZOOM_MIN,
-            Math.round((zoomFactor - ZOOM_STEP) * 100) / 100,
-        );
-
-        updateZoomLabel();
-
-        updateZoomButtonsState();
-
-        rerenderAtCurrentZoom();
+        isZooming = false;
     };
 
     /*
@@ -663,7 +655,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            updateZoomButtonsState();
+            updateZoomUI();
 
             hideLoading();
 
@@ -698,11 +690,19 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | RESET ZOOM SETIAP BUKA LAPORAN BARU
+        |--------------------------------------------------------------------------
+        */
+
+        currentZoom = ZOOM_DEFAULT;
+
+        updateZoomUI();
+
         setDetailData(button);
 
         resetDetail();
-
-        resetZoom();
 
         resetViewer();
 
@@ -794,7 +794,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.stopPropagation();
 
-        zoomOut();
+        applyZoom(currentZoom - ZOOM_STEP);
     });
 
     zoomInButton?.addEventListener("click", (event) => {
@@ -802,7 +802,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.stopPropagation();
 
-        zoomIn();
+        applyZoom(currentZoom + ZOOM_STEP);
+    });
+
+    zoomResetButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        applyZoom(ZOOM_DEFAULT);
     });
 
     /*
