@@ -1,570 +1,506 @@
-import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
-
 /*
 |--------------------------------------------------------------------------
-| PDF.js Worker
+| PDF VIEWER TESIS
+|--------------------------------------------------------------------------
+| PDF.js
+| Fullscreen page (bukan modal)
+| Read Only
+| Floating header (title + Detail + Close)
+| Sliding detail panel
+| Floating zoom controls
 |--------------------------------------------------------------------------
 */
+
+import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 
 
-/*
-|--------------------------------------------------------------------------
-| Jalankan hanya jika PDF Viewer tersedia
-|--------------------------------------------------------------------------
-*/
-
 document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | Elements
+    | ELEMENTS
     |--------------------------------------------------------------------------
     */
 
-    const pdfConfig =
-        document.getElementById("pdf-config");
+    const pdfConfig = document.getElementById("pdf-config");
 
-    const pdfContainer =
-        document.getElementById("pdf-container");
+    const viewerArea = document.getElementById("pdfViewerArea");
 
-    const pdfLoading =
-        document.getElementById("pdf-loading");
+    const pagesContainer = document.getElementById("pdf-container");
 
-    const pdfError =
-        document.getElementById("pdf-error");
+    const loading = document.getElementById("pdf-loading");
+
+    const errorBox = document.getElementById("pdf-error");
+
+    const errorMessage = document.getElementById("pdf-error-message");
+
+    const title = document.getElementById("pdfTitle");
+
+    const detailToggle = document.getElementById("pdfDetailToggle");
+
+    const detailPanel = document.getElementById("pdfDetailPanel");
+
+    const detailClose = document.getElementById("pdfDetailClose");
+
+    const detailBackdrop = document.getElementById("pdfDetailBackdrop");
+
+    const detailAuthor = document.getElementById("pdfDetailAuthor");
+
+    const detailNim = document.getElementById("pdfDetailNim");
+
+    const detailChapter = document.getElementById("pdfDetailChapter");
+
+    const detailTitle = document.getElementById("pdfDetailTitle");
+
+    const zoomOutButton = document.getElementById("pdfZoomOut");
+
+    const zoomInButton = document.getElementById("pdfZoomIn");
+
+    const zoomResetButton = document.getElementById("pdfZoomReset");
+
+    const zoomLabel = document.getElementById("pdfZoomLabel");
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Pastikan halaman PDF Viewer
-    |--------------------------------------------------------------------------
-    */
-
-    if (!pdfConfig || !pdfContainer) {
+    if (!pdfConfig || !pagesContainer) {
         return;
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Ambil konfigurasi dari Blade
+    | CONFIG DARI BLADE
     |--------------------------------------------------------------------------
     */
 
-    const pdfUrl =
-        pdfConfig.dataset.pdfUrl || "";
+    const pdfUrl = pdfConfig.dataset.pdfUrl || "";
 
-    const sourceUrl =
-        pdfConfig.dataset.sourceUrl || "";
-
-    const title =
-        pdfConfig.dataset.title || "Dokumen";
+    const sourceUrl = pdfConfig.dataset.sourceUrl || "";
 
 
     /*
     |--------------------------------------------------------------------------
-    | Helper - Error
+    | ISI DETAIL PANEL + HEADER TITLE
     |--------------------------------------------------------------------------
     */
 
-    function showError(message = "PDF gagal dimuat.") {
+    const bab = pdfConfig.dataset.bab || pdfConfig.dataset.title || "-";
 
-        console.error(
-            "PDF Viewer Error:",
-            message
-        );
+    if (title) title.textContent = bab;
 
+    if (detailAuthor) detailAuthor.textContent = pdfConfig.dataset.nama || "-";
 
-        /*
-        | Sembunyikan loading
-        */
+    if (detailNim) detailNim.textContent = pdfConfig.dataset.nim || "-";
 
-        if (pdfLoading) {
+    if (detailChapter) detailChapter.textContent = bab;
 
-            pdfLoading.classList.add(
-                "hidden"
-            );
-        }
-
-
-        /*
-        | Sembunyikan container PDF
-        */
-
-        if (pdfContainer) {
-
-            pdfContainer.classList.add(
-                "hidden"
-            );
-        }
-
-
-        /*
-        | Tampilkan error
-        */
-
-        if (pdfError) {
-
-            pdfError.classList.remove(
-                "hidden"
-            );
-
-            pdfError.classList.add(
-                "flex"
-            );
-        }
-    }
+    if (detailTitle) detailTitle.textContent = pdfConfig.dataset.tesis || "-";
 
 
     /*
     |--------------------------------------------------------------------------
-    | Helper - Loading
+    | ZOOM CONFIG
+    |--------------------------------------------------------------------------
+    */
+
+    const ZOOM_MIN = 0.5;
+
+    const ZOOM_MAX = 2.5;
+
+    const ZOOM_STEP = 0.15;
+
+    const ZOOM_DEFAULT = 0.5;
+
+    let currentZoom = ZOOM_DEFAULT;
+
+    let currentPdf = null;
+
+    let isZooming = false;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER - LOADING / ERROR / SHOW
     |--------------------------------------------------------------------------
     */
 
     function showLoading() {
 
-        if (pdfLoading) {
+        loading?.classList.remove("hidden");
 
-            pdfLoading.classList.remove(
-                "hidden"
-            );
+        loading?.classList.add("flex");
 
-            pdfLoading.classList.add(
-                "flex"
-            );
+        errorBox?.classList.add("hidden");
+
+        errorBox?.classList.remove("flex");
+    }
+
+    function hideLoading() {
+
+        loading?.classList.add("hidden");
+
+        loading?.classList.remove("flex");
+    }
+
+    function showError(message = "PDF gagal dimuat.") {
+
+        console.error("PDF Viewer Error:", message);
+
+        hideLoading();
+
+        if (errorMessage) {
+
+            errorMessage.textContent = message;
         }
 
+        errorBox?.classList.remove("hidden");
 
-        if (pdfError) {
+        errorBox?.classList.add("flex");
+    }
 
-            pdfError.classList.add(
-                "hidden"
-            );
+    function clearPages() {
 
-            pdfError.classList.remove(
-                "flex"
-            );
-        }
-
-
-        if (pdfContainer) {
-
-            pdfContainer.classList.add(
-                "hidden"
-            );
-        }
+        pagesContainer.innerHTML = "";
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Helper - Selesai Loading
+    | UPDATE ZOOM UI
     |--------------------------------------------------------------------------
     */
 
-    function showPDF() {
+    function updateZoomUI() {
 
-        if (pdfLoading) {
+        if (zoomLabel) {
 
-            pdfLoading.classList.add(
-                "hidden"
-            );
-
-            pdfLoading.classList.remove(
-                "flex"
-            );
+            zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
         }
 
+        if (zoomOutButton) {
 
-        if (pdfError) {
-
-            pdfError.classList.add(
-                "hidden"
-            );
-
-            pdfError.classList.remove(
-                "flex"
-            );
+            zoomOutButton.disabled = currentZoom <= ZOOM_MIN;
         }
 
+        if (zoomInButton) {
 
-        if (pdfContainer) {
-
-            pdfContainer.classList.remove(
-                "hidden"
-            );
+            zoomInButton.disabled = currentZoom >= ZOOM_MAX;
         }
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Validasi URL
+    | RENDER SINGLE PAGE (FIT-TO-WIDTH x ZOOM USER)
     |--------------------------------------------------------------------------
     */
 
-    if (!pdfUrl) {
+    async function renderPage(pdf, pageNumber) {
 
-        showError(
-            "URL PDF tidak tersedia."
-        );
+        const page = await pdf.getPage(pageNumber);
 
-        return;
+        const baseViewport = page.getViewport({ scale: 1 });
+
+        const viewerWidth = viewerArea?.clientWidth || window.innerWidth;
+
+        const horizontalPadding = window.innerWidth < 640 ? 24 : 48;
+
+        const availableWidth = Math.max(viewerWidth - horizontalPadding, 300);
+
+        const fitScale = availableWidth / baseViewport.width;
+
+        const scale = fitScale * currentZoom;
+
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+
+        canvas.className = "pdf-page";
+
+        const context = canvas.getContext("2d", { alpha: false });
+
+        if (!context) {
+
+            throw new Error("Canvas PDF tidak dapat dibuat.");
+        }
+
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = Math.floor(viewport.width * pixelRatio);
+
+        canvas.height = Math.floor(viewport.height * pixelRatio);
+
+        canvas.style.width = `${viewport.width}px`;
+
+        canvas.style.height = `${viewport.height}px`;
+
+        const transform =
+            pixelRatio !== 1 ? [pixelRatio, 0, 0, pixelRatio, 0, 0] : null;
+
+        await page.render({
+            canvasContext: context,
+            viewport,
+            transform,
+        }).promise;
+
+        pagesContainer.appendChild(canvas);
+
+        page.cleanup();
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Render PDF
+    | RENDER ALL PAGES
+    |--------------------------------------------------------------------------
+    */
+
+    async function renderAllPages(pdf) {
+
+        clearPages();
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+
+            await renderPage(pdf, pageNumber);
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY ZOOM (RE-RENDER TANPA FETCH ULANG PDF)
+    |--------------------------------------------------------------------------
+    */
+
+    async function applyZoom(nextZoom) {
+
+        if (!currentPdf || isZooming) {
+
+            return;
+        }
+
+        const clamped = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, nextZoom));
+
+        if (clamped === currentZoom) {
+
+            return;
+        }
+
+        isZooming = true;
+
+        currentZoom = clamped;
+
+        updateZoomUI();
+
+        const scrollRatio =
+            viewerArea && viewerArea.scrollHeight > 0
+                ? viewerArea.scrollTop / viewerArea.scrollHeight
+                : 0;
+
+        await renderAllPages(currentPdf);
+
+        if (viewerArea) {
+
+            viewerArea.scrollTop = scrollRatio * viewerArea.scrollHeight;
+        }
+
+        isZooming = false;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RENDER PDF (LOAD DOKUMEN)
     |--------------------------------------------------------------------------
     */
 
     async function renderPDF() {
 
+        if (!pdfUrl) {
+
+            showError("URL PDF tidak tersedia.");
+
+            return;
+        }
+
         try {
 
             showLoading();
 
+            const loadingTask = pdfjsLib.getDocument({ url: pdfUrl });
 
-            /*
-            |--------------------------------------------------------------------------
-            | Load PDF
-            |--------------------------------------------------------------------------
-            */
+            currentPdf = await loadingTask.promise;
 
-            const loadingTask =
-                pdfjsLib.getDocument({
-                    url: pdfUrl,
-                });
+            if (!currentPdf || !currentPdf.numPages) {
 
-
-            const pdf =
-                await loadingTask.promise;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Pastikan PDF memiliki halaman
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                !pdf ||
-                !pdf.numPages
-            ) {
-
-                throw new Error(
-                    "Dokumen PDF tidak memiliki halaman."
-                );
+                throw new Error("Dokumen PDF tidak memiliki halaman.");
             }
 
+            updateZoomUI();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Bersihkan container
-            |--------------------------------------------------------------------------
-            */
+            await renderAllPages(currentPdf);
 
-            pdfContainer.innerHTML = "";
+            hideLoading();
 
+            if (viewerArea) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Render setiap halaman
-            |--------------------------------------------------------------------------
-            */
-
-            for (
-                let pageNumber = 1;
-
-                pageNumber <= pdf.numPages;
-
-                pageNumber++
-            ) {
-
-                const page =
-                    await pdf.getPage(
-                        pageNumber
-                    );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Ukuran asli halaman
-                |--------------------------------------------------------------------------
-                */
-
-                const originalViewport =
-                    page.getViewport({
-                        scale: 1,
-                    });
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Area PDF
-                |--------------------------------------------------------------------------
-                */
-
-                const pdfSection =
-                    pdfContainer.parentElement;
-
-
-                const availableWidth =
-                    pdfSection
-                        ? pdfSection.clientWidth - 56
-                        : window.innerWidth - 56;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Maksimal lebar PDF
-                |--------------------------------------------------------------------------
-                */
-
-                const maxWidth =
-                    Math.min(
-                        900,
-                        Math.max(
-                            300,
-                            availableWidth
-                        )
-                    );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Hitung scale
-                |--------------------------------------------------------------------------
-                */
-
-                const scale =
-                    maxWidth /
-                    originalViewport.width;
-
-
-                const viewport =
-                    page.getViewport({
-                        scale,
-                    });
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Canvas
-                |--------------------------------------------------------------------------
-                */
-
-                const canvas =
-                    document.createElement(
-                        "canvas"
-                    );
-
-
-                canvas.className =
-                    "pdf-page";
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Context
-                |--------------------------------------------------------------------------
-                */
-
-                const context =
-                    canvas.getContext(
-                        "2d"
-                    );
-
-
-                if (!context) {
-
-                    throw new Error(
-                        "Canvas PDF tidak dapat dibuat."
-                    );
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Device Pixel Ratio
-                |--------------------------------------------------------------------------
-                */
-
-                const pixelRatio =
-                    window.devicePixelRatio || 1;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Canvas Resolution
-                |--------------------------------------------------------------------------
-                */
-
-                canvas.width =
-                    Math.floor(
-                        viewport.width *
-                        pixelRatio
-                    );
-
-
-                canvas.height =
-                    Math.floor(
-                        viewport.height *
-                        pixelRatio
-                    );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Ukuran tampilan
-                |--------------------------------------------------------------------------
-                */
-
-                canvas.style.width =
-                    `${viewport.width}px`;
-
-                canvas.style.height =
-                    `${viewport.height}px`;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Render halaman
-                |--------------------------------------------------------------------------
-                */
-
-                await page.render({
-
-                    canvasContext:
-                        context,
-
-                    viewport:
-                        viewport,
-
-                    transform: [
-                        pixelRatio,
-                        0,
-                        0,
-                        pixelRatio,
-                        0,
-                        0,
-                    ],
-
-                }).promise;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Tambahkan canvas ke halaman
-                |--------------------------------------------------------------------------
-                */
-
-                pdfContainer.appendChild(
-                    canvas
-                );
+                viewerArea.scrollTop = 0;
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | PDF berhasil
-            |--------------------------------------------------------------------------
-            */
-
-            showPDF();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Log informasi
-            |--------------------------------------------------------------------------
-            */
-
-            console.log(
-                `PDF berhasil dimuat: ${title}`
-            );
-
-            console.log(
-                `Jumlah halaman: ${pdf.numPages}`
-            );
-
+            console.log(`PDF berhasil dimuat, jumlah halaman: ${currentPdf.numPages}`);
 
         } catch (error) {
 
-            console.error(
-                "Gagal memuat PDF:",
-                error
-            );
+            console.error("Gagal memuat PDF:", error);
 
-
-            showError(
-                error?.message ||
-                "PDF gagal dimuat."
-            );
+            showError(error?.message || "PDF gagal dimuat.");
         }
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Jalankan PDF Viewer
+    | DETAIL PANEL
     |--------------------------------------------------------------------------
     */
 
-    renderPDF();
+    function openDetail() {
+
+        detailPanel?.classList.remove("translate-x-full");
+
+        detailPanel?.classList.add("translate-x-0");
+
+        detailBackdrop?.classList.remove("hidden");
+
+        detailToggle?.setAttribute("aria-expanded", "true");
+    }
+
+    function closeDetail() {
+
+        detailPanel?.classList.remove("translate-x-0");
+
+        detailPanel?.classList.add("translate-x-full");
+
+        detailBackdrop?.classList.add("hidden");
+
+        detailToggle?.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleDetail() {
+
+        const opened = detailPanel?.classList.contains("translate-x-0");
+
+        if (opened) {
+
+            closeDetail();
+
+        } else {
+
+            openDetail();
+        }
+    }
 
 
     /*
     |--------------------------------------------------------------------------
-    | Responsive Re-render
+    | EVENTS
     |--------------------------------------------------------------------------
-    |
-    | Ketika ukuran browser berubah, PDF perlu dirender ulang
-    | supaya ukurannya tetap sesuai container.
-    |
+    */
+
+    detailToggle?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        toggleDetail();
+    });
+
+    detailClose?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        closeDetail();
+    });
+
+    detailBackdrop?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        closeDetail();
+    });
+
+    zoomInButton?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        applyZoom(currentZoom + ZOOM_STEP);
+    });
+
+    zoomOutButton?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        applyZoom(currentZoom - ZOOM_STEP);
+    });
+
+    zoomResetButton?.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        applyZoom(ZOOM_DEFAULT);
+    });
+
+    document.addEventListener("keydown", (event) => {
+
+        if (event.key !== "Escape") {
+
+            return;
+        }
+
+        if (detailPanel?.classList.contains("translate-x-0")) {
+
+            closeDetail();
+        }
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESIZE -> RE-RENDER (FIT-TO-WIDTH)
+    |--------------------------------------------------------------------------
     */
 
     let resizeTimer = null;
 
-    window.addEventListener(
-        "resize",
-        () => {
+    window.addEventListener("resize", () => {
 
-            clearTimeout(
-                resizeTimer
-            );
+        clearTimeout(resizeTimer);
 
+        resizeTimer = setTimeout(() => {
 
-            resizeTimer =
-                setTimeout(
-                    () => {
+            if (currentPdf) {
 
-                        renderPDF();
+                renderAllPages(currentPdf);
+            }
 
-                    },
-                    250
-                );
-        }
-    );
+        }, 250);
+    });
 
 
     /*
     |--------------------------------------------------------------------------
-    | Simpan source URL untuk debugging
+    | INIT
     |--------------------------------------------------------------------------
     */
 
+    updateZoomUI();
+
+    renderPDF();
+
     if (sourceUrl) {
 
-        console.log(
-            "Repository source:",
-            sourceUrl
-        );
+        console.log("Repository source:", sourceUrl);
     }
 
 });

@@ -8,6 +8,7 @@
 | No Browser PDF Toolbar
 | Detail Panel
 | Zoom Controls
+| Collapsible Chapter Sidebar (Icon Rail on Minimize)
 |--------------------------------------------------------------------------
 */
 
@@ -63,6 +64,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | CHAPTER SIDEBAR
+    |--------------------------------------------------------------------------
+    */
+
+    const chapterPanel = document.getElementById("skripsiPdfChapterPanel");
+
+    const chapterToggle = document.getElementById("skripsiPdfChapterToggle");
+
+    const chapterToggleIcon = document.getElementById("skripsiPdfChapterToggleIcon");
+
+    const chapterHeaderText = document.getElementById("skripsiPdfChapterHeaderText");
+
+    const chapterList = document.getElementById("skripsiPdfChapterList");
+
+    const chapterListTitle = document.getElementById("skripsiPdfChapterListTitle");
+
+    /*
+    |--------------------------------------------------------------------------
     | DETAIL
     |--------------------------------------------------------------------------
     */
@@ -97,6 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const zoomLabel = document.getElementById("skripsiPdfZoomLabel");
 
+    const zoomControls = document.getElementById("skripsiPdfZoomControls");
+
     /*
     |--------------------------------------------------------------------------
     | VALIDASI
@@ -129,6 +150,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | TRIGGER SELECTOR
+    |--------------------------------------------------------------------------
+    */
+
+    const TRIGGER_SELECTOR = "[data-skripsi-pdf-viewer]";
+
+    /*
+    |--------------------------------------------------------------------------
+    | SIDEBAR WIDTH (EXPANDED / COLLAPSED)
+    |--------------------------------------------------------------------------
+    */
+
+    const SIDEBAR_EXPANDED_CLASS = "w-72";
+
+    const SIDEBAR_COLLAPSED_CLASS = "w-20";
+
+    /*
+    |--------------------------------------------------------------------------
     | CURRENT PDF
     |--------------------------------------------------------------------------
     */
@@ -142,6 +181,22 @@ document.addEventListener("DOMContentLoaded", () => {
     let isZooming = false;
 
     let currentZoom = 0.5;
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT TRIGGER (UNTUK DAFTAR BAB)
+    |--------------------------------------------------------------------------
+    */
+
+    let currentTriggerButton = null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATE SIDEBAR (DEFAULT: EXPANDED)
+    |--------------------------------------------------------------------------
+    */
+
+    let isChapterExpanded = true;
 
     /*
     |--------------------------------------------------------------------------
@@ -170,31 +225,13 @@ document.addEventListener("DOMContentLoaded", () => {
             throw new Error("Path PDF tidak ditemukan.");
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUDAH URL LENGKAP
-        |--------------------------------------------------------------------------
-        */
-
         if (/^https?:\/\//i.test(cleanPath)) {
             return cleanPath;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | BASE URL
-        |--------------------------------------------------------------------------
-        */
-
         if (!sisintaFileUrl) {
             throw new Error("SISINTA_FILE_URL belum tersedia.");
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | PATH RELATIF
-        |--------------------------------------------------------------------------
-        */
 
         return `${sisintaFileUrl}/` + cleanPath.replace(/^\/+/, "");
     };
@@ -203,21 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
     |--------------------------------------------------------------------------
     | BUILD FETCH URL (VIA PROXY UNTUK DOMAIN EKSTERNAL)
     |--------------------------------------------------------------------------
-    |
-    | Browser tidak bisa fetch() PDF langsung dari domain lain
-    | (mis. tei.um.ac.id) kalau server itu tidak mengirim header
-    | CORS (Access-Control-Allow-Origin). Ini bukan bug di server
-    | dokumen, tapi memang aturan browser.
-    |
-    | Solusinya: request dilempar ke backend Laravel sendiri lewat
-    | route('pdf.proxy'), backend yang fetch ke domain eksternal
-    | (server-ke-server tidak kena CORS), lalu backend meneruskan
-    | isi PDF-nya ke browser.
-    |
-    | Kalau URL-nya memang sudah 1 origin dengan halaman ini
-    | (misalnya suatu saat file disimpan lokal di /storage),
-    | proxy dilewati saja karena tidak perlu.
-    |
     */
 
     const buildFetchUrl = (targetUrl) => {
@@ -239,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | SHOW LOADING
+    | SHOW / HIDE LOADING & ERROR
     |--------------------------------------------------------------------------
     */
 
@@ -249,23 +271,11 @@ document.addEventListener("DOMContentLoaded", () => {
         loading?.classList.add("flex");
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | HIDE LOADING
-    |--------------------------------------------------------------------------
-    */
-
     const hideLoading = () => {
         loading?.classList.add("hidden");
 
         loading?.classList.remove("flex");
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | SHOW ERROR
-    |--------------------------------------------------------------------------
-    */
 
     const showError = (message) => {
         hideLoading();
@@ -280,41 +290,17 @@ document.addEventListener("DOMContentLoaded", () => {
         error?.classList.add("flex");
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | HIDE ERROR
-    |--------------------------------------------------------------------------
-    */
-
     const hideError = () => {
         error?.classList.add("hidden");
 
         error?.classList.remove("flex");
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR PDF PAGES
-    |--------------------------------------------------------------------------
-    */
-
     const clearPages = () => {
         pagesContainer.innerHTML = "";
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR PDF
-    |--------------------------------------------------------------------------
-    */
-
     const clearPdf = async () => {
-        /*
-        |--------------------------------------------------------------------------
-        | CANCEL LOADING TASK
-        |--------------------------------------------------------------------------
-        */
-
         if (currentLoadingTask) {
             try {
                 await currentLoadingTask.destroy();
@@ -324,12 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             currentLoadingTask = null;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DESTROY PDF DOCUMENT
-        |--------------------------------------------------------------------------
-        */
 
         if (currentPdf) {
             try {
@@ -341,20 +321,8 @@ document.addEventListener("DOMContentLoaded", () => {
             currentPdf = null;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CLEAR CANVAS
-        |--------------------------------------------------------------------------
-        */
-
         clearPages();
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | RESET VIEWER
-    |--------------------------------------------------------------------------
-    */
 
     const resetViewer = () => {
         clearPages();
@@ -371,12 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     const setDetailData = (button) => {
-        /*
-        |--------------------------------------------------------------------------
-        | DATA
-        |--------------------------------------------------------------------------
-        */
-
         const nama =
             button.dataset.pdfNama || button.dataset.skripsiAuthor || "-";
 
@@ -388,21 +350,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const judul =
             button.dataset.pdfSkripsi || button.dataset.skripsiTitle || "-";
 
-        /*
-        |--------------------------------------------------------------------------
-        | HEADER TITLE
-        |--------------------------------------------------------------------------
-        */
-
         if (title) {
             title.textContent = bab;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DETAIL
-        |--------------------------------------------------------------------------
-        */
 
         if (detailAuthor) {
             detailAuthor.textContent = nama;
@@ -420,19 +370,325 @@ document.addEventListener("DOMContentLoaded", () => {
             detailTitle.textContent = judul;
         }
 
+        console.log("DETAIL SKRIPSI:", { nama, nim, bab, judul });
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET TRIGGER LIST (SEMUA TOMBOL PDF DI HALAMAN)
+    |--------------------------------------------------------------------------
+    */
+
+    const getTriggerList = () => {
+        return Array.from(document.querySelectorAll(TRIGGER_SELECTOR));
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | KUNCI GROUPING SKRIPSI (BERDASARKAN NIM, FALLBACK KE JUDUL)
+    |--------------------------------------------------------------------------
+    */
+
+    const getSkripsiKey = (button) => {
+        const nim = button.dataset.pdfNim || button.dataset.skripsiNim || "";
+
+        if (nim) {
+            return `nim:${nim}`;
+        }
+
+        const judul =
+            button.dataset.pdfSkripsi || button.dataset.skripsiTitle || "";
+
+        return `judul:${judul}`;
+    };
+
+    const getChapterGroup = (button) => {
+        const key = getSkripsiKey(button);
+
+        return getTriggerList().filter((item) => getSkripsiKey(item) === key);
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | ANGKA ROMAWI (UNTUK BADGE BAB SAAT DIMINIMIZE / DIEXPAND)
+    |--------------------------------------------------------------------------
+    */
+
+    const toRoman = (num) => {
+        const table = [
+            ["M", 1000], ["CM", 900], ["D", 500], ["CD", 400],
+            ["C", 100], ["XC", 90], ["L", 50], ["XL", 40],
+            ["X", 10], ["IX", 9], ["V", 5], ["IV", 4], ["I", 1],
+        ];
+
+        let result = "";
+
+        let n = num;
+
+        for (const [roman, value] of table) {
+            while (n >= value) {
+                result += roman;
+
+                n -= value;
+            }
+        }
+
+        return result || "-";
+    };
+
+    const isDaftarPustaka = (label) => /pustaka/i.test(label);
+
+    /*
+    |--------------------------------------------------------------------------
+    | TENTUKAN BADGE UNTUK SATU BAB
+    |--------------------------------------------------------------------------
+    |
+    | - "Daftar Pustaka" -> ikon buku
+    | - Label yang sudah mengandung angka romawi ("BAB I", dst) -> dipakai langsung
+    | - Selain itu -> fallback ke angka romawi berdasar urutan di grup
+    |
+    */
+
+    const getChapterBadge = (item, indexInGroup) => {
+        const label =
+            item.dataset.pdfTitle || item.dataset.skripsiChapter || "-";
+
+        if (isDaftarPustaka(label)) {
+            return { icon: "book" };
+        }
+
+        const match = label.match(/\b([IVXLCDM]+)\b/i);
+
+        if (match) {
+            return { text: match[1].toUpperCase() };
+        }
+
+        return { text: toRoman(indexInGroup + 1) };
+    };
+
+    const bookIconSvg = `
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 4.5A2.5 2.5 0 017.5 2H19v17H7.5A2.5 2.5 0 005 21.5v-17Z" />
+            <path stroke-linecap="round" d="M5 19.5A2.5 2.5 0 017.5 17H19" />
+        </svg>
+    `;
+
+    /*
+    |--------------------------------------------------------------------------
+    | RENDER DAFTAR BAB DI SIDEBAR
+    |--------------------------------------------------------------------------
+    */
+
+    const renderChapterList = () => {
+        if (!chapterList) {
+            return;
+        }
+
+        chapterList.innerHTML = "";
+
+        if (!currentTriggerButton) {
+            chapterList.innerHTML =
+                '<p class="px-3 py-4 text-sm text-slate-400">Tidak ada bab lain.</p>';
+
+            if (chapterListTitle) {
+                chapterListTitle.textContent = "-";
+            }
+
+            return;
+        }
+
+        const group = getChapterGroup(currentTriggerButton);
+
+        if (chapterListTitle) {
+            const judul =
+                currentTriggerButton.dataset.pdfSkripsi ||
+                currentTriggerButton.dataset.skripsiTitle ||
+                "-";
+
+            chapterListTitle.textContent = judul;
+        }
+
+        if (group.length === 0) {
+            chapterList.innerHTML =
+                '<p class="px-3 py-4 text-sm text-slate-400">Tidak ada bab lain.</p>';
+
+            return;
+        }
+
+        group.forEach((item, index) => {
+            const bab =
+                item.dataset.pdfTitle || item.dataset.skripsiChapter || "-";
+
+            const isActive = item === currentTriggerButton;
+
+            const badge = getChapterBadge(item, index);
+
+            const chapterButton = document.createElement("button");
+
+            chapterButton.type = "button";
+
+            chapterButton.title = bab;
+
+            chapterButton.className = [
+                "flex",
+                "w-full",
+                "items-center",
+                "gap-3",
+                "rounded-xl",
+                "px-3",
+                "py-3",
+                "text-left",
+                "transition-all",
+                "duration-150",
+                isActive
+                    ? "bg-slate-800 text-white"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-800",
+            ].join(" ");
+
+            /*
+            |----------------------------------------------------------------
+            | BADGE (ANGKA ROMAWI / IKON BUKU)
+            |----------------------------------------------------------------
+            */
+
+            const badgeEl = document.createElement("span");
+
+            badgeEl.className = [
+                "flex",
+                "h-8",
+                "w-8",
+                "shrink-0",
+                "items-center",
+                "justify-center",
+                "rounded-lg",
+                "text-xs",
+                "font-bold",
+                isActive
+                    ? "bg-white/15 text-white"
+                    : "bg-slate-100 text-slate-600",
+            ].join(" ");
+
+            if (badge.icon === "book") {
+                badgeEl.innerHTML = bookIconSvg;
+            } else {
+                badgeEl.textContent = badge.text;
+            }
+
+            chapterButton.appendChild(badgeEl);
+
+            /*
+            |----------------------------------------------------------------
+            | LABEL (DIBUAT WRAP, TIDAK TERPOTONG, HANYA TAMPIL SAAT EXPANDED)
+            |----------------------------------------------------------------
+            */
+
+            const labelEl = document.createElement("span");
+
+            labelEl.className = [
+                "chapter-label",
+                "min-w-0",
+                "flex-1",
+                "whitespace-normal",
+                "break-words",
+                "text-sm",
+                "font-medium",
+                "leading-snug",
+            ].join(" ");
+
+            labelEl.textContent = bab;
+
+            chapterButton.appendChild(labelEl);
+
+            chapterButton.addEventListener("click", (event) => {
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                if (isActive) {
+                    return;
+                }
+
+                openPdf(item);
+            });
+
+            chapterList.appendChild(chapterButton);
+        });
+
+        applyChapterExpandedState();
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | TERAPKAN STATE EXPANDED / COLLAPSED KE SELURUH ELEMEN SIDEBAR
+    |--------------------------------------------------------------------------
+    */
+
+    const applyChapterExpandedState = () => {
+        if (!chapterPanel) {
+            return;
+        }
+
+        chapterPanel.dataset.expanded = isChapterExpanded ? "true" : "false";
+
+        chapterPanel.classList.toggle(SIDEBAR_EXPANDED_CLASS, isChapterExpanded);
+
+        chapterPanel.classList.toggle(SIDEBAR_COLLAPSED_CLASS, !isChapterExpanded);
+
+        chapterHeaderText?.classList.toggle("hidden", !isChapterExpanded);
+
+        chapterToggle?.setAttribute("aria-expanded", String(isChapterExpanded));
+
+        chapterToggle?.setAttribute(
+            "aria-label",
+            isChapterExpanded ? "Ciutkan daftar bab" : "Perluas daftar bab",
+        );
+
+        if (chapterToggleIcon) {
+            chapterToggleIcon.style.transform = isChapterExpanded
+                ? "rotate(0deg)"
+                : "rotate(180deg)";
+        }
+
         /*
-        |--------------------------------------------------------------------------
-        | DEBUG
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | LABEL BAB DISEMBUNYIKAN SAAT COLLAPSED, BADGE JADI TENGAH
+        |------------------------------------------------------------------
         */
 
-        console.log("DETAIL SKRIPSI:", {
-            nama,
-            nim,
-            bab,
-            judul,
+        chapterList?.querySelectorAll(".chapter-label").forEach((el) => {
+            el.classList.toggle("hidden", !isChapterExpanded);
+        });
+
+        chapterList?.querySelectorAll("button").forEach((btn) => {
+            btn.classList.toggle("justify-center", !isChapterExpanded);
         });
     };
+
+    const toggleChapterExpanded = () => {
+        isChapterExpanded = !isChapterExpanded;
+
+        applyChapterExpandedState();
+
+        updateZoomControlsPosition();
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | SELARASKAN POSISI KONTROL ZOOM DENGAN LEBAR SIDEBAR
+    |--------------------------------------------------------------------------
+    */
+
+    const updateZoomControlsPosition = () => {
+        if (!zoomControls || !chapterPanel) {
+            return;
+        }
+
+        zoomControls.style.left = `${chapterPanel.offsetWidth}px`;
+    };
+
+    window.addEventListener("resize", () => {
+        updateZoomControlsPosition();
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -450,12 +706,6 @@ document.addEventListener("DOMContentLoaded", () => {
         detailToggle?.setAttribute("aria-expanded", "false");
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | OPEN DETAIL
-    |--------------------------------------------------------------------------
-    */
-
     const openDetail = () => {
         if (!detailPanel) {
             return;
@@ -469,12 +719,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         detailToggle?.setAttribute("aria-expanded", "true");
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLOSE DETAIL
-    |--------------------------------------------------------------------------
-    */
 
     const closeDetail = () => {
         if (!detailPanel) {
@@ -490,18 +734,8 @@ document.addEventListener("DOMContentLoaded", () => {
         detailToggle?.setAttribute("aria-expanded", "false");
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | TOGGLE DETAIL
-    |--------------------------------------------------------------------------
-    */
-
     const toggleDetail = () => {
-        if (!detailPanel) {
-            return;
-        }
-
-        const opened = detailPanel.classList.contains("translate-x-0");
+        const opened = detailPanel?.classList.contains("translate-x-0");
 
         if (opened) {
             closeDetail();
@@ -512,18 +746,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | ANIMATE OPEN
+    | ANIMATE OPEN / CLOSE MODAL
     |--------------------------------------------------------------------------
     */
 
     const animateOpen = () => {
         modal.classList.remove("hidden");
-
-        /*
-        |--------------------------------------------------------------------------
-        | STATE AWAL
-        |--------------------------------------------------------------------------
-        */
 
         modal.classList.remove("opacity-100");
 
@@ -533,19 +761,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modalContent.classList.add("translate-y-2", "scale-[0.99]");
 
-        /*
-        |--------------------------------------------------------------------------
-        | FORCE REFLOW
-        |--------------------------------------------------------------------------
-        */
-
         void modal.offsetWidth;
-
-        /*
-        |--------------------------------------------------------------------------
-        | ANIMATE
-        |--------------------------------------------------------------------------
-        */
 
         requestAnimationFrame(() => {
             modal.classList.remove("opacity-0");
@@ -557,12 +773,6 @@ document.addEventListener("DOMContentLoaded", () => {
             modalContent.classList.add("translate-y-0", "scale-100");
         });
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | ANIMATE CLOSE
-    |--------------------------------------------------------------------------
-    */
 
     const animateClose = (callback) => {
         modalContent.classList.remove("translate-y-0", "scale-100");
@@ -590,19 +800,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (zoomOutButton) {
             zoomOutButton.disabled = currentZoom <= ZOOM_MIN;
 
-            zoomOutButton.classList.toggle(
-                "opacity-40",
-                currentZoom <= ZOOM_MIN,
-            );
+            zoomOutButton.classList.toggle("opacity-40", currentZoom <= ZOOM_MIN);
         }
 
         if (zoomInButton) {
             zoomInButton.disabled = currentZoom >= ZOOM_MAX;
 
-            zoomInButton.classList.toggle(
-                "opacity-40",
-                currentZoom >= ZOOM_MAX,
-            );
+            zoomInButton.classList.toggle("opacity-40", currentZoom >= ZOOM_MAX);
         }
     };
 
@@ -615,21 +819,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const renderPage = async (pdf, pageNumber) => {
         const page = await pdf.getPage(pageNumber);
 
-        /*
-        |--------------------------------------------------------------------------
-        | DEFAULT VIEWPORT
-        |--------------------------------------------------------------------------
-        */
-
-        const viewport = page.getViewport({
-            scale: 1,
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | CONTAINER WIDTH
-        |--------------------------------------------------------------------------
-        */
+        const viewport = page.getViewport({ scale: 1 });
 
         const viewerWidth = viewer?.clientWidth || window.innerWidth;
 
@@ -637,25 +827,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const availableWidth = Math.max(viewerWidth - horizontalPadding, 300);
 
-        /*
-        |--------------------------------------------------------------------------
-        | SCALE (FIT-TO-WIDTH x ZOOM USER)
-        |--------------------------------------------------------------------------
-        */
-
         const fitScale = availableWidth / viewport.width;
 
         const scale = fitScale * currentZoom;
 
-        const finalViewport = page.getViewport({
-            scale,
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | PAGE WRAPPER
-        |--------------------------------------------------------------------------
-        */
+        const finalViewport = page.getViewport({ scale });
 
         const pageWrapper = document.createElement("div");
 
@@ -671,23 +847,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         pageWrapper.style.height = `${finalViewport.height}px`;
 
-        /*
-        |--------------------------------------------------------------------------
-        | CANVAS
-        |--------------------------------------------------------------------------
-        */
-
         const canvas = document.createElement("canvas");
 
-        const context = canvas.getContext("2d", {
-            alpha: false,
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEVICE PIXEL RATIO
-        |--------------------------------------------------------------------------
-        */
+        const context = canvas.getContext("2d", { alpha: false });
 
         const outputScale = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -701,30 +863,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         canvas.className = "block";
 
-        /*
-        |--------------------------------------------------------------------------
-        | HIGH DPI
-        |--------------------------------------------------------------------------
-        */
-
         const transform =
             outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
-
-        /*
-        |--------------------------------------------------------------------------
-        | APPEND
-        |--------------------------------------------------------------------------
-        */
 
         pageWrapper.appendChild(canvas);
 
         pagesContainer.appendChild(pageWrapper);
-
-        /*
-        |--------------------------------------------------------------------------
-        | RENDER
-        |--------------------------------------------------------------------------
-        */
 
         await page.render({
             canvasContext: context,
@@ -732,18 +876,12 @@ document.addEventListener("DOMContentLoaded", () => {
             transform,
         }).promise;
 
-        /*
-        |--------------------------------------------------------------------------
-        | CLEAN PAGE
-        |--------------------------------------------------------------------------
-        */
-
         page.cleanup();
     };
 
     /*
     |--------------------------------------------------------------------------
-    | RENDER ALL PAGES (DIPAKAI SAAT LOAD & SAAT ZOOM BERUBAH)
+    | RENDER ALL PAGES
     |--------------------------------------------------------------------------
     */
 
@@ -751,12 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
         clearPages();
 
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-            /*
-            |--------------------------------------------------------------------------
-            | STOP IF CLOSING
-            |--------------------------------------------------------------------------
-            */
-
             if (isClosing) {
                 return;
             }
@@ -767,7 +899,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | APPLY ZOOM (RE-RENDER TANPA FETCH ULANG PDF)
+    | APPLY ZOOM
     |--------------------------------------------------------------------------
     */
 
@@ -787,12 +919,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentZoom = clamped;
 
         updateZoomUI();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN RASIO SCROLL SUPAYA POSISI BACA TIDAK LONCAT
-        |--------------------------------------------------------------------------
-        */
 
         const scrollRatio =
             viewer && viewer.scrollHeight > 0
@@ -816,81 +942,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const renderPdf = async (pdfUrl) => {
         try {
-            /*
-            |--------------------------------------------------------------------------
-            | CLEAR PREVIOUS
-            |--------------------------------------------------------------------------
-            */
-
             await clearPdf();
-
-            /*
-            |--------------------------------------------------------------------------
-            | PDF.JS LOAD
-            |--------------------------------------------------------------------------
-            */
 
             currentLoadingTask = pdfjsLib.getDocument({
                 url: pdfUrl,
-
-                /*
-                    |--------------------------------------------------------------------------
-                    | CREDENTIALS
-                    |--------------------------------------------------------------------------
-                    */
-
                 withCredentials: false,
-
-                /*
-                    |--------------------------------------------------------------------------
-                    | RANGE REQUEST
-                    |--------------------------------------------------------------------------
-                    */
-
                 disableRange: false,
-
                 disableStream: false,
             });
-
-            /*
-            |--------------------------------------------------------------------------
-            | GET DOCUMENT
-            |--------------------------------------------------------------------------
-            */
 
             currentPdf = await currentLoadingTask.promise;
 
             currentLoadingTask = null;
 
-            /*
-            |--------------------------------------------------------------------------
-            | TOTAL PAGES
-            |--------------------------------------------------------------------------
-            */
-
             console.log("Jumlah halaman PDF:", currentPdf.numPages);
-
-            /*
-            |--------------------------------------------------------------------------
-            | RENDER SEMUA HALAMAN
-            |--------------------------------------------------------------------------
-            */
 
             await renderAllPages(currentPdf);
 
-            /*
-            |--------------------------------------------------------------------------
-            | HIDE LOADING
-            |--------------------------------------------------------------------------
-            */
-
             hideLoading();
-
-            /*
-            |--------------------------------------------------------------------------
-            | SCROLL TOP
-            |--------------------------------------------------------------------------
-            */
 
             if (viewer) {
                 viewer.scrollTop = 0;
@@ -898,9 +967,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.error("PDF.js error:", err);
 
-            showError(
-                "PDF tidak dapat dimuat. Periksa koneksi atau path file.",
-            );
+            showError("PDF tidak dapat dimuat. Periksa koneksi atau path file.");
         }
     };
 
@@ -913,21 +980,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const openPdf = (button) => {
         isClosing = false;
 
-        /*
-        |--------------------------------------------------------------------------
-        | RESET ZOOM SETIAP BUKA BAB BARU
-        |--------------------------------------------------------------------------
-        */
+        currentTriggerButton = button;
+
+        renderChapterList();
 
         currentZoom = ZOOM_DEFAULT;
 
         updateZoomUI();
-
-        /*
-        |--------------------------------------------------------------------------
-        | PATH
-        |--------------------------------------------------------------------------
-        */
 
         const filePath = button.dataset.pdfPath;
 
@@ -937,35 +996,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DETAIL DATA
-        |--------------------------------------------------------------------------
-        */
-
         setDetailData(button);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLOSE DETAIL
-        |--------------------------------------------------------------------------
-        */
 
         resetDetail();
 
-        /*
-        |--------------------------------------------------------------------------
-        | RESET VIEWER
-        |--------------------------------------------------------------------------
-        */
-
         resetViewer();
-
-        /*
-        |--------------------------------------------------------------------------
-        | BUILD URL
-        |--------------------------------------------------------------------------
-        */
 
         let pdfUrl;
 
@@ -985,25 +1020,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | URL YANG DI-FETCH
-        |--------------------------------------------------------------------------
-        |
-        | pdfUrl        -> URL asli dokumen (dipakai untuk log & debug).
-        | fetchUrl      -> URL yang benar-benar di-fetch PDF.js.
-        |                  Dialihkan lewat /pdf-proxy kalau pdfUrl beda
-        |                  origin, supaya tidak kena CORS di browser.
-        |
-        */
-
         const fetchUrl = buildFetchUrl(pdfUrl);
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBUG
-        |--------------------------------------------------------------------------
-        */
 
         console.log("PDF PATH:", filePath);
 
@@ -1011,35 +1028,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("PDF URL (di-fetch):", fetchUrl);
 
-        /*
-        |--------------------------------------------------------------------------
-        | MODAL
-        |--------------------------------------------------------------------------
-        */
-
         modal.setAttribute("aria-hidden", "false");
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCK BODY
-        |--------------------------------------------------------------------------
-        */
 
         document.body.classList.add("overflow-hidden");
 
-        /*
-        |--------------------------------------------------------------------------
-        | OPEN ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
         animateOpen();
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD PDF.JS
-        |--------------------------------------------------------------------------
-        */
 
         renderPdf(fetchUrl);
     };
@@ -1061,54 +1054,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         isClosing = true;
 
-        /*
-        |--------------------------------------------------------------------------
-        | CLOSE DETAIL
-        |--------------------------------------------------------------------------
-        */
-
         closeDetail();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
         animateClose(async () => {
-            /*
-                |--------------------------------------------------------------------------
-                | HIDE
-                |--------------------------------------------------------------------------
-                */
-
             modal.classList.add("hidden");
 
             modal.setAttribute("aria-hidden", "true");
 
-            /*
-                |--------------------------------------------------------------------------
-                | UNLOCK BODY
-                |--------------------------------------------------------------------------
-                */
-
             document.body.classList.remove("overflow-hidden");
-
-            /*
-                |--------------------------------------------------------------------------
-                | CLEAR PDF
-                |--------------------------------------------------------------------------
-                */
 
             await clearPdf();
 
-            /*
-                |--------------------------------------------------------------------------
-                | RESET
-                |--------------------------------------------------------------------------
-                */
-
             resetViewer();
+
+            currentTriggerButton = null;
+
+            renderChapterList();
 
             isClosing = false;
         });
@@ -1116,12 +1077,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | OPEN BUTTON
+    | OPEN BUTTON (EVENT DELEGATION)
     |--------------------------------------------------------------------------
-    |
-    | Event delegation supaya tetap bekerja
-    | setelah AJAX pagination/filter.
-    |
     */
 
     document.addEventListener("click", (event) => {
@@ -1140,6 +1097,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | CHAPTER SIDEBAR TOGGLE
+    |--------------------------------------------------------------------------
+    */
+
+    chapterToggle?.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        toggleChapterExpanded();
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | DETAIL BUTTON
     |--------------------------------------------------------------------------
     */
@@ -1152,12 +1123,6 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleDetail();
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | DETAIL CLOSE
-    |--------------------------------------------------------------------------
-    */
-
     detailClose?.addEventListener("click", (event) => {
         event.preventDefault();
 
@@ -1165,12 +1130,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeDetail();
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | DETAIL BACKDROP
-    |--------------------------------------------------------------------------
-    */
 
     detailBackdrop?.addEventListener("click", (event) => {
         event.preventDefault();
@@ -1182,7 +1141,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | ZOOM IN
+    | ZOOM
     |--------------------------------------------------------------------------
     */
 
@@ -1194,12 +1153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         applyZoom(currentZoom + ZOOM_STEP);
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | ZOOM OUT
-    |--------------------------------------------------------------------------
-    */
-
     zoomOutButton?.addEventListener("click", (event) => {
         event.preventDefault();
 
@@ -1207,12 +1160,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         applyZoom(currentZoom - ZOOM_STEP);
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | ZOOM RESET
-    |--------------------------------------------------------------------------
-    */
 
     zoomResetButton?.addEventListener("click", (event) => {
         event.preventDefault();
@@ -1236,12 +1183,6 @@ document.addEventListener("DOMContentLoaded", () => {
         closePdf();
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | MODAL BACKDROP
-    |--------------------------------------------------------------------------
-    */
-
     backdrop?.addEventListener("click", (event) => {
         event.preventDefault();
 
@@ -1252,24 +1193,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
-    | ESCAPE
+    | KEYBOARD (ESC)
     |--------------------------------------------------------------------------
     */
 
     document.addEventListener("keydown", (event) => {
-        if (event.key !== "Escape") {
-            return;
-        }
-
         if (modal.classList.contains("hidden")) {
             return;
         }
 
-        /*
-            |--------------------------------------------------------------------------
-            | DETAIL TERBUKA
-            |--------------------------------------------------------------------------
-            */
+        if (event.key !== "Escape") {
+            return;
+        }
 
         if (detailPanel?.classList.contains("translate-x-0")) {
             closeDetail();
@@ -1277,12 +1212,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        /*
-            |--------------------------------------------------------------------------
-            | CLOSE MODAL
-            |--------------------------------------------------------------------------
-            */
-
         closePdf();
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | INIT
+    |--------------------------------------------------------------------------
+    */
+
+    applyChapterExpandedState();
+
+    updateZoomControlsPosition();
 });
