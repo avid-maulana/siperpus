@@ -369,14 +369,14 @@
                     {{-- PDF PAGES CONTAINER --}}
 
                     <div id="skripsiPdfPages" class="flex
-                           min-h-full
-                           flex-col
-                           items-center
-                           gap-5
-                           px-3
-                           py-5
-                           sm:px-6"></div>
-
+       min-h-full
+       flex-col
+       items-center
+       gap-5
+       px-3
+       pt-5
+       pb-32
+       sm:px-6"></div>
 
                     {{-- =========================================
                     DETAIL BACKDROP

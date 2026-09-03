@@ -690,6 +690,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateZoomControlsPosition();
     });
 
+    chapterPanel?.addEventListener("transitionend", (event) => {
+        if (event.propertyName === "width") {
+            updateZoomControlsPosition();
+        }
+    });
+
     /*
     |--------------------------------------------------------------------------
     | RESET DETAIL
