@@ -688,6 +688,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("resize", () => {
         updateZoomControlsPosition();
+
+        
     });
 
     chapterPanel?.addEventListener("transitionend", (event) => {

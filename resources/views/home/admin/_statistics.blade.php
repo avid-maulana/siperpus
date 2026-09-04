@@ -325,7 +325,7 @@
                     </span>
 
                     <p class="text-xs font-medium text-slate-400">
-                        Kompetensi Bidang Keahlian
+                        Kelompok Bidang Keahlian
                     </p>
 
                 </div>
