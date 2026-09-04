@@ -615,7 +615,7 @@ Total Koleksi
                                transition-all duration-200
                                hover:bg-blue-300
                                active:scale-95">
-                            Search
+                            Cari 
                         </button>
 
                     </div>
