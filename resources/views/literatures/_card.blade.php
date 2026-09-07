@@ -8,6 +8,7 @@
         <img
             src="{{ $literature->cover_url ?: asset('asset/cover.jpg') }}"
             alt="{{ $literature->title }}"
+            onerror="this.onerror=null; this.src='{{ asset('asset/cover.jpg') }}';"
             class="h-64 w-full object-cover transition duration-500 group-hover:scale-105">
 
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"></div>
