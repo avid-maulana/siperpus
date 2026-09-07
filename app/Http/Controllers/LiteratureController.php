@@ -125,10 +125,10 @@ class LiteratureController extends Controller
         */
 
         return view('literatures.index', [
-            'literatures'       => $literatures,
-            'types'             => $types,
-            'categories'        => $categories,
-            'totalLiteratures'  => $totalLiteratures,
+            'literatures' => $literatures,
+            'types' => $types,
+            'categories' => $categories,
+            'totalLiteratures' => $totalLiteratures,
         ]);
     }
 
@@ -313,6 +313,35 @@ class LiteratureController extends Controller
             ->with(
                 'success',
                 'Literatur berhasil diperbarui.'
+            );
+    }
+
+
+    /**
+     * Hapus Literatur
+     */
+    public function destroy(Literature $literature)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Hapus Literatur
+        |--------------------------------------------------------------------------
+        */
+
+        $literature->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('library.indexLiterature')
+            ->with(
+                'success',
+                'Literatur berhasil dihapus.'
             );
     }
 }
