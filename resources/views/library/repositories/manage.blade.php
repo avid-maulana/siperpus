@@ -146,7 +146,7 @@
                                    text-sm font-semibold text-white
                                    transition-all duration-200
                                    hover:bg-[#18202b]">
-                            Search
+                            Cari
                         </button>
 
                     </div>      

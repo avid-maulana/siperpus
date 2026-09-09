@@ -401,224 +401,103 @@
             REPOSITORY DOCUMENTS
         ====================================================== --}}
 
-        <div class="mt-8
-                   border-t
-                   border-slate-100
-                   pt-6">
+        <div class="mt-8 border-t border-slate-100 pt-6">
 
-            <div
-                class="grid
-                       grid-cols-1
-                       gap-2.5
-                       sm:grid-cols-2">
+            {{-- =====================================================
+                REPOSITORY DOCUMENTS
+                Layout persis: 3 tombol di baris pertama,
+                2 tombol lebar di baris kedua,
+                Daftar Pustaka full-width.
+            ====================================================== --}}
+
+            <div class="grid grid-cols-6 gap-3">
 
                 @foreach ($babList as $key => $label)
                     @php
-                        /*
-                        |--------------------------------------------------------------------------
-                        | CEK FILE DARI DATABASE
-                        |--------------------------------------------------------------------------
-                        */
-
                         $available = $skripsi->isi && $skripsi->isi->$key;
-
+                        $filePath = $available ? $skripsi->isi->$key : null;
                         $icon = $key === 'daftar_pustaka' ? 'menu_book' : 'description';
-
                         $isDaftarPustaka = $key === 'daftar_pustaka';
 
-                        /*
-                        |--------------------------------------------------------------------------
-                        | PATH FILE DARI DATABASE
-                        |--------------------------------------------------------------------------
-                        */
+                        if ($isDaftarPustaka) {
+                            $gridClass = 'col-span-6';
+                        } elseif ($loop->iteration <= 3) {
+                            $gridClass = 'col-span-6 sm:col-span-2';
+                        } else {
+                            $gridClass = 'col-span-6 sm:col-span-3';
+                        }
 
-                        $filePath = $available ? $skripsi->isi->$key : null;
+                        $isCompactChapter = !$isDaftarPustaka && $loop->iteration <= 3;
                     @endphp
-
 
                     @if ($available)
 
-                    <button
-                        type="button"
-
-                        data-skripsi-pdf-viewer="true"
-
-                        {{-- =================================================
-                            PDF
-                        ================================================== --}}
-                        data-pdf-path="{{ $filePath }}"
-
-                        {{-- =================================================
-                            HEADER MODAL
-                        ================================================== --}}
-                        data-pdf-title="{{ $label }}"
-
-                        {{-- =================================================
-                            DETAIL MODAL
-                        ================================================== --}}
-                        data-skripsi-author="{{ $namaMahasiswa }}"
-                        data-skripsi-nim="{{ $nimMahasiswa }}"
-                        data-skripsi-chapter="{{ $label }}"
-                        data-skripsi-title="{{ $judul }}"
-
-                        class="group/link
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            rounded-2xl
-                            border
-                            border-slate-200
-                            bg-white
-                            px-4
-                            py-3
-                            text-left
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            shadow-sm
-                            transition-all
-                            duration-200
-                            hover:border-slate-300
-                            hover:bg-slate-50
-                            hover:shadow-md
-                            active:scale-[0.99]
-                            {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}"
-                    >
-
-                        {{-- =================================================
-                            BUTTON CONTENT
-                        ================================================== --}}
-
-                        <span
-                            class="flex
-                                min-w-0
-                                items-center
-                                gap-3
-                                {{ $isDaftarPustaka ? 'sm:w-full sm:justify-center' : '' }}"
+                        <button
+                            type="button"
+                            data-skripsi-pdf-viewer="true"
+                            data-pdf-path="{{ $filePath }}"
+                            data-pdf-title="{{ $label }}"
+                            data-skripsi-author="{{ $namaMahasiswa }}"
+                            data-skripsi-nim="{{ $nimMahasiswa }}"
+                            data-skripsi-chapter="{{ $label }}"
+                            data-skripsi-title="{{ $judul }}"
+                            class="{{ $gridClass }} group/link relative flex min-h-[76px] w-full
+                                items-center justify-between gap-2 rounded-2xl border
+                                   border-slate-200 bg-white px-3.5 py-3 text-left
+                                   shadow-sm transition-all duration-200
+                                   hover:-translate-y-0.5 hover:border-[#b8c9dc]
+                                   hover:bg-[#fbfdff] hover:shadow-md
+                                active:scale-[0.98]
+                                {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}"
                         >
-
-                            {{-- =================================================
-                                ICON
-                            ================================================== --}}
-
-                            <span
-                                class="flex
-                                    h-9
-                                    w-9
-                                    shrink-0
-                                    items-center
-                                    justify-center
-                                    rounded-xl
-                                    bg-slate-100
-                                    text-slate-500
-                                    transition-all
-                                    duration-200
-                                    group-hover/link:bg-slate-200
-                                    group-hover/link:text-slate-700"
-                            >
-
-                                <span
-                                    class="material-symbols-outlined text-[19px]"
-                                >
-                                    {{ $icon }}
-                                </span>
-
-                            </span>
-
-
-                            {{-- =================================================
-                                LABEL BAB
-                            ================================================== --}}
-
-                            <span
-                                class="truncate
-                                    {{ $isDaftarPustaka ? 'sm:text-center' : '' }}"
-                            >
-                                {{ $label }}
-                            </span>
-
-                        </span>
-
-
-                        {{-- =================================================
-                            ARROW
-                        ================================================== --}}
-
-                        <span
-                            class="material-symbols-outlined
-                                shrink-0
-                                text-[18px]
-                                text-slate-300
-                                transition-all
-                                duration-200
-                                group-hover/link:translate-x-0.5
-                                group-hover/link:text-slate-600
-                                {{ $isDaftarPustaka ? 'sm:hidden' : '' }}"
-                        >
-                            arrow_forward
-                        </span>
-
-                    </button>
-
-                @else
-                        {{-- File tidak tersedia --}}
-
-                        <div
-                            class="flex
-                            items-center
-                            justify-between
-                            rounded-2xl
-                            border
-                            border-slate-100
-                            bg-slate-50
-                            px-4
-                            py-3
-                            text-sm
-                            font-medium
-                            text-slate-400
-                            {{ $isDaftarPustaka ? 'sm:col-span-2 sm:justify-center sm:px-6' : '' }}">
-
-                            <span
-                                class="flex
-                                    min-w-0
-                                    items-center
-                                    gap-3
-                                    {{ $isDaftarPustaka ? 'sm:w-full sm:justify-center' : '' }}">
-
-                                <span
-                                    class="flex
-                                        h-9
-                                        w-9
-                                        shrink-0
-                                        items-center
-                                        justify-center
-                                        rounded-xl
-                                        bg-slate-100
-                                        text-slate-300">
-                                    <span class="material-symbols-outlined text-[19px]">
+                            <span class="flex min-w-0 items-center gap-2.5">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center
+                                             rounded-xl bg-[#eef3f8] text-[#52769d]
+                                             ring-1 ring-inset ring-[#dce6f0]
+                                             transition-all duration-200
+                                             group-hover/link:bg-[#dfeaf4]">
+                                    <span class="material-symbols-outlined text-[20px]">
                                         {{ $icon }}
                                     </span>
                                 </span>
 
-                                <span
-                                    class="truncate
-                                        {{ $isDaftarPustaka ? 'sm:text-center' : '' }}">
+                                <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-[#17365d]
+                                             {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
                                     {{ $label }}
                                 </span>
-
                             </span>
 
+                        </button>
 
-                            <span
-                                class="text-[10px]
-                                    font-medium
-                                    text-slate-400
-                                    {{ $isDaftarPustaka ? 'sm:hidden' : '' }}">
+                    @else
+
+                        <div
+                            class="{{ $gridClass }} flex min-h-[76px] w-full items-center
+                                justify-between gap-2 rounded-2xl border border-slate-100
+                                bg-slate-50 px-3.5 py-3 text-slate-400
+                                {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}"
+                        >
+                            <span class="flex min-w-0 items-center gap-2.5">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center
+                                             rounded-xl bg-slate-100 text-slate-300">
+                                    <span class="material-symbols-outlined text-[20px]">
+                                        {{ $icon }}
+                                    </span>
+                                </span>
+
+                                <span class="min-w-0 flex-1 truncate text-[13px] font-semibold
+                                             {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
+                                    {{ $label }}
+                                </span>
+                            </span>
+
+                            <span class="shrink-0 rounded-full bg-slate-100 px-2 py-1
+                                         text-[9px] font-semibold text-slate-400
+                                         {{ $isCompactChapter ? 'sm:absolute sm:right-2 sm:top-2' : '' }}">
                                 Belum ada
                             </span>
-
                         </div>
+
                     @endif
                 @endforeach
 
