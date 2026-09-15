@@ -400,10 +400,10 @@ Route::middleware('auth')->group(function () {
                     ->connectTimeout(30)
                     ->withHeaders([
                         'User-Agent' =>
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0 Safari/537.36',
+                            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0 Safari/537.36',
 
                         'Accept' =>
-                        'application/pdf,application/octet-stream,text/html,*/*',
+                            'application/pdf,application/octet-stream,text/html,*/*',
                     ])
                     ->withOptions([
                         'allow_redirects' => [
@@ -418,19 +418,19 @@ Route::middleware('auth')->group(function () {
                     'PDF Proxy Exception',
                     [
                         'original_url' =>
-                        $url,
+                            $url,
 
                         'request_url' =>
-                        $requestUrl,
+                            $requestUrl,
 
                         'message' =>
-                        $e->getMessage(),
+                            $e->getMessage(),
 
                         'file' =>
-                        $e->getFile(),
+                            $e->getFile(),
 
                         'line' =>
-                        $e->getLine(),
+                            $e->getLine(),
                     ]
                 );
 
@@ -454,18 +454,18 @@ Route::middleware('auth')->group(function () {
                     'PDF Proxy HTTP Error',
                     [
                         'original_url' =>
-                        $url,
+                            $url,
 
                         'request_url' =>
-                        $requestUrl,
+                            $requestUrl,
 
                         'status' =>
-                        $response->status(),
+                            $response->status(),
 
                         'content_type' =>
-                        $response->header(
-                            'Content-Type'
-                        ),
+                            $response->header(
+                                'Content-Type'
+                            ),
                     ]
                 );
 
@@ -473,8 +473,8 @@ Route::middleware('auth')->group(function () {
                 abort(
                     502,
                     'Server dokumen mengembalikan status '
-                        . $response->status()
-                        . '.'
+                    . $response->status()
+                    . '.'
                 );
             }
 
@@ -509,13 +509,13 @@ Route::middleware('auth')->group(function () {
                     'PDF Proxy Empty Response',
                     [
                         'original_url' =>
-                        $url,
+                            $url,
 
                         'request_url' =>
-                        $requestUrl,
+                            $requestUrl,
 
                         'content_type' =>
-                        $contentType,
+                            $contentType,
                     ]
                 );
 
@@ -546,20 +546,20 @@ Route::middleware('auth')->group(function () {
                     'PDF Proxy Invalid PDF',
                     [
                         'original_url' =>
-                        $url,
+                            $url,
 
                         'request_url' =>
-                        $requestUrl,
+                            $requestUrl,
 
                         'content_type' =>
-                        $contentType,
+                            $contentType,
 
                         'body_start' =>
-                        substr(
-                            $body,
-                            0,
-                            100
-                        ),
+                            substr(
+                                $body,
+                                0,
+                                100
+                            ),
                     ]
                 );
 
@@ -567,7 +567,7 @@ Route::middleware('auth')->group(function () {
                 abort(
                     502,
                     'Dokumen tidak dapat ditampilkan sebagai PDF. '
-                        . 'Pastikan repository dapat diakses secara publik.'
+                    . 'Pastikan repository dapat diakses secara publik.'
                 );
             }
 
@@ -583,19 +583,19 @@ Route::middleware('auth')->group(function () {
                 200,
                 [
                     'Content-Type' =>
-                    'application/pdf',
+                        'application/pdf',
 
                     'Content-Disposition' =>
-                    'inline; filename="document.pdf"',
+                        'inline; filename="document.pdf"',
 
                     'Content-Length' =>
-                    strlen($body),
+                        strlen($body),
 
                     'Cache-Control' =>
-                    'private, max-age=3600',
+                        'private, max-age=3600',
 
                     'Accept-Ranges' =>
-                    'bytes',
+                        'bytes',
                 ]
             );
         }
@@ -775,19 +775,19 @@ Route::middleware(['auth', 'role'])
         )->name('destroyCategory');
 
         Route::post(
-    '/store-type',
-    [LibraryController::class, 'storeType']
-)->name('storeType');
- 
- 
-Route::put(
-    '/update-type/{id}',
-    [LibraryController::class, 'updateType']
-)->name('updateType');
- 
- 
-Route::delete(
-    '/destroy-type/{id}',
-    [LibraryController::class, 'destroyType']
-)->name('destroyType');
+            '/store-type',
+            [LibraryController::class, 'storeType']
+        )->name('storeType');
+
+
+        Route::put(
+            '/update-type/{id}',
+            [LibraryController::class, 'updateType']
+        )->name('updateType');
+
+
+        Route::delete(
+            '/destroy-type/{id}',
+            [LibraryController::class, 'destroyType']
+        )->name('destroyType');
     });

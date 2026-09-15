@@ -29,11 +29,10 @@
 
 
 {{-- =========================================================
-    CARD SKRIPSI
+CARD SKRIPSI
 ========================================================= --}}
 
-<div
-    class="group flex h-full flex-col
+<div class="group flex h-full flex-col
            overflow-hidden
            rounded-3xl
            border border-slate-200
@@ -45,19 +44,17 @@
 
 
     {{-- =========================================================
-        HEADER
+    HEADER
     ========================================================== --}}
 
-    <div
-        class="relative overflow-hidden
+    <div class="relative overflow-hidden
                border-b border-slate-200
                bg-[#1b2330]
                px-6 py-6">
 
         {{-- Background --}}
 
-        <div
-            class="pointer-events-none absolute inset-0
+        <div class="pointer-events-none absolute inset-0
                    bg-gradient-to-br
                    from-[#263241]
                    via-[#212A37]
@@ -67,8 +64,7 @@
 
         {{-- Glow --}}
 
-        <div
-            class="pointer-events-none absolute
+        <div class="pointer-events-none absolute
                    -right-16 -top-16
                    h-48 w-48
                    rounded-full
@@ -83,7 +79,7 @@
 
 
             {{-- =================================================
-                LABEL
+            LABEL
             ================================================== --}}
 
             <div class="inline-flex items-center gap-2
@@ -93,8 +89,7 @@
                     school
                 </span>
 
-                <span
-                    class="text-[10px]
+                <span class="text-[10px]
                            font-semibold
                            uppercase
                            tracking-[0.18em]">
@@ -105,7 +100,7 @@
 
 
             {{-- =================================================
-                TITLE
+            TITLE
             ================================================== --}}
 
             <div class="relative mt-4">
@@ -119,8 +114,7 @@
                            transition-[max-height]
                            duration-500
                            ease-in-out
-                           group-hover:max-h-[500px]"
-                    title="{{ $judul }}">
+                           group-hover:max-h-[500px]" title="{{ $judul }}">
 
                     {{ $judul }}
 
@@ -129,8 +123,7 @@
 
                 {{-- Fade --}}
 
-                <div
-                    class="pointer-events-none
+                <div class="pointer-events-none
                            absolute
                            inset-x-0
                            bottom-0
@@ -148,13 +141,12 @@
 
 
             {{-- =================================================
-                KBK
+            KBK
             ================================================== --}}
 
             <div class="mt-5">
 
-                <div
-                    class="inline-flex
+                <div class="inline-flex
                            max-w-full
                            items-center
                            gap-3
@@ -168,8 +160,7 @@
                            duration-300
                            group-hover:bg-white/[0.12]">
 
-                    <div
-                        class="flex
+                    <div class="flex
                                h-8
                                w-8
                                shrink-0
@@ -188,8 +179,7 @@
 
                     <div class="min-w-0">
 
-                        <div
-                            class="text-[9px]
+                        <div class="text-[9px]
                                    font-semibold
                                    uppercase
                                    tracking-[0.15em]
@@ -202,8 +192,7 @@
                                    truncate
                                    text-xs
                                    font-semibold
-                                   text-white/85"
-                            title="{{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}">
+                                   text-white/85" title="{{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}">
                             {{ data_get($skripsi, 'user.dataJudul.kbk.nama_kbk', '-') }}
                         </div>
 
@@ -219,7 +208,7 @@
 
 
     {{-- =========================================================
-        CONTENT
+    CONTENT
     ========================================================== --}}
 
     <div class="flex
@@ -228,20 +217,19 @@
                p-6">
 
         {{-- =====================================================
-            INFO MAHASISWA
+        INFO MAHASISWA
         ====================================================== --}}
 
         <div class="space-y-5">
 
 
             {{-- =================================================
-                NAMA
+            NAMA
             ================================================== --}}
 
             <div class="flex items-start gap-3">
 
-                <div
-                    class="mt-0.5
+                <div class="mt-0.5
                            flex
                            h-9
                            w-9
@@ -264,8 +252,7 @@
 
                 <div class="min-w-0 flex-1">
 
-                    <div
-                        class="text-[10px]
+                    <div class="text-[10px]
                                font-medium
                                uppercase
                                tracking-widest
@@ -274,8 +261,7 @@
                     </div>
 
 
-                    <div
-                        class="truncate
+                    <div class="truncate
                                text-sm
                                font-semibold
                                text-slate-700">
@@ -288,13 +274,12 @@
 
 
             {{-- =================================================
-                NIM
+            NIM
             ================================================== --}}
 
             <div class="flex items-start gap-3">
 
-                <div
-                    class="mt-0.5
+                <div class="mt-0.5
                            flex
                            h-9
                            w-9
@@ -317,8 +302,7 @@
 
                 <div class="min-w-0 flex-1">
 
-                    <div
-                        class="text-[10px]
+                    <div class="text-[10px]
                                font-medium
                                uppercase
                                tracking-widest
@@ -327,8 +311,7 @@
                     </div>
 
 
-                    <div
-                        class="truncate
+                    <div class="truncate
                                text-sm
                                font-semibold
                                text-slate-700">
@@ -343,13 +326,12 @@
 
 
         {{-- =====================================================
-            DIUNGGAH
+        DIUNGGAH
         ====================================================== --}}
 
         <div class="mt-5 flex items-start gap-3">
 
-            <div
-                class="mt-0.5
+            <div class="mt-0.5
                        flex
                        h-9
                        w-9
@@ -372,8 +354,7 @@
 
             <div class="min-w-0 flex-1">
 
-                <div
-                    class="text-[10px]
+                <div class="text-[10px]
                            font-medium
                            uppercase
                            tracking-widest
@@ -398,16 +379,16 @@
 
 
         {{-- =====================================================
-            REPOSITORY DOCUMENTS
+        REPOSITORY DOCUMENTS
         ====================================================== --}}
 
         <div class="mt-8 border-t border-slate-100 pt-6">
 
             {{-- =====================================================
-                REPOSITORY DOCUMENTS
-                Layout persis: 3 tombol di baris pertama,
-                2 tombol lebar di baris kedua,
-                Daftar Pustaka full-width.
+            REPOSITORY DOCUMENTS
+            Layout persis: 3 tombol di baris pertama,
+            2 tombol lebar di baris kedua,
+            Daftar Pustaka full-width.
             ====================================================== --}}
 
             <div class="grid grid-cols-6 gap-3">
@@ -432,37 +413,31 @@
 
                     @if ($available)
 
-                        <button
-                            type="button"
-                            data-skripsi-pdf-viewer="true"
-                            data-pdf-path="{{ $filePath }}"
-                            data-pdf-title="{{ $label }}"
-                            data-skripsi-author="{{ $namaMahasiswa }}"
-                            data-skripsi-nim="{{ $nimMahasiswa }}"
-                            data-skripsi-chapter="{{ $label }}"
-                            data-skripsi-title="{{ $judul }}"
-                            class="{{ $gridClass }} group/link relative flex min-h-[76px] w-full
-                                items-center justify-between gap-2 rounded-2xl border
-                                   border-slate-200 bg-white px-3.5 py-3 text-left
-                                   shadow-sm transition-all duration-200
-                                   hover:-translate-y-0.5 hover:border-[#b8c9dc]
-                                   hover:bg-[#fbfdff] hover:shadow-md
-                                active:scale-[0.98]
-                                {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}"
-                        >
+                        <button type="button" data-skripsi-pdf-viewer="true" data-pdf-path="{{ $filePath }}"
+                            data-pdf-title="{{ $label }}" data-skripsi-author="{{ $namaMahasiswa }}"
+                            data-skripsi-nim="{{ $nimMahasiswa }}" data-skripsi-chapter="{{ $label }}"
+                            data-skripsi-title="{{ $judul }}" class="{{ $gridClass }} group/link relative flex min-h-[76px] w-full
+                                        items-center justify-between gap-2 rounded-2xl border
+                                           border-slate-200 bg-white px-3.5 py-3 text-left
+                                           shadow-sm transition-all duration-200
+                                           hover:-translate-y-0.5 hover:border-[#b8c9dc]
+                                           hover:bg-[#fbfdff] hover:shadow-md
+                                        active:scale-[0.98]
+                                        {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}">
                             <span class="flex min-w-0 items-center gap-2.5">
                                 <span class="flex h-10 w-10 shrink-0 items-center justify-center
-                                             rounded-xl bg-[#eef3f8] text-[#52769d]
-                                             ring-1 ring-inset ring-[#dce6f0]
-                                             transition-all duration-200
-                                             group-hover/link:bg-[#dfeaf4]">
+                                                     rounded-xl bg-[#eef3f8] text-[#52769d]
+                                                     ring-1 ring-inset ring-[#dce6f0]
+                                                     transition-all duration-200
+                                                     group-hover/link:bg-[#dfeaf4]">
                                     <span class="material-symbols-outlined text-[20px]">
                                         {{ $icon }}
                                     </span>
                                 </span>
 
-                                <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-[#17365d]
-                                             {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
+                                <span
+                                    class="min-w-0 flex-1 truncate text-[13px] font-semibold text-[#17365d]
+                                                     {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
                                     {{ $label }}
                                 </span>
                             </span>
@@ -471,29 +446,28 @@
 
                     @else
 
-                        <div
-                            class="{{ $gridClass }} flex min-h-[76px] w-full items-center
-                                justify-between gap-2 rounded-2xl border border-slate-100
-                                bg-slate-50 px-3.5 py-3 text-slate-400
-                                {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}"
-                        >
+                        <div class="{{ $gridClass }} flex min-h-[76px] w-full items-center
+                                        justify-between gap-2 rounded-2xl border border-slate-100
+                                        bg-slate-50 px-3.5 py-3 text-slate-400
+                                        {{ $isCompactChapter ? 'sm:flex-col sm:justify-center sm:gap-1 sm:px-2' : '' }}">
                             <span class="flex min-w-0 items-center gap-2.5">
                                 <span class="flex h-10 w-10 shrink-0 items-center justify-center
-                                             rounded-xl bg-slate-100 text-slate-300">
+                                                     rounded-xl bg-slate-100 text-slate-300">
                                     <span class="material-symbols-outlined text-[20px]">
                                         {{ $icon }}
                                     </span>
                                 </span>
 
-                                <span class="min-w-0 flex-1 truncate text-[13px] font-semibold
-                                             {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
+                                <span
+                                    class="min-w-0 flex-1 truncate text-[13px] font-semibold
+                                                     {{ $isCompactChapter ? 'sm:flex-none sm:whitespace-nowrap sm:text-center' : '' }}">
                                     {{ $label }}
                                 </span>
                             </span>
 
                             <span class="shrink-0 rounded-full bg-slate-100 px-2 py-1
-                                         text-[9px] font-semibold text-slate-400
-                                         {{ $isCompactChapter ? 'sm:absolute sm:right-2 sm:top-2' : '' }}">
+                                                 text-[9px] font-semibold text-slate-400
+                                                 {{ $isCompactChapter ? 'sm:absolute sm:right-2 sm:top-2' : '' }}">
                                 Belum ada
                             </span>
                         </div>
@@ -507,7 +481,7 @@
 
 
         {{-- =====================================================
-            SPACER
+        SPACER
         ====================================================== --}}
 
         <div class="flex-1"></div>

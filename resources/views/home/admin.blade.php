@@ -6,7 +6,7 @@
     ADMIN DASHBOARD JAVASCRIPT
 ========================================================== --}}
 @push('scripts')
-@vite('resources/js/home/admin.js')
+@vite('resources/js/home/admin/admin.js')
 @endpush
 
 

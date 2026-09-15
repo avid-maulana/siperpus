@@ -316,6 +316,7 @@
                         'nama' => $nama,
                         'nim' => $nim,
                         'skripsi' => $judul,
+                        'document_type' => 'Disertasi',
                         'bab' => 'Repository Disertasi',
                     ]) }}"
                     class="flex w-full

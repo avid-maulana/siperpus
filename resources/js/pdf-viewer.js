@@ -39,6 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const title = document.getElementById("pdfTitle");
 
+    const repositoryLabel = document.getElementById("pdfRepositoryLabel");
+
+    const detailHeading = document.getElementById("pdfDetailHeading");
+
+    const detailTitleLabel = document.getElementById("pdfDetailTitleLabel");
+
     const detailToggle = document.getElementById("pdfDetailToggle");
 
     const detailPanel = document.getElementById("pdfDetailPanel");
@@ -79,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sourceUrl = pdfConfig.dataset.sourceUrl || "";
 
+    const documentType = pdfConfig.dataset.documentType || "Tesis";
+
 
     /*
     |--------------------------------------------------------------------------
@@ -88,6 +96,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const bab = pdfConfig.dataset.bab || pdfConfig.dataset.title || "-";
 
+    if (repositoryLabel) repositoryLabel.textContent = `Repository ${documentType}`;
+
+    if (detailHeading) detailHeading.textContent = `Detail ${documentType}`;
+
+    if (detailTitleLabel) detailTitleLabel.textContent = `Judul ${documentType}`;
+
     if (title) title.textContent = bab;
 
     if (detailAuthor) detailAuthor.textContent = pdfConfig.dataset.nama || "-";
@@ -96,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (detailChapter) detailChapter.textContent = bab;
 
-    if (detailTitle) detailTitle.textContent = pdfConfig.dataset.tesis || "-";
+    if (detailTitle) detailTitle.textContent = pdfConfig.dataset.workTitle || "-";
 
 
     /*

@@ -37,7 +37,7 @@
     */
 
     $anggota = $tim?->detailTims
-        ?->filter(fn($detail) => $detail->user)
+            ?->filter(fn($detail) => $detail->user)
         ->map(fn($detail) => $detail->user)
         ->unique('user_id');
 
@@ -142,11 +142,9 @@
         left: 0;
         height: 28px;
         pointer-events: none;
-        background: linear-gradient(
-            to bottom,
-            transparent,
-            #212A37
-        );
+        background: linear-gradient(to bottom,
+                transparent,
+                #212A37);
         opacity: 1;
         transition:
             opacity 0.25s ease;
@@ -171,8 +169,7 @@
 </style>
 
 
-<article
-    class="pi-card group flex h-full flex-col
+<article class="pi-card group flex h-full flex-col
            overflow-hidden
            rounded-3xl
            border border-slate-200
@@ -184,22 +181,20 @@
 
 
     {{-- =========================================================
-        HEADER
+    HEADER
     ========================================================== --}}
 
-    <div
-        class="pi-card-header relative overflow-hidden
+    <div class="pi-card-header relative overflow-hidden
                border-b border-slate-200
                bg-[#1b2330]
                px-6 py-6">
 
 
         {{-- =====================================================
-            BACKGROUND
+        BACKGROUND
         ====================================================== --}}
 
-        <div
-            class="pointer-events-none absolute inset-0
+        <div class="pointer-events-none absolute inset-0
                    bg-gradient-to-br
                    from-[#263241]
                    via-[#212A37]
@@ -208,11 +203,10 @@
 
 
         {{-- =====================================================
-            GLOW
+        GLOW
         ====================================================== --}}
 
-        <div
-            class="pointer-events-none absolute
+        <div class="pointer-events-none absolute
                    -right-16 -top-16
                    h-48 w-48
                    rounded-full
@@ -222,14 +216,14 @@
 
 
         {{-- =====================================================
-            HEADER CONTENT
+        HEADER CONTENT
         ====================================================== --}}
 
         <div class="pi-header-content relative z-10">
 
 
             {{-- =================================================
-                LABEL
+            LABEL
             ================================================== --}}
 
             <div class="inline-flex items-center gap-2 text-white/60">
@@ -238,8 +232,7 @@
                     description
                 </span>
 
-                <span
-                    class="text-[10px]
+                <span class="text-[10px]
                            font-semibold
                            uppercase
                            tracking-[0.18em]">
@@ -250,19 +243,17 @@
 
 
             {{-- =================================================
-                TITLE
+            TITLE
             ================================================== --}}
 
             <div class="pi-title-wrapper mt-4">
 
                 <div class="pi-title-content">
 
-                    <h3
-                        class="text-[16px]
+                    <h3 class="text-[16px]
                                font-semibold
                                leading-[1.5]
-                               text-white"
-                        title="{{ $laporan->judul }}">
+                               text-white" title="{{ $laporan->judul }}">
 
                         {{ $laporan->judul ?: 'Judul tidak tersedia' }}
 
@@ -283,7 +274,7 @@
 
 
     {{-- =========================================================
-        CONTENT BODY
+    CONTENT BODY
     ========================================================== --}}
 
     <div class="flex flex-1 flex-col p-6">
@@ -292,25 +283,24 @@
 
 
             {{-- =================================================
-                INDUSTRI
+            INDUSTRI
             ================================================== --}}
 
             @if ($industri)
 
                 <div class="flex items-start gap-3">
 
-                    <div
-                        class="mt-0.5
-                               flex h-9 w-9
-                               shrink-0
-                               items-center
-                               justify-center
-                               rounded-2xl
-                               bg-slate-100
-                               text-slate-500
-                               ring-1
-                               ring-inset
-                               ring-slate-200">
+                    <div class="mt-0.5
+                                   flex h-9 w-9
+                                   shrink-0
+                                   items-center
+                                   justify-center
+                                   rounded-2xl
+                                   bg-slate-100
+                                   text-slate-500
+                                   ring-1
+                                   ring-inset
+                                   ring-slate-200">
 
                         <span class="material-symbols-outlined text-[20px]">
                             business
@@ -321,21 +311,18 @@
 
                     <div class="min-w-0 flex-1">
 
-                        <div
-                            class="text-[10px]
-                                   font-medium
-                                   uppercase
-                                   tracking-widest
-                                   text-slate-400">
+                        <div class="text-[10px]
+                                       font-medium
+                                       uppercase
+                                       tracking-widest
+                                       text-slate-400">
                             Industri
                         </div>
 
-                        <div
-                            class="break-words
-                                   text-sm
-                                   font-semibold
-                                   text-slate-700"
-                            title="{{ $industri->nama }}">
+                        <div class="break-words
+                                       text-sm
+                                       font-semibold
+                                       text-slate-700" title="{{ $industri->nama }}">
 
                             {{ $industri->nama }}
 
@@ -349,25 +336,24 @@
 
 
             {{-- =================================================
-                KETUA
+            KETUA
             ================================================== --}}
 
             @if ($ketua)
 
                 <div class="flex items-start gap-3">
 
-                    <div
-                        class="mt-0.5
-                               flex h-9 w-9
-                               shrink-0
-                               items-center
-                               justify-center
-                               rounded-2xl
-                               bg-slate-100
-                               text-slate-500
-                               ring-1
-                               ring-inset
-                               ring-slate-200">
+                    <div class="mt-0.5
+                                   flex h-9 w-9
+                                   shrink-0
+                                   items-center
+                                   justify-center
+                                   rounded-2xl
+                                   bg-slate-100
+                                   text-slate-500
+                                   ring-1
+                                   ring-inset
+                                   ring-slate-200">
 
                         <span class="material-symbols-outlined text-[20px]">
                             person
@@ -378,20 +364,18 @@
 
                     <div class="min-w-0 flex-1">
 
-                        <div
-                            class="text-[10px]
-                                   font-medium
-                                   uppercase
-                                   tracking-widest
-                                   text-slate-400">
+                        <div class="text-[10px]
+                                       font-medium
+                                       uppercase
+                                       tracking-widest
+                                       text-slate-400">
                             Ketua
                         </div>
 
-                        <div
-                            class="break-words
-                                   text-sm
-                                   font-semibold
-                                   text-slate-700">
+                        <div class="break-words
+                                       text-sm
+                                       font-semibold
+                                       text-slate-700">
 
                             {{ $ketua->nama_lengkap }}
 
@@ -405,25 +389,24 @@
 
 
             {{-- =================================================
-                ANGGOTA
+            ANGGOTA
             ================================================== --}}
 
             @if ($anggota?->count())
 
                 <div class="flex items-start gap-3">
 
-                    <div
-                        class="mt-0.5
-                               flex h-9 w-9
-                               shrink-0
-                               items-center
-                               justify-center
-                               rounded-2xl
-                               bg-slate-100
-                               text-slate-500
-                               ring-1
-                               ring-inset
-                               ring-slate-200">
+                    <div class="mt-0.5
+                                   flex h-9 w-9
+                                   shrink-0
+                                   items-center
+                                   justify-center
+                                   rounded-2xl
+                                   bg-slate-100
+                                   text-slate-500
+                                   ring-1
+                                   ring-inset
+                                   ring-slate-200">
 
                         <span class="material-symbols-outlined text-[20px]">
                             diversity_3
@@ -434,13 +417,12 @@
 
                     <div class="min-w-0 flex-1">
 
-                        <div
-                            class="mb-1
-                                   text-[10px]
-                                   font-medium
-                                   uppercase
-                                   tracking-widest
-                                   text-slate-400">
+                        <div class="mb-1
+                                       text-[10px]
+                                       font-medium
+                                       uppercase
+                                       tracking-widest
+                                       text-slate-400">
 
                             Anggota ({{ $anggota->count() }})
 
@@ -453,20 +435,18 @@
 
                                 <li class="flex items-start gap-3">
 
-                                    <span
-                                        class="mt-[7px]
-                                               h-[5px]
-                                               w-[5px]
-                                               shrink-0
-                                               rounded-full
-                                               bg-slate-400">
+                                    <span class="mt-[7px]
+                                                       h-[5px]
+                                                       w-[5px]
+                                                       shrink-0
+                                                       rounded-full
+                                                       bg-slate-400">
                                     </span>
 
-                                    <span
-                                        class="break-words
-                                               text-sm
-                                               font-semibold
-                                               text-slate-700">
+                                    <span class="break-words
+                                                       text-sm
+                                                       font-semibold
+                                                       text-slate-700">
 
                                         {{ $member->nama_lengkap }}
 
@@ -486,25 +466,24 @@
 
 
             {{-- =================================================
-                TERAKHIR DIPERBARUI
+            TERAKHIR DIPERBARUI
             ================================================== --}}
 
             @if ($tanggalTerakhirDiperbarui)
 
                 <div class="mt-6 flex items-start gap-3">
 
-                    <div
-                        class="mt-0.5
-                               flex h-9 w-9
-                               shrink-0
-                               items-center
-                               justify-center
-                               rounded-2xl
-                               bg-slate-100
-                               text-slate-500
-                               ring-1
-                               ring-inset
-                               ring-slate-200">
+                    <div class="mt-0.5
+                                   flex h-9 w-9
+                                   shrink-0
+                                   items-center
+                                   justify-center
+                                   rounded-2xl
+                                   bg-slate-100
+                                   text-slate-500
+                                   ring-1
+                                   ring-inset
+                                   ring-slate-200">
 
                         <span class="material-symbols-outlined text-[20px]">
                             schedule
@@ -515,22 +494,20 @@
 
                     <div class="min-w-0 flex-1">
 
-                        <div
-                            class="text-[10px]
-                                   font-medium
-                                   uppercase
-                                   tracking-widest
-                                   text-slate-400">
+                        <div class="text-[10px]
+                                       font-medium
+                                       uppercase
+                                       tracking-widest
+                                       text-slate-400">
 
                             Terakhir Diperbarui
 
                         </div>
 
-                        <div
-                            class="mt-0.5
-                                   text-sm
-                                   font-semibold
-                                   text-slate-700">
+                        <div class="mt-0.5
+                                       text-sm
+                                       font-semibold
+                                       text-slate-700">
 
                             {{ $tanggalTerakhirDiperbarui->translatedFormat('d F Y') }}
 
@@ -546,62 +523,49 @@
 
 
         {{-- =====================================================
-            ACTION DOCUMENT
+        ACTION DOCUMENT
         ====================================================== --}}
 
         <div class="mt-auto pt-8">
 
             {{-- =================================================
-                FILE LAPORAN
+            FILE LAPORAN
             ================================================== --}}
 
             @if ($fileLaporan)
 
-                <button
-                    type="button"
-
-                    data-praktik-industri-pdf-viewer="true"
-
-                    data-pdf-path="{{ $laporan->file_aktif_url }}"
-
+                <button type="button" data-praktik-industri-pdf-viewer="true" data-pdf-path="{{ $laporan->file_aktif_url }}"
                     data-judul="{{ $laporan->judul ?: 'Judul tidak tersedia' }}"
-
-                    data-industri="{{ $industri->nama ?? '-' }}"
-
-                    data-ketua="{{ $ketua->nama_lengkap ?? '-' }}"
-
-                    data-updated="{{ $tanggalTerakhirDiperbarui?->translatedFormat('d F Y') ?? '-' }}"
-
-                    class="group/link
-                           flex
-                           w-full
-                           items-center
-                           justify-between
-                           rounded-2xl
-                           border border-slate-200
-                           bg-white
-                           px-4 py-3
-                           text-left
-                           text-sm
-                           font-medium
-                           text-slate-700
-                           shadow-sm
-                           transition-all
-                           duration-300
-                           hover:border-[#212A37]
-                           hover:bg-[#212A37]
-                           hover:text-white
-                           hover:shadow-lg">
+                    data-industri="{{ $industri->nama ?? '-' }}" data-ketua="{{ $ketua->nama_lengkap ?? '-' }}"
+                    data-updated="{{ $tanggalTerakhirDiperbarui?->translatedFormat('d F Y') ?? '-' }}" class="group/link
+                               flex
+                               w-full
+                               items-center
+                               justify-between
+                               rounded-2xl
+                               border border-slate-200
+                               bg-white
+                               px-4 py-3
+                               text-left
+                               text-sm
+                               font-medium
+                               text-slate-700
+                               shadow-sm
+                               transition-all
+                               duration-300
+                               hover:border-[#212A37]
+                               hover:bg-[#212A37]
+                               hover:text-white
+                               hover:shadow-lg">
 
                     <span class="flex min-w-0 items-center gap-3">
 
-                        <span
-                            class="material-symbols-outlined
-                                   text-[18px]
-                                   text-slate-400
-                                   transition-colors
-                                   duration-300
-                                   group-hover/link:text-white">
+                        <span class="material-symbols-outlined
+                                       text-[18px]
+                                       text-slate-400
+                                       transition-colors
+                                       duration-300
+                                       group-hover/link:text-white">
                             picture_as_pdf
                         </span>
 
@@ -611,13 +575,12 @@
 
                     </span>
 
-                    <span
-                        class="material-symbols-outlined
-                               text-[18px]
-                               text-slate-300
-                               transition-colors
-                               duration-300
-                               group-hover/link:text-white">
+                    <span class="material-symbols-outlined
+                                   text-[18px]
+                                   text-slate-300
+                                   transition-colors
+                                   duration-300
+                                   group-hover/link:text-white">
                         visibility
                     </span>
 
@@ -625,24 +588,22 @@
 
             @else
 
-                <div
-                    class="flex
-                           items-center
-                           justify-between
-                           rounded-2xl
-                           border border-slate-100
-                           bg-slate-50
-                           px-4 py-3
-                           text-sm
-                           font-medium
-                           text-slate-400">
+                <div class="flex
+                               items-center
+                               justify-between
+                               rounded-2xl
+                               border border-slate-100
+                               bg-slate-50
+                               px-4 py-3
+                               text-sm
+                               font-medium
+                               text-slate-400">
 
                     <span class="flex min-w-0 items-center gap-3">
 
-                        <span
-                            class="material-symbols-outlined
-                                   text-[18px]
-                                   text-slate-300">
+                        <span class="material-symbols-outlined
+                                       text-[18px]
+                                       text-slate-300">
                             description_off
                         </span>
 

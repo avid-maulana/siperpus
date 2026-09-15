@@ -13,8 +13,8 @@ export default defineConfig({
                 "resources/js/app.js",
 
                 // Homepage
-                "resources/js/home/admin.js",
-                "resources/js/home/user.js",
+                "resources/js/home/admin/admin.js",
+                "resources/js/home/user/user.js",
 
                 // Authentication
                 "resources/js/auth/login.js",

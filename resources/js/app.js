@@ -3,7 +3,7 @@ import "./bootstrap";
 import "./literature";
 import "./navbar";
 
-import "./home/user";
+import "./home/user/user";
 
 import "./disertasi/repository";
 

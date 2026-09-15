@@ -1,11 +1,11 @@
 {{-- =========================================================
-    SEARCH PRAKTIK INDUSTRI
-    ---------------------------------------------------------
-    Desain disamakan dengan search tesis & disertasi.
-    Optional variables (component tetap jalan normal jika tidak
-    dikirim dari controller):
-      $tahunOptions  -> collection/array tahun yang tersedia
-      $totalResults  -> int, total hasil yang cocok
+SEARCH PRAKTIK INDUSTRI
+---------------------------------------------------------
+Desain disamakan dengan search tesis & disertasi.
+Optional variables (component tetap jalan normal jika tidak
+dikirim dari controller):
+$tahunOptions -> collection/array tahun yang tersedia
+$totalResults -> int, total hasil yang cocok
 ========================================================= --}}
 
 <style>
@@ -24,71 +24,64 @@
         height: 0;
     }
 
-    #praktikIndustriSubmit .pi-spinner { display: none; }
-    #praktikIndustriSubmit.is-loading .pi-label { display: none; }
-    #praktikIndustriSubmit.is-loading .pi-spinner { display: inline-flex; }
+    #praktikIndustriSubmit .pi-spinner {
+        display: none;
+    }
+
+    #praktikIndustriSubmit.is-loading .pi-label {
+        display: none;
+    }
+
+    #praktikIndustriSubmit.is-loading .pi-spinner {
+        display: inline-flex;
+    }
 </style>
 
 @php
     $activeFilter = $filter ?? request('filter', 'nama');
     $activeSearch = $search ?? request('search');
-    $activeTahun  = request('tahun');
+    $activeTahun = request('tahun');
 
     $filterLabels = [
-        'nama'     => 'Nama Mahasiswa',
+        'nama' => 'Nama Mahasiswa',
         'industri' => 'Industri',
-        'judul'    => 'Judul Laporan',
+        'judul' => 'Judul Laporan',
     ];
 
     $hasAdvanced = filled($activeTahun);
-    $hasActive   = filled($activeSearch) || $hasAdvanced;
+    $hasActive = filled($activeSearch) || $hasAdvanced;
 @endphp
 
-<div
-    class="rounded-2xl
+<div class="rounded-2xl
            border border-slate-200
            bg-white
            p-5
-           shadow-sm"
->
+           shadow-sm">
 
-    <form
-        id="praktikIndustriFilterForm"
-        action="{{ route('praktik-industri.index') }}"
-        method="GET"
-        class="w-full"
-    >
+    <form id="praktikIndustriFilterForm" action="{{ route('praktik-industri.index') }}" method="GET" class="w-full">
 
-        <div
-            class="grid grid-cols-1 gap-3
+        <div class="grid grid-cols-1 gap-3
                    lg:grid-cols-[190px_minmax(0,1fr)_54px]
-                   lg:items-end"
-        >
+                   lg:items-end">
 
             {{-- =================================================
-                FILTER
+            FILTER
             ================================================== --}}
 
             <div>
 
-                <label
-                    for="praktikIndustriFilter"
-                    class="mb-1.5 block
+                <label for="praktikIndustriFilter" class="mb-1.5 block
                            text-xs
                            font-semibold
                            uppercase
                            tracking-wider
-                           text-slate-500"
-                >
+                           text-slate-500">
                     Filter Berdasarkan
                 </label>
 
                 <div class="relative">
 
-                    <select
-                        id="praktikIndustriFilter"
-                        name="filter"
-                        class="h-[52px]
+                    <select id="praktikIndustriFilter" name="filter" class="h-[52px]
                                w-full
                                appearance-none
                                rounded-xl
@@ -104,8 +97,7 @@
                                duration-200
                                focus:border-[#212A37]
                                focus:ring-4
-                               focus:ring-slate-100"
-                    >
+                               focus:ring-slate-100">
                         @foreach ($filterLabels as $value => $label)
                             <option value="{{ $value }}" {{ $activeFilter === $value ? 'selected' : '' }}>
                                 {{ $label }}
@@ -113,16 +105,14 @@
                         @endforeach
                     </select>
 
-                    <span
-                        class="material-symbols-outlined
+                    <span class="material-symbols-outlined
                                pointer-events-none
                                absolute
                                right-3
                                top-1/2
                                -translate-y-1/2
                                text-[20px]
-                               text-slate-400"
-                    >
+                               text-slate-400">
                         keyboard_arrow_down
                     </span>
 
@@ -132,55 +122,42 @@
 
 
             {{-- =================================================
-                SEARCH
+            SEARCH
             ================================================== --}}
 
             <div>
 
-                <label
-                    for="praktikIndustriSearch"
-                    class="mb-1.5 block
+                <label for="praktikIndustriSearch" class="mb-1.5 block
                            text-xs
                            font-semibold
                            uppercase
                            tracking-wider
-                           text-slate-500"
-                >
+                           text-slate-500">
                     Pencarian
                 </label>
 
                 <div class="group relative">
 
-                    <div
-                        class="pointer-events-none
+                    <div class="pointer-events-none
                                absolute
                                inset-y-0
                                left-0
                                flex
                                items-center
-                               pl-4"
-                    >
-                        <span
-                            class="material-symbols-outlined
+                               pl-4">
+                        <span class="material-symbols-outlined
                                    text-[21px]
                                    text-slate-400
                                    transition-colors
-                                   group-focus-within:text-[#212A37]"
-                        >
+                                   group-focus-within:text-[#212A37]">
                             search
                         </span>
                     </div>
 
-                    <input
-                        id="praktikIndustriSearch"
-                        type="search"
-                        name="search"
-                        value="{{ $activeSearch }}"
-                        autocomplete="off"
-                        spellcheck="false"
+                    <input id="praktikIndustriSearch" type="search" name="search" value="{{ $activeSearch }}"
+                        autocomplete="off" spellcheck="false"
                         aria-label="Cari nama mahasiswa, industri, atau judul laporan"
-                        placeholder="Cari nama mahasiswa, industri, atau judul laporan..."
-                        class="h-[52px]
+                        placeholder="Cari nama mahasiswa, industri, atau judul laporan..." class="h-[52px]
                                w-full
                                rounded-xl
                                border border-slate-300
@@ -196,14 +173,9 @@
                                placeholder:text-slate-400
                                focus:border-[#212A37]
                                focus:ring-4
-                               focus:ring-slate-100"
-                    >
+                               focus:ring-slate-100">
 
-                    <button
-                        id="clearPraktikIndustriSearch"
-                        type="button"
-                        title="Hapus pencarian"
-                        class="{{ filled($activeSearch) ? '' : 'hidden' }}
+                    <button id="clearPraktikIndustriSearch" type="button" title="Hapus pencarian" class="{{ filled($activeSearch) ? '' : 'hidden' }}
                                absolute
                                right-[102px]
                                top-1/2
@@ -213,15 +185,11 @@
                                text-slate-400
                                transition
                                hover:bg-slate-100
-                               hover:text-slate-700"
-                    >
+                               hover:text-slate-700">
                         <span class="material-symbols-outlined text-[18px]">close</span>
                     </button>
 
-                    <button
-                        id="praktikIndustriSubmit"
-                        type="submit"
-                        class="absolute
+                    <button id="praktikIndustriSubmit" type="submit" class="absolute
                                right-1.5
                                top-1/2
                                flex
@@ -241,11 +209,11 @@
                                hover:bg-[#18202b]
                                active:scale-[0.98]
                                disabled:cursor-not-allowed
-                               disabled:opacity-70"
-                    >
+                               disabled:opacity-70">
                         <span class="pi-label">Cari</span>
                         <span class="pi-spinner items-center justify-center">
-                            <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+                            <span
+                                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
                         </span>
                     </button>
 
@@ -255,28 +223,22 @@
 
 
             {{-- =================================================
-                RESET
+            RESET
             ================================================== --}}
 
             <div>
 
-                <span
-                    class="mb-1.5 block
+                <span class="mb-1.5 block
                            text-center
                            text-xs
                            font-semibold
                            uppercase
                            tracking-wider
-                           text-slate-500"
-                >
+                           text-slate-500">
                     Reset
                 </span>
 
-                <button
-                    type="button"
-                    id="resetPraktikIndustriFilter"
-                    title="Reset Filter"
-                    class="relative flex
+                <button type="button" id="resetPraktikIndustriFilter" title="Reset Filter" class="relative flex
                            h-[52px]
                            w-[54px]
                            items-center
@@ -291,18 +253,15 @@
                            hover:border-[#212A37]
                            hover:bg-[#212A37]
                            hover:text-white
-                           active:scale-[0.98]"
-                >
+                           active:scale-[0.98]">
                     <span class="material-symbols-outlined text-[22px]">restart_alt</span>
 
                     @if ($hasActive)
-                        <span
-                            class="absolute -right-1 -top-1
-                                   h-3 w-3
-                                   rounded-full
-                                   border-2 border-white
-                                   bg-[#212A37]"
-                        ></span>
+                        <span class="absolute -right-1 -top-1
+                                       h-3 w-3
+                                       rounded-full
+                                       border-2 border-white
+                                       bg-[#212A37]"></span>
                     @endif
                 </button>
 
@@ -317,38 +276,28 @@
 
         @if (isset($tahunOptions))
 
-            <button
-                type="button"
-                id="praktikIndustriAdvancedToggle"
-                class="mt-3 inline-flex items-center gap-1.5
-                       text-xs font-semibold text-slate-500
-                       hover:text-[#212A37]"
-            >
+            <button type="button" id="praktikIndustriAdvancedToggle" class="mt-3 inline-flex items-center gap-1.5
+                           text-xs font-semibold text-slate-500
+                           hover:text-[#212A37]">
                 <span class="material-symbols-outlined text-[16px]">tune</span>
                 Filter lanjutan
                 <span class="material-symbols-outlined text-[16px]" id="praktikIndustriAdvancedChevron">expand_more</span>
             </button>
 
-            <div
-                id="praktikIndustriAdvancedPanel"
-                class="{{ $hasAdvanced ? '' : 'hidden' }}
-                       mt-3 flex flex-col
-                       gap-3 rounded-xl
-                       border border-slate-200
-                       bg-slate-50/70
-                       p-4
-                       sm:flex-row sm:flex-wrap"
-            >
+            <div id="praktikIndustriAdvancedPanel" class="{{ $hasAdvanced ? '' : 'hidden' }}
+                           mt-3 flex flex-col
+                           gap-3 rounded-xl
+                           border border-slate-200
+                           bg-slate-50/70
+                           p-4
+                           sm:flex-row sm:flex-wrap">
 
                 <label class="flex flex-1 min-w-[10rem] flex-col gap-1">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tahun</span>
-                    <select
-                        name="tahun"
-                        class="h-[44px] rounded-lg border border-slate-300 bg-white
-                               px-3 text-sm text-slate-700
-                               outline-none focus:border-[#212A37]
-                               focus:ring-4 focus:ring-slate-100"
-                    >
+                    <select name="tahun" class="h-[44px] rounded-lg border border-slate-300 bg-white
+                                   px-3 text-sm text-slate-700
+                                   outline-none focus:border-[#212A37]
+                                   focus:ring-4 focus:ring-slate-100">
                         <option value="">Semua tahun</option>
                         @foreach ($tahunOptions as $tahun)
                             <option value="{{ $tahun }}" {{ (string) $activeTahun === (string) $tahun ? 'selected' : '' }}>
@@ -359,12 +308,9 @@
                 </label>
 
                 <div class="flex items-end">
-                    <button
-                        type="submit"
-                        class="h-[44px] rounded-lg bg-[#212A37] px-4
-                               text-sm font-semibold text-white
-                               transition-colors hover:bg-[#18202b]"
-                    >
+                    <button type="submit" class="h-[44px] rounded-lg bg-[#212A37] px-4
+                                   text-sm font-semibold text-white
+                                   transition-colors hover:bg-[#18202b]">
                         Terapkan
                     </button>
                 </div>
@@ -381,28 +327,22 @@
             <div class="mt-3 flex flex-wrap items-center gap-2">
 
                 @if (filled($activeSearch))
-                    <a
-                        href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
-                        class="inline-flex items-center gap-1.5
-                               rounded-full bg-slate-100
-                               py-1.5 pl-3 pr-2
-                               text-xs font-medium text-slate-600
-                               hover:bg-slate-200"
-                    >
+                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}" class="inline-flex items-center gap-1.5
+                                       rounded-full bg-slate-100
+                                       py-1.5 pl-3 pr-2
+                                       text-xs font-medium text-slate-600
+                                       hover:bg-slate-200">
                         {{ $filterLabels[$activeFilter] ?? 'Pencarian' }}: "{{ $activeSearch }}"
                         <span class="material-symbols-outlined text-[15px]">close</span>
                     </a>
                 @endif
 
                 @if (filled($activeTahun))
-                    <a
-                        href="{{ request()->fullUrlWithQuery(['tahun' => null]) }}"
-                        class="inline-flex items-center gap-1.5
-                               rounded-full bg-slate-100
-                               py-1.5 pl-3 pr-2
-                               text-xs font-medium text-slate-600
-                               hover:bg-slate-200"
-                    >
+                    <a href="{{ request()->fullUrlWithQuery(['tahun' => null]) }}" class="inline-flex items-center gap-1.5
+                                       rounded-full bg-slate-100
+                                       py-1.5 pl-3 pr-2
+                                       text-xs font-medium text-slate-600
+                                       hover:bg-slate-200">
                         Tahun: {{ $activeTahun }}
                         <span class="material-symbols-outlined text-[15px]">close</span>
                     </a>
@@ -437,86 +377,86 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-    const form         = document.getElementById('praktikIndustriFilterForm');
-    const filterSelect = document.getElementById('praktikIndustriFilter');
-    const searchInput  = document.getElementById('praktikIndustriSearch');
-    const clearButton  = document.getElementById('clearPraktikIndustriSearch');
-    const resetButton  = document.getElementById('resetPraktikIndustriFilter');
-    const submitButton = document.getElementById('praktikIndustriSubmit');
-    const advToggle     = document.getElementById('praktikIndustriAdvancedToggle');
-    const advPanel       = document.getElementById('praktikIndustriAdvancedPanel');
-    const advChevron      = document.getElementById('praktikIndustriAdvancedChevron');
+        const form = document.getElementById('praktikIndustriFilterForm');
+        const filterSelect = document.getElementById('praktikIndustriFilter');
+        const searchInput = document.getElementById('praktikIndustriSearch');
+        const clearButton = document.getElementById('clearPraktikIndustriSearch');
+        const resetButton = document.getElementById('resetPraktikIndustriFilter');
+        const submitButton = document.getElementById('praktikIndustriSubmit');
+        const advToggle = document.getElementById('praktikIndustriAdvancedToggle');
+        const advPanel = document.getElementById('praktikIndustriAdvancedPanel');
+        const advChevron = document.getElementById('praktikIndustriAdvancedChevron');
 
-    if (!form || !searchInput) return;
+        if (!form || !searchInput) return;
 
-    const updateClearButton = () => {
-        if (searchInput.value.trim() !== '') {
-            clearButton?.classList.remove('hidden');
-        } else {
-            clearButton?.classList.add('hidden');
-        }
-    };
+        const updateClearButton = () => {
+            if (searchInput.value.trim() !== '') {
+                clearButton?.classList.remove('hidden');
+            } else {
+                clearButton?.classList.add('hidden');
+            }
+        };
 
-    const setLoading = () => {
-        submitButton?.classList.add('is-loading');
-        submitButton?.setAttribute('disabled', 'disabled');
-    };
+        const setLoading = () => {
+            submitButton?.classList.add('is-loading');
+            submitButton?.setAttribute('disabled', 'disabled');
+        };
 
-    // Ketik tidak langsung mencari — hasil baru muncul saat user
-    // menekan Enter atau klik tombol "Cari".
-    searchInput.addEventListener('input', () => {
-        updateClearButton();
-    });
+        // Ketik tidak langsung mencari — hasil baru muncul saat user
+        // menekan Enter atau klik tombol "Cari".
+        searchInput.addEventListener('input', () => {
+            updateClearButton();
+        });
 
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                updateClearButton();
+                searchInput.focus();
+            }
+        });
+
+        filterSelect?.addEventListener('change', () => {
+            if (searchInput.value.trim() !== '') {
+                setLoading();
+                form.submit();
+            }
+        });
+
+        clearButton?.addEventListener('click', () => {
             searchInput.value = '';
             updateClearButton();
             searchInput.focus();
-        }
-    });
+        });
 
-    filterSelect?.addEventListener('change', () => {
-        if (searchInput.value.trim() !== '') {
-            setLoading();
-            form.submit();
-        }
-    });
+        resetButton?.addEventListener('click', () => {
+            window.location.href = @json(route('praktik-industri.index'));
+        });
 
-    clearButton?.addEventListener('click', () => {
-        searchInput.value = '';
-        updateClearButton();
-        searchInput.focus();
-    });
-
-    resetButton?.addEventListener('click', () => {
-        window.location.href = @json(route('praktik-industri.index'));
-    });
-
-    advToggle?.addEventListener('click', () => {
-        advPanel?.classList.toggle('hidden');
-        if (advChevron) {
-            advChevron.textContent = advPanel?.classList.contains('hidden') ? 'expand_more' : 'expand_less';
-        }
-    });
-
-    form.addEventListener('submit', () => {
-        setLoading();
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement !== searchInput) {
-            const tag = document.activeElement?.tagName || '';
-            if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
-                e.preventDefault();
-                searchInput.focus();
+        advToggle?.addEventListener('click', () => {
+            advPanel?.classList.toggle('hidden');
+            if (advChevron) {
+                advChevron.textContent = advPanel?.classList.contains('hidden') ? 'expand_more' : 'expand_less';
             }
-        }
+        });
+
+        form.addEventListener('submit', () => {
+            setLoading();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                const tag = document.activeElement?.tagName || '';
+                if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            }
+        });
+
+        updateClearButton();
+
     });
-
-    updateClearButton();
-
-});
 </script>

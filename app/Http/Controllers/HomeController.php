@@ -589,10 +589,10 @@ class HomeController extends Controller
                 */
 
                 'latestLoginActivities' =>
-                $latestLoginActivities,
+                    $latestLoginActivities,
 
                 'loginActivities' =>
-                $loginActivities,
+                    $loginActivities,
             ]
         );
     }

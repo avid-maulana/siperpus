@@ -6,7 +6,7 @@
 
     {{-- =========================================================
     HERO
-========================================================= --}}
+    ========================================================= --}}
     <section class="relative -mt-20 overflow-hidden">
 
         {{-- Background --}}
@@ -14,41 +14,38 @@
             class="absolute inset-0 h-full w-full object-cover">
 
         {{-- Overlay --}}
-        <div
-            class="absolute inset-0
-               bg-gradient-to-r
-               from-[#212A37]/95
-               via-[#212A37]/85
-               to-[#212A37]/65">
+        <div class="absolute inset-0
+                       bg-gradient-to-r
+                       from-[#212A37]/95
+                       via-[#212A37]/85
+                       to-[#212A37]/65">
         </div>
 
 
         {{-- Hero Content --}}
-        <div
-            class="relative mx-auto flex min-h-[500px]
-               max-w-7xl items-center
-               px-4 pb-24 pt-28
-               sm:px-6 lg:px-8">
+        <div class="relative mx-auto flex min-h-[500px]
+                       max-w-7xl items-center
+                       px-4 pb-24 pt-28
+                       sm:px-6 lg:px-8">
 
             <div class="grid w-full items-center gap-12
-                   lg:grid-cols-[minmax(0,1fr)_300px]">
+                           lg:grid-cols-[minmax(0,1fr)_300px]">
 
                 {{-- =================================================
                 LEFT CONTENT
-            ================================================== --}}
+                ================================================== --}}
                 <div class="max-w-3xl">
 
                     {{-- Label --}}
-                    <div
-                        class="mb-6 inline-flex items-center gap-2
-                           rounded-full
-                           border border-white/10
-                           bg-white/10
-                           px-4 py-2
-                           text-sm font-medium
-                           text-white
-                           shadow-sm
-                           backdrop-blur-md">
+                    <div class="mb-6 inline-flex items-center gap-2
+                                   rounded-full
+                                   border border-white/10
+                                   bg-white/10
+                                   px-4 py-2
+                                   text-sm font-medium
+                                   text-white
+                                   shadow-sm
+                                   backdrop-blur-md">
 
                         <span class="material-symbols-outlined text-[18px]">
                             work
@@ -60,10 +57,9 @@
 
 
                     {{-- Title --}}
-                    <h1
-                        class="text-4xl font-bold leading-tight
-                           tracking-tight text-white
-                           sm:text-5xl lg:text-6xl">
+                    <h1 class="text-4xl font-bold leading-tight
+                                   tracking-tight text-white
+                                   sm:text-5xl lg:text-6xl">
 
                         Temukan Koleksi
 
@@ -75,11 +71,10 @@
 
 
                     {{-- Description --}}
-                    <p
-                        class="mt-5 max-w-2xl
-                           text-base leading-8
-                           text-slate-300
-                           sm:text-lg">
+                    <p class="mt-5 max-w-2xl
+                                   text-base leading-8
+                                   text-slate-300
+                                   sm:text-lg">
 
                         Jelajahi koleksi laporan Praktik Industri
                         yang telah tersedia di repository untuk
@@ -93,52 +88,48 @@
 
                 {{-- =================================================
                 REPOSITORY NOTE
-            ================================================== --}}
+                ================================================== --}}
                 <div class="hidden justify-end lg:flex">
 
-                    <div
-                        class="group relative w-full max-w-[270px]
-                           rotate-[2deg]
-                           bg-[#fffdf4]
-                           px-7 pb-7 pt-9
-                           shadow-[0_18px_45px_rgba(0,0,0,0.28)]
-                           transition-all duration-300
-                           hover:-translate-y-1
-                           hover:rotate-0
-                           hover:shadow-[0_24px_55px_rgba(0,0,0,0.32)]">
+                    <div class="group relative w-full max-w-[270px]
+                                   rotate-[2deg]
+                                   bg-[#fffdf4]
+                                   px-7 pb-7 pt-9
+                                   shadow-[0_18px_45px_rgba(0,0,0,0.28)]
+                                   transition-all duration-300
+                                   hover:-translate-y-1
+                                   hover:rotate-0
+                                   hover:shadow-[0_24px_55px_rgba(0,0,0,0.32)]">
 
                         {{-- Tape --}}
-                        <div
-                            class="absolute -top-4 left-1/2
-                               h-8 w-24
-                               -translate-x-1/2 -rotate-2
-                               bg-white/60
-                               shadow-sm
-                               backdrop-blur-[2px]">
+                        <div class="absolute -top-4 left-1/2
+                                       h-8 w-24
+                                       -translate-x-1/2 -rotate-2
+                                       bg-white/60
+                                       shadow-sm
+                                       backdrop-blur-[2px]">
                         </div>
 
 
                         {{-- Fold --}}
-                        <div
-                            class="absolute bottom-0 right-0
-                               h-8 w-8
-                               bg-gradient-to-tl
-                               from-[#e8e4d5]
-                               to-[#fffdf4]
-                               shadow-[-3px_-3px_6px_rgba(0,0,0,0.06)]">
+                        <div class="absolute bottom-0 right-0
+                                       h-8 w-8
+                                       bg-gradient-to-tl
+                                       from-[#e8e4d5]
+                                       to-[#fffdf4]
+                                       shadow-[-3px_-3px_6px_rgba(0,0,0,0.06)]">
                         </div>
 
 
                         <div class="relative">
 
                             {{-- Icon --}}
-                            <div
-                                class="flex h-11 w-11
-                                   items-center justify-center
-                                   rounded-xl
-                                   bg-[#212A37]
-                                   text-white
-                                   shadow-sm">
+                            <div class="flex h-11 w-11
+                                           items-center justify-center
+                                           rounded-xl
+                                           bg-[#212A37]
+                                           text-white
+                                           shadow-sm">
 
                                 <span class="material-symbols-outlined text-[22px]">
                                     work
@@ -148,13 +139,12 @@
 
 
                             {{-- Label --}}
-                            <p
-                                class="mt-6
-                                   text-[11px]
-                                   font-bold
-                                   uppercase
-                                   tracking-wide
-                                   text-slate-500">
+                            <p class="mt-6
+                                           text-[11px]
+                                           font-bold
+                                           uppercase
+                                           tracking-wide
+                                           text-slate-500">
                                 Total Repository
                             </p>
 
@@ -162,11 +152,10 @@
                             {{-- Total --}}
                             <div class="mt-2 flex items-end gap-2">
 
-                                <h2
-                                    class="text-5xl
-                                       font-bold
-                                       tracking-tight
-                                       text-[#212A37]">
+                                <h2 class="text-5xl
+                                               font-bold
+                                               tracking-tight
+                                               text-[#212A37]">
 
                                     @if ($laporan->total() >= 1000000)
                                         {{ rtrim(rtrim(number_format($laporan->total() / 1000000, 1, ',', ''), '0'), ',') }}M+
@@ -179,11 +168,10 @@
                                 </h2>
 
 
-                                <span
-                                    class="mb-1.5
-                                       text-sm
-                                       font-semibold
-                                       text-slate-500">
+                                <span class="mb-1.5
+                                               text-sm
+                                               font-semibold
+                                               text-slate-500">
                                     Laporan
                                 </span>
 
@@ -191,19 +179,17 @@
 
 
                             {{-- Divider --}}
-                            <div
-                                class="my-4
-                                   border-t
-                                   border-dashed
-                                   border-slate-300">
+                            <div class="my-4
+                                           border-t
+                                           border-dashed
+                                           border-slate-300">
                             </div>
 
 
                             {{-- Description --}}
-                            <p
-                                class="text-sm
-                                   leading-6
-                                   text-slate-500">
+                            <p class="text-sm
+                                           leading-6
+                                           text-slate-500">
                                 Total koleksi laporan Praktik Industri
                                 yang tersedia di repository.
                             </p>
@@ -223,20 +209,19 @@
 
     {{-- =========================================================
     SEARCH CARD
-========================================================= --}}
+    ========================================================= --}}
     <div class="relative z-20 mx-auto -mt-12
-           max-w-7xl
-           px-4
-           sm:px-6
-           lg:px-8">
+                   max-w-7xl
+                   px-4
+                   sm:px-6
+                   lg:px-8">
 
-        <div
-            class="rounded-[24px]
-               border border-slate-200
-               bg-white
-               px-6 py-5
-               shadow-[0_20px_50px_-20px_rgba(15,23,42,0.22)]
-               sm:px-7">
+        <div class="rounded-[24px]
+                       border border-slate-200
+                       bg-white
+                       px-6 py-5
+                       shadow-[0_20px_50px_-20px_rgba(15,23,42,0.22)]
+                       sm:px-7">
 
             @include('praktik-industri._filter')
 
@@ -247,12 +232,11 @@
 
     {{-- =========================================================
     RESULT
-========================================================= --}}
-    <section id="praktikIndustriResult"
-        class="mx-auto mt-8
-           max-w-7xl
-           px-4 pb-12
-           sm:px-6 lg:px-8">
+    ========================================================= --}}
+    <section id="praktikIndustriResult" class="mx-auto mt-8
+                   max-w-7xl
+                   px-4 pb-12
+                   sm:px-6 lg:px-8">
 
         @include('praktik-industri._result', [
             'laporan' => $laporan,
@@ -263,14 +247,14 @@
 
     {{-- =========================================================
     PDF VIEWER MODAL
-========================================================= --}}
+    ========================================================= --}}
 
-    @include('praktik-industri._pdf-viewer')
+    @include('praktik-industri.pdf-viewer._pdf-viewer')
 
 
     {{-- =========================================================
     PRAKTIK INDUSTRI SCRIPTS
-========================================================= --}}
+    ========================================================= --}}
 
     @vite([
         'resources/js/praktik-industri/pdf-viewer.js',

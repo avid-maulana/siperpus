@@ -306,6 +306,7 @@ $repository?->repository_url ?? null;
                 'nama'  => $nama,
                 'nim'   => $nim,
                 'skripsi' => $judul,
+                'document_type' => 'Tesis',
                 'bab'   => 'Repository Tesis',
             ]) }}"
                 class="flex w-full
