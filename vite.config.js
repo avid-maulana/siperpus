@@ -24,6 +24,9 @@ export default defineConfig({
                 "resources/js/skripsi/skripsi.js",
                 "resources/js/skripsi/pdf-viewer.js",
 
+                // Journal
+                "resources/js/journal/journal.js",
+
                 // Praktik Industri
                 "resources/js/praktik-industri/pdf-viewer.js",
             ],

@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'list' => [
+        ['name' => 'Cambridge Core', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/cambridge.jpg', 'url' => 'https://www.cambridge.org/core'],
+        ['name' => 'Emerald Insight', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/emerald.jpg', 'url' => 'http://emeraldinsight.com/'],
+        ['name' => 'JSTOR', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/jstor.jpg', 'url' => 'https://www.jstor.org/'],
+        ['name' => 'ScienceDirect', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/sciencedirect.jpg', 'url' => 'https://www.sciencedirect.com/'],
+        ['name' => 'Oxford Academic Journals', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/oxford-journals.jpg', 'url' => 'https://academic.oup.com/journals'],
+        ['name' => 'Oxford Academic Books', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/oxford-books.jpg', 'url' => 'https://academic.oup.com/books'],
+        ['name' => 'ProQuest Journals', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/proquest-journals.jpg', 'url' => 'http://search.proquest.com/'],
+        ['name' => 'ProQuest Ebook Central', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/proquest-ebook.jpg', 'url' => 'https://ebookcentral.proquest.com/lib/unmalang-ebooks/'],
+        ['name' => 'SAGE Knowledge (Books)', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/sage-books.jpg', 'url' => 'https://sk.sagepub.com/referenceandbooks'],
+        ['name' => 'SAGE Journals', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/sage-1.jpg', 'url' => 'https://journals.sagepub.com/'],
+        ['name' => 'Springer Link', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/springer.jpg', 'url' => 'http://link.springer.com/'],
+        ['name' => 'Nature', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/nature.jpg', 'url' => 'https://www.nature.com/'],
+        ['name' => 'Kubuku', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2025/11/kubuku.png', 'url' => 'https://kbk2975518.perpustakaandigital.com/index'],
+        ['name' => 'Taylor & Francis Journals', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2023/11/taylorjournals1.png', 'url' => 'http://tandfonline.com/'],
+        ['name' => 'Statista', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2025/09/statista_lg.jpg', 'url' => 'https://www.statista.com/sso/login?connection=universitas-negeri-malang'],
+        ['name' => 'Digilib UM', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2026/01/Digilib-UM-scaled.jpg', 'url' => 'https://lib.um.ac.id/index.php/digilib-um-2/'],
+        ['name' => 'Taylor & Francis Ebooks', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2023/11/taylorebooks2.png', 'url' => 'https://www.taylorfrancis.com/'],
+        ['name' => 'Bloomsbury Collections', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2024/11/BBY_Collections-lg.jpg', 'url' => 'https://www.bloomsburycollections.com/'],
+        ['name' => 'IEEE Xplore', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2025/09/Ieee-logo.jpg', 'url' => 'https://ieeexplore.ieee.org/Xplore/home.jsp'],
+        ['name' => 'Wiley Online Library', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2021/02/wiley.jpg', 'url' => 'http://onlinelibrary.wiley.com/'],
+        ['name' => 'ACS Publications', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2024/12/pubs-acs24.jpg', 'url' => 'https://pubs.acs.org/'],
+        ['name' => 'RapidILL', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2026/08/rapidill.png', 'url' => 'https://lib.um.ac.id/index.php/interlibrary/'],
+        ['name' => 'Gale (InfoTrac)', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2023/09/worldscientificnew.png', 'url' => 'http://infotrac.galegroup.com/itweb'],
+        ['name' => 'Brill', 'logo' => 'https://lib.um.ac.id/wp-content/uploads/2025/01/brill_lg.jpg', 'url' => 'https://brill.com/'],
+    ],
+];

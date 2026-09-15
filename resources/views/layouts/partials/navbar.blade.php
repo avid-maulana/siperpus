@@ -313,13 +313,14 @@
                             TAMPILAN USER DROPDOWN (HANYA ADMIN)
                         ================================================== --}}
                         @php
-                            $activeUserView =
-                                request()->routeIs('literatures.index') ||
-                                request()->routeIs('praktik-industri.index') ||
-                                request()->routeIs('skripsi.index') ||
-                                request()->routeIs('tesis.index') ||
-                                request()->routeIs('disertasi.index');
-                        @endphp
+    $activeUserView =
+        request()->routeIs('literatures.index') ||
+        request()->routeIs('praktik-industri.index') ||
+        request()->routeIs('journal.index') ||
+        request()->routeIs('skripsi.index') ||
+        request()->routeIs('tesis.index') ||
+        request()->routeIs('disertasi.index');
+@endphp
 
                         <div id="userViewMenuWrapper"
                             class="group/userview relative
@@ -416,6 +417,23 @@
 
                                         <span class="material-symbols-outlined text-[20px]">business_center</span>
                                         <span>Praktik Industri</span>
+                                    </a>
+
+                                  {{-- JOURNAL --}}
+
+                                    <a href="{{ route('journal.index') }}"
+                                        class="flex items-center gap-3
+                                               rounded-xl
+                                               px-3 py-2.5
+                                               text-sm
+                                               transition-colors
+                                               duration-200
+                                               {{ request()->routeIs('journal.index')
+                                                   ? 'bg-slate-100 font-semibold text-slate-900'
+                                                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }}">
+
+                                        <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+                                        <span>Journal</span>
                                     </a>
 
                                     {{-- SKRIPSI --}}
@@ -537,6 +555,40 @@
                                               group-hover:translate-x-0' }}">
                             </span>
                         </a>
+
+                        {{-- JOURNAL --}}
+                        
+                        @php
+                            $activeJournal = request()->routeIs('journal.index');
+                        @endphp
+                        <a href="{{ route('journal.index') }}"
+                            class="group relative flex h-[72px]
+                                   items-center
+                                   text-[16px]
+                                   font-medium
+                                   transition-colors
+                                   duration-300
+                                   {{ $activeJournal ? 'text-white' : 'text-slate-300 hover:text-white' }}">
+
+                            Journal
+
+                            <span
+                                class="absolute bottom-0 left-1/2
+                                       h-[3px] w-0
+                                       -translate-x-1/2
+                                       rounded-full
+                                       bg-white
+                                       transition-all
+                                       duration-300
+                                       ease-out
+                                       {{ $activeJournal
+                                           ? '!left-0 !w-full !translate-x-0'
+                                           : 'group-hover:left-0
+                                              group-hover:w-full
+                                              group-hover:translate-x-0' }}">
+                            </span>
+                        </a>
+
 
                         {{-- SKRIPSI --}}
                         @php

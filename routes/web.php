@@ -15,6 +15,7 @@ use App\Http\Controllers\RepositoryManagementController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\PraktikIndustriController;
 use App\Http\Controllers\PraktikIndustriAdminController;
+use App\Http\Controllers\JournalController;
 
 
 /*
@@ -81,6 +82,17 @@ Route::middleware('auth')->group(function () {
         '/literatures',
         [LiteratureController::class, 'index']
     )->name('literatures.index');
+
+      /*
+    |--------------------------------------------------------------------------
+    | Journal
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/journal',
+        [JournalController::class, 'index']
+    )->name('journal.index');
 
 
     /*
