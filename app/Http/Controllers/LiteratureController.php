@@ -48,34 +48,21 @@ class LiteratureController extends Controller
 
                             $query->where('title', 'like', "%{$search}%")
                                 ->orWhere('author', 'like', "%{$search}%");
-
                         }
                     );
-
                 }
             )
             ->when(
                 $typeName !== '',
                 function ($query) use ($typeName) {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Tipe di sini merujuk ke tabel 'types' (sama seperti
-                    | 'Kelola Tipe' admin), diakses lewat relasi
-                    | Category -> Type. Bukan kolom enum lama di
-                    | literatures.type yang sudah tidak dipakai.
-                    |--------------------------------------------------------------------------
-                    */
-
                     $query->whereHas(
                         'category.type',
                         function ($query) use ($typeName) {
 
                             $query->where('name', $typeName);
-
                         }
                     );
-
                 }
             )
             ->when(
@@ -83,7 +70,6 @@ class LiteratureController extends Controller
                 function ($query) use ($categoryId) {
 
                     $query->where('category_id', $categoryId);
-
                 }
             )
             ->latest()
@@ -120,6 +106,25 @@ class LiteratureController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Response AJAX
+        |--------------------------------------------------------------------------
+        | Kalau request datang dari fetch() di literatures.js (ditandai header
+        | X-Requested-With), cukup balikin partial _result saja, bukan full
+        | page. Kalau ini tidak dicek, seluruh halaman (layout + hero + search
+        | bar) ikut di-inject ke dalam #resultsContainer di sisi client.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->ajax()) {
+            return view('literatures._result', [
+                'literatures' => $literatures,
+                'categories' => $categories,
+            ])->render();
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
         | View
         |--------------------------------------------------------------------------
         */
@@ -138,12 +143,6 @@ class LiteratureController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Validasi
-        |--------------------------------------------------------------------------
-        */
-
         $validated = $request->validate([
 
             'cover_url' => [
@@ -198,23 +197,9 @@ class LiteratureController extends Controller
             ],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Simpan Literatur Baru
-        |--------------------------------------------------------------------------
-        */
-
         Literature::create(
             $validated
         );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Redirect
-        |--------------------------------------------------------------------------
-        */
 
         return redirect()
             ->route('library.indexLiterature')
@@ -230,12 +215,6 @@ class LiteratureController extends Controller
      */
     public function update(Request $request, Literature $literature)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Validasi
-        |--------------------------------------------------------------------------
-        */
-
         $validated = $request->validate([
 
             'cover_url' => [
@@ -290,23 +269,9 @@ class LiteratureController extends Controller
             ],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Update Literatur
-        |--------------------------------------------------------------------------
-        */
-
         $literature->update(
             $validated
         );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Redirect
-        |--------------------------------------------------------------------------
-        */
 
         return redirect()
             ->route('library.indexLiterature')
@@ -322,20 +287,7 @@ class LiteratureController extends Controller
      */
     public function destroy(Literature $literature)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus Literatur
-        |--------------------------------------------------------------------------
-        */
-
         $literature->delete();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Redirect
-        |--------------------------------------------------------------------------
-        */
 
         return redirect()
             ->route('library.indexLiterature')

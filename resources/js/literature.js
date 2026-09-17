@@ -117,6 +117,32 @@
     };
 
     // =========================================================
+    // RESULT ERROR STATE
+    // =========================================================
+
+    const renderErrorState = () => {
+        result.innerHTML = `
+            <div
+                class="rounded-3xl border border-red-200
+                       bg-red-50 p-10 text-center shadow-sm">
+
+                <span class="material-symbols-outlined text-4xl text-red-400">
+                    error
+                </span>
+
+                <p class="mt-3 text-sm font-semibold text-red-700">
+                    Gagal memuat hasil pencarian.
+                </p>
+
+                <p class="mt-2 text-sm text-red-500">
+                    Silakan coba lagi beberapa saat.
+                </p>
+
+            </div>
+        `;
+    };
+
+    // =========================================================
     // AJAX
     // =========================================================
 
@@ -162,6 +188,7 @@
         } catch (error) {
             if (error.name !== "AbortError") {
                 console.error("Literature AJAX Error:", error);
+                renderErrorState();
             }
         } finally {
             if (showLoader) {

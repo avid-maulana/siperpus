@@ -15,6 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
     |--------------------------------------------------------------------------
+    | Reset tombol "Cari" (spinner dimatikan oleh _search.blade.php lewat
+    | window.praktikIndustriSearch.stopLoading, terlepas dari sukses/gagal)
+    |--------------------------------------------------------------------------
+    */
+
+    const stopSubmitLoading = () => {
+        window.praktikIndustriSearch?.stopLoading?.();
+    };
+
+    /*
+    |--------------------------------------------------------------------------
     | Loading Bar
     |--------------------------------------------------------------------------
     */
@@ -123,37 +134,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const html = await response.text();
 
-            const parser = new DOMParser();
+            if (!html.trim()) {
+                throw new Error("Respons hasil Praktik Industri kosong.");
+            }
 
-            const documentHTML = parser.parseFromString(html, "text/html");
-
+            const documentHTML = new DOMParser().parseFromString(
+                html,
+                "text/html",
+            );
             const newResult = documentHTML.getElementById(
                 "praktikIndustriResult",
             );
 
-            if (!newResult) {
-                throw new Error(
-                    "Container hasil Praktik Industri tidak ditemukan.",
-                );
-            }
-
-            resultContainer.innerHTML = newResult.innerHTML;
-
-            /*
-            |--------------------------------------------------------------------------
-            | Update URL
-            |--------------------------------------------------------------------------
-            */
+            resultContainer.innerHTML = newResult
+                ? newResult.innerHTML
+                : html;
 
             if (pushState) {
                 window.history.pushState({}, "", url);
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Scroll ke hasil
-            |--------------------------------------------------------------------------
-            */
 
             const resultTop =
                 resultContainer.getBoundingClientRect().top +
@@ -165,12 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 behavior: "smooth",
             });
 
-            /*
-            |--------------------------------------------------------------------------
-            | Re-bind Pagination
-            |--------------------------------------------------------------------------
-            */
-
             bindPagination();
         } catch (error) {
             if (error.name === "AbortError") {
@@ -179,27 +172,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             console.error("Praktik Industri:", error);
 
-            resultContainer.innerHTML = `
-                <div class="rounded-2xl border border-red-200 bg-red-50 px-6 py-12 text-center">
-                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
-                        <span class="material-symbols-outlined text-red-500">
-                            error
-                        </span>
-                    </div>
-
-                    <h3 class="mt-4 text-base font-semibold text-red-700">
-                        Gagal memuat laporan
-                    </h3>
-
-                    <p class="mt-1 text-sm text-red-600">
-                        Terjadi kesalahan saat mengambil data.
-                        Silakan coba lagi.
-                    </p>
-                </div>
-            `;
+            window.location.assign(url);
+            return;
         } finally {
             hideLoading();
             hideResultLoading();
+            stopSubmitLoading();
         }
     };
 
@@ -244,10 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                /*
-                    | Hanya intercept pagination
-                    */
-
                 if (!href.includes("praktik-industri")) {
                     return;
                 }
@@ -276,4 +250,4 @@ document.addEventListener("DOMContentLoaded", () => {
     */
 
     bindPagination();
-});                                                                                                                                                                                                                                                                                                                                                
+});

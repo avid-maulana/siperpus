@@ -60,7 +60,7 @@
     ========================================================= --}}
 
     @vite([
-        'resources/js/journal/journal.js',
+        'resources/js/journal.js',
     ])
 
 @endsection

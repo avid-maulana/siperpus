@@ -60,7 +60,8 @@ $totalResults -> int, total hasil yang cocok
 
     <form id="praktikIndustriFilterForm" action="{{ route('praktik-industri.index') }}" method="GET" class="w-full">
 
-        <div class="grid grid-cols-1 gap-3
+        <div
+            class="grid grid-cols-1 gap-3
                    lg:grid-cols-[190px_minmax(0,1fr)_54px]
                    lg:items-end">
 
@@ -70,7 +71,8 @@ $totalResults -> int, total hasil yang cocok
 
             <div>
 
-                <label for="praktikIndustriFilter" class="mb-1.5 block
+                <label for="praktikIndustriFilter"
+                    class="mb-1.5 block
                            text-xs
                            font-semibold
                            uppercase
@@ -81,7 +83,8 @@ $totalResults -> int, total hasil yang cocok
 
                 <div class="relative">
 
-                    <select id="praktikIndustriFilter" name="filter" class="h-[52px]
+                    <select id="praktikIndustriFilter" name="filter"
+                        class="h-[52px]
                                w-full
                                appearance-none
                                rounded-xl
@@ -105,7 +108,8 @@ $totalResults -> int, total hasil yang cocok
                         @endforeach
                     </select>
 
-                    <span class="material-symbols-outlined
+                    <span
+                        class="material-symbols-outlined
                                pointer-events-none
                                absolute
                                right-3
@@ -127,7 +131,8 @@ $totalResults -> int, total hasil yang cocok
 
             <div>
 
-                <label for="praktikIndustriSearch" class="mb-1.5 block
+                <label for="praktikIndustriSearch"
+                    class="mb-1.5 block
                            text-xs
                            font-semibold
                            uppercase
@@ -138,14 +143,16 @@ $totalResults -> int, total hasil yang cocok
 
                 <div class="group relative">
 
-                    <div class="pointer-events-none
+                    <div
+                        class="pointer-events-none
                                absolute
                                inset-y-0
                                left-0
                                flex
                                items-center
                                pl-4">
-                        <span class="material-symbols-outlined
+                        <span
+                            class="material-symbols-outlined
                                    text-[21px]
                                    text-slate-400
                                    transition-colors
@@ -157,7 +164,8 @@ $totalResults -> int, total hasil yang cocok
                     <input id="praktikIndustriSearch" type="search" name="search" value="{{ $activeSearch }}"
                         autocomplete="off" spellcheck="false"
                         aria-label="Cari nama mahasiswa, industri, atau judul laporan"
-                        placeholder="Cari nama mahasiswa, industri, atau judul laporan..." class="h-[52px]
+                        placeholder="Cari nama mahasiswa, industri, atau judul laporan..."
+                        class="h-[52px]
                                w-full
                                rounded-xl
                                border border-slate-300
@@ -175,7 +183,8 @@ $totalResults -> int, total hasil yang cocok
                                focus:ring-4
                                focus:ring-slate-100">
 
-                    <button id="clearPraktikIndustriSearch" type="button" title="Hapus pencarian" class="{{ filled($activeSearch) ? '' : 'hidden' }}
+                    <button id="clearPraktikIndustriSearch" type="button" title="Hapus pencarian"
+                        class="{{ filled($activeSearch) ? '' : 'hidden' }}
                                absolute
                                right-[102px]
                                top-1/2
@@ -189,7 +198,8 @@ $totalResults -> int, total hasil yang cocok
                         <span class="material-symbols-outlined text-[18px]">close</span>
                     </button>
 
-                    <button id="praktikIndustriSubmit" type="submit" class="absolute
+                    <button id="praktikIndustriSubmit" type="submit"
+                        class="absolute
                                right-1.5
                                top-1/2
                                flex
@@ -228,7 +238,8 @@ $totalResults -> int, total hasil yang cocok
 
             <div>
 
-                <span class="mb-1.5 block
+                <span
+                    class="mb-1.5 block
                            text-center
                            text-xs
                            font-semibold
@@ -238,7 +249,8 @@ $totalResults -> int, total hasil yang cocok
                     Reset
                 </span>
 
-                <button type="button" id="resetPraktikIndustriFilter" title="Reset Filter" class="relative flex
+                <button type="button" id="resetPraktikIndustriFilter" title="Reset Filter"
+                    class="relative flex
                            h-[52px]
                            w-[54px]
                            items-center
@@ -257,7 +269,8 @@ $totalResults -> int, total hasil yang cocok
                     <span class="material-symbols-outlined text-[22px]">restart_alt</span>
 
                     @if ($hasActive)
-                        <span class="absolute -right-1 -top-1
+                        <span
+                            class="absolute -right-1 -top-1
                                        h-3 w-3
                                        rounded-full
                                        border-2 border-white
@@ -276,15 +289,18 @@ $totalResults -> int, total hasil yang cocok
 
         @if (isset($tahunOptions))
 
-            <button type="button" id="praktikIndustriAdvancedToggle" class="mt-3 inline-flex items-center gap-1.5
+            <button type="button" id="praktikIndustriAdvancedToggle"
+                class="mt-3 inline-flex items-center gap-1.5
                            text-xs font-semibold text-slate-500
                            hover:text-[#212A37]">
                 <span class="material-symbols-outlined text-[16px]">tune</span>
                 Filter lanjutan
-                <span class="material-symbols-outlined text-[16px]" id="praktikIndustriAdvancedChevron">expand_more</span>
+                <span class="material-symbols-outlined text-[16px]"
+                    id="praktikIndustriAdvancedChevron">expand_more</span>
             </button>
 
-            <div id="praktikIndustriAdvancedPanel" class="{{ $hasAdvanced ? '' : 'hidden' }}
+            <div id="praktikIndustriAdvancedPanel"
+                class="{{ $hasAdvanced ? '' : 'hidden' }}
                            mt-3 flex flex-col
                            gap-3 rounded-xl
                            border border-slate-200
@@ -294,13 +310,15 @@ $totalResults -> int, total hasil yang cocok
 
                 <label class="flex flex-1 min-w-[10rem] flex-col gap-1">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tahun</span>
-                    <select name="tahun" class="h-[44px] rounded-lg border border-slate-300 bg-white
+                    <select name="tahun"
+                        class="h-[44px] rounded-lg border border-slate-300 bg-white
                                    px-3 text-sm text-slate-700
                                    outline-none focus:border-[#212A37]
                                    focus:ring-4 focus:ring-slate-100">
                         <option value="">Semua tahun</option>
                         @foreach ($tahunOptions as $tahun)
-                            <option value="{{ $tahun }}" {{ (string) $activeTahun === (string) $tahun ? 'selected' : '' }}>
+                            <option value="{{ $tahun }}"
+                                {{ (string) $activeTahun === (string) $tahun ? 'selected' : '' }}>
                                 {{ $tahun }}
                             </option>
                         @endforeach
@@ -308,7 +326,8 @@ $totalResults -> int, total hasil yang cocok
                 </label>
 
                 <div class="flex items-end">
-                    <button type="submit" class="h-[44px] rounded-lg bg-[#212A37] px-4
+                    <button type="submit"
+                        class="h-[44px] rounded-lg bg-[#212A37] px-4
                                    text-sm font-semibold text-white
                                    transition-colors hover:bg-[#18202b]">
                         Terapkan
@@ -327,7 +346,8 @@ $totalResults -> int, total hasil yang cocok
             <div class="mt-3 flex flex-wrap items-center gap-2">
 
                 @if (filled($activeSearch))
-                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}" class="inline-flex items-center gap-1.5
+                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
+                        class="inline-flex items-center gap-1.5
                                        rounded-full bg-slate-100
                                        py-1.5 pl-3 pr-2
                                        text-xs font-medium text-slate-600
@@ -338,7 +358,8 @@ $totalResults -> int, total hasil yang cocok
                 @endif
 
                 @if (filled($activeTahun))
-                    <a href="{{ request()->fullUrlWithQuery(['tahun' => null]) }}" class="inline-flex items-center gap-1.5
+                    <a href="{{ request()->fullUrlWithQuery(['tahun' => null]) }}"
+                        class="inline-flex items-center gap-1.5
                                        rounded-full bg-slate-100
                                        py-1.5 pl-3 pr-2
                                        text-xs font-medium text-slate-600
@@ -404,6 +425,18 @@ $totalResults -> int, total hasil yang cocok
             submitButton?.setAttribute('disabled', 'disabled');
         };
 
+        // Dipanggil dari luar (praktik-industri.js) lewat window.praktikIndustriSearch
+        // setelah AJAX selesai (sukses ataupun gagal), supaya tombol tidak nyangkut
+        // di spinner selamanya.
+        const stopLoading = () => {
+            submitButton?.classList.remove('is-loading');
+            submitButton?.removeAttribute('disabled');
+        };
+
+        // Expose supaya praktik-industri.js bisa reset tombol ini setelah fetch selesai.
+        window.praktikIndustriSearch = window.praktikIndustriSearch || {};
+        window.praktikIndustriSearch.stopLoading = stopLoading;
+
         // Ketik tidak langsung mencari — hasil baru muncul saat user
         // menekan Enter atau klik tombol "Cari".
         searchInput.addEventListener('input', () => {
@@ -421,7 +454,17 @@ $totalResults -> int, total hasil yang cocok
         filterSelect?.addEventListener('change', () => {
             if (searchInput.value.trim() !== '') {
                 setLoading();
-                form.submit();
+
+                // requestSubmit() (bukan submit()) supaya event 'submit' tetap
+                // ter-trigger dan ditangkap oleh listener AJAX di praktik-industri.js.
+                // form.submit() native TIDAK memicu event 'submit', jadi kalau
+                // dipakai, ganti filter akan selalu full page reload — tidak
+                // konsisten dengan pencarian yang lewat AJAX.
+                if (form.requestSubmit) {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
             }
         });
 
@@ -438,7 +481,8 @@ $totalResults -> int, total hasil yang cocok
         advToggle?.addEventListener('click', () => {
             advPanel?.classList.toggle('hidden');
             if (advChevron) {
-                advChevron.textContent = advPanel?.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+                advChevron.textContent = advPanel?.classList.contains('hidden') ? 'expand_more' :
+                    'expand_less';
             }
         });
 

@@ -32,6 +32,8 @@ class PraktikIndustriController extends Controller
 
         $filter = $request->input('filter', 'nama');
 
+        $tahun = $request->input('tahun');
+
         /*
         |--------------------------------------------------------------------------
         | CARI USER DI DATABASE MASTER
@@ -60,35 +62,9 @@ class PraktikIndustriController extends Controller
         |--------------------------------------------------------------------------
         | QUERY LAPORAN TERBARU PER KELOMPOK
         |--------------------------------------------------------------------------
-        |
-        | Struktur:
-        |
-        | ujians.detail_tim_id
-        |        ↓
-        | detail_tims.id
-        |        ↓
-        | detail_tims.tim_id
-        |
-        | Setiap laporan akan dibandingkan dengan laporan
-        | lain yang memiliki tim_id sama.
-        |
-        | Jika ada laporan yang lebih baru:
-        |
-        |     laporan lama → disembunyikan
-        |
-        | Jika tidak ada:
-        |
-        |     laporan terbaru → ditampilkan
-        |
         */
 
         $laporan = PraktikIndustri::query()
-
-            /*
-            |--------------------------------------------------------------------------
-            | HUBUNGKAN LAPORAN DENGAN TIM SAAT INI
-            |--------------------------------------------------------------------------
-            */
 
             ->join(
                 'detail_tims as dt_current',
@@ -97,25 +73,9 @@ class PraktikIndustriController extends Controller
                 'ujians.detail_tim_id'
             )
 
-            /*
-            |--------------------------------------------------------------------------
-            | PENTING
-            |--------------------------------------------------------------------------
-            |
-            | Karena menggunakan JOIN, kita hanya mengambil
-            | kolom dari tabel ujians agar model tetap normal.
-            |
-            */
-
             ->select(
                 'ujians.*'
             )
-
-            /*
-            |--------------------------------------------------------------------------
-            | AMBIL LAPORAN TERBARU PER TIM
-            |--------------------------------------------------------------------------
-            */
 
             ->whereNotExists(function ($query) {
 
@@ -133,44 +93,19 @@ class PraktikIndustriController extends Controller
                         'u_lama.detail_tim_id'
                     )
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | KELOMPOK HARUS SAMA
-                    |--------------------------------------------------------------------------
-                    */
-
                     ->whereColumn(
                         'dt_lama.tim_id',
                         '=',
                         'dt_current.tim_id'
                     )
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | LAPORAN PEMBANDING HARUS LEBIH BARU
-                    |--------------------------------------------------------------------------
-                    */
-
                     ->where(function ($query) {
-
-                        /*
-                        |--------------------------------------------------------------
-                        | created_at lebih baru
-                        |--------------------------------------------------------------
-                        */
 
                         $query->whereColumn(
                             'u_lama.created_at',
                             '>',
                             'ujians.created_at'
                         )
-
-                            /*
-                        |--------------------------------------------------------------
-                        | Jika created_at sama,
-                        | ID lebih besar dianggap lebih baru.
-                        |--------------------------------------------------------------
-                        */
 
                             ->orWhere(function ($query) {
 
@@ -190,12 +125,6 @@ class PraktikIndustriController extends Controller
             })
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | RELASI
-            |--------------------------------------------------------------------------
-            */
-
             ->with([
 
                 'detailTim.tim',
@@ -213,15 +142,9 @@ class PraktikIndustriController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | SEARCH
+            | SEARCH + FILTER
             |--------------------------------------------------------------------------
             */
-
-            /*
-|--------------------------------------------------------------------------
-| SEARCH + FILTER
-|--------------------------------------------------------------------------
-*/
 
             ->when(
                 $search !== '',
@@ -238,12 +161,6 @@ class PraktikIndustriController extends Controller
                             $userIds
                         ) {
 
-                            /*
-                |--------------------------------------------------------------------------
-                | FILTER: JUDUL
-                |--------------------------------------------------------------------------
-                */
-
                             if ($filter === 'judul') {
 
                                 $query->where(
@@ -251,23 +168,11 @@ class PraktikIndustriController extends Controller
                                     'like',
                                     "%{$search}%"
                                 );
-                            }
-
-
-                            /*
-                |--------------------------------------------------------------------------
-                | FILTER: INDUSTRI
-                |--------------------------------------------------------------------------
-                */ elseif ($filter === 'industri') {
+                            } elseif ($filter === 'industri') {
 
                                 $query->whereHas(
                                     'detailTim.tim.industri',
                                     function ($industriQuery) use ($search) {
-
-                                        /*
-                            | GANTI 'nama' jika nama kolom industri
-                            | di database kamu berbeda.
-                            */
 
                                         $industriQuery->where(
                                             'nama',
@@ -276,20 +181,9 @@ class PraktikIndustriController extends Controller
                                         );
                                     }
                                 );
-                            }
-
-
-                            /*
-                |--------------------------------------------------------------------------
-                | FILTER: NAMA
-                |--------------------------------------------------------------------------
-                */ elseif ($filter === 'nama') {
+                            } elseif ($filter === 'nama') {
 
                                 if ($userIds->isNotEmpty()) {
-
-                                    /*
-                        | Ketua
-                        */
 
                                     $query->whereHas(
                                         'detailTim.tim',
@@ -302,11 +196,6 @@ class PraktikIndustriController extends Controller
                                         }
                                     );
 
-
-                                    /*
-                        | Anggota
-                        */
-
                                     $query->orWhereHas(
                                         'detailTim.tim.detailTims',
                                         function ($detailTimQuery) use ($userIds) {
@@ -317,12 +206,7 @@ class PraktikIndustriController extends Controller
                                             );
                                         }
                                     );
-                                }
-
-                                /*
-                    | Jika nama tidak ditemukan,
-                    | paksa hasil menjadi kosong.
-                    */ else {
+                                } else {
 
                                     $query->whereRaw('1 = 0');
                                 }
@@ -335,9 +219,21 @@ class PraktikIndustriController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | URUTKAN
+            | FILTER: TAHUN
             |--------------------------------------------------------------------------
             */
+
+            ->when(
+                filled($tahun),
+                function ($query) use ($tahun) {
+
+                    $query->whereYear(
+                        'ujians.created_at',
+                        $tahun
+                    );
+                }
+            )
+
 
             ->orderByDesc(
                 'ujians.created_at'
@@ -347,16 +243,30 @@ class PraktikIndustriController extends Controller
                 'ujians.id'
             )
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | PAGINATION
-            |--------------------------------------------------------------------------
-            */
-
             ->paginate(12)
 
             ->withQueryString();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESPONSE AJAX
+        |--------------------------------------------------------------------------
+        |
+        | Kalau request datang dari fetch() di praktik-industri.js (ditandai
+        | header X-Requested-With), cukup balikin partial _result saja. Sebelum
+        | ini, controller selalu balikin full page (hero, search card, modal PDF
+        | viewer, @vite) untuk SETIAP pencarian AJAX — jauh lebih berat, dan
+        | rentan gagal kalau ada bagian halaman yang tidak dibutuhkan justru
+        | error saat dirender ulang.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->ajax()) {
+            return view('praktik-industri._result', [
+                'laporan' => $laporan,
+            ])->render();
+        }
 
 
         /*
